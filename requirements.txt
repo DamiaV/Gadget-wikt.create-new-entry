@@ -1,0 +1,8 @@
+certifi
+charset-normalizer
+idna
+mwparserfromhell
+packaging
+pywikibot
+requests
+urllib3
