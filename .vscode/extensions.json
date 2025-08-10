@@ -1,3 +1,9 @@
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    "Vue.volar",
+    "ms-python.black-formatter",
+    "ms-python.pylint",
+    "ms-python.python",
+    "dbaeumer.vscode-eslint"
+  ]
 }
