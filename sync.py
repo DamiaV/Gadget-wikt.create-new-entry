@@ -9,8 +9,11 @@ import json
 import pathlib
 import re
 import subprocess
+import sys
+import typing
 
 import pywikibot as pwb
+import pywikibot.exceptions as pwb_ex
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,6 +29,8 @@ class File:
 
     local_path: pathlib.Path
     remote_title: str
+    is_tracked: bool
+    is_modified: bool
 
 
 def load_config() -> Config:
@@ -37,6 +42,18 @@ def load_config() -> Config:
     with open("config.json", encoding="UTF-8") as f:
         settings = json.load(f)
     return Config(page_prefix=settings["pagePrefix"])
+
+
+def is_file_tracked(path: pathlib.Path) -> bool:
+    # pylint: disable=subprocess-run-check
+    result = subprocess.run(["git", "ls-files", "--error-unmatch", str(path)])
+    return result.returncode == 0
+
+
+def is_file_modified(path: pathlib.Path) -> bool:
+    # pylint: disable=subprocess-run-check
+    result = subprocess.run(["git", "diff", "--exit-code", str(path)])
+    return result.returncode != 0
 
 
 def commonjs_to_esm(commonjs_code: str) -> str:
@@ -82,17 +99,20 @@ def extract_local_file_structure(config: Config) -> set[File]:
                 File(
                     local_path=path,
                     remote_title=config.page_prefix + "/".join(path.parts[1:]),
+                    is_tracked=is_file_tracked(path),
+                    is_modified=is_file_modified(path),
                 )
             )
 
     return files
 
 
-def pull(verbose: bool = False) -> None:
+def pull(verbose: bool = False, overwrite: bool = False) -> int:
     """
     Pull changes from the remote wiki.
 
     :param verbose: If True, show more detailed logs.
+    :param overwrite: If True, overwrite any uncommitted changes.
     """
     config = load_config()
     files = extract_local_file_structure(config)
@@ -103,43 +123,71 @@ def pull(verbose: bool = False) -> None:
         if verbose:
             print(f"{file.remote_title} -> {file.local_path}")
         page = pwb.Page(site, file.remote_title)
+
         if not page.exists():
             if verbose:
                 print("Page does not exist, skipping.")
             continue
+
+        if not file.is_tracked and not overwrite:
+            print(
+                f"Local file '{file.local_path}' is not tracked but page "
+                f"[[{file.remote_title}]] exists on the remote wiki, skipping."
+            )
+            continue
+
+        if file.is_modified and not overwrite:
+            print(f"Local file '{file.local_path}' has uncommitted changes, skipping.")
+            continue
+
         text = commonjs_to_esm(page.text)
         with file.local_path.open("w") as f:
             f.write(text)
     print("Done.")
+
     print("Running 'eslint --fix'…")
     # pylint: disable=subprocess-run-check
-    subprocess.run(["npm", "run", "lint:fix"])
+    result = subprocess.run(["npm", "run", "lint:fix"])
     print("Done.")
+    return result.returncode
 
 
-def push(verbose: bool = False, message: str = None) -> None:
+def push(verbose: bool = False, force: bool = False, message: str = None) -> int:
     """
     Push local changes to the remote wiki.
 
     :param verbose: If True, show more detailed logs.
+    :param force: If True, untracked files will be pushed.
     :param message: The edit message.
     """
     config = load_config()
     files = extract_local_file_structure(config)
+    exit_code = 0
 
     site = pwb.Site()
     print("Pushing changes with message:", message)
     for file in files:
         if verbose:
             print(f"{file.local_path} -> {file.remote_title}")
+
+        if not file.is_tracked and not force:
+            print(f"Warning: Local file '{file.local_path}' is not tracked, skipping.")
+            continue
+
         page = pwb.Page(site, file.remote_title)
         with file.local_path.open("r") as f:
             page.text = esm_to_commonjs(f.read())
-        page.save(summary=message, quiet=True)
+        try:
+            page.save(summary=message, quiet=True)
+        except pwb_ex.PageRelatedError as e:
+            print(f"The page [[{file.remote_title}]] could not be saved:", str(e))
+            exit_code = 1
     print("Done.")
 
+    return exit_code
 
-ACTIONS = {
+
+ACTIONS: dict[str, typing.Callable[[None], int]] = {
     "pull": pull,
     "push": push,
 }
@@ -154,6 +202,12 @@ def main() -> None:
 
     pull_parser = subparsers.add_parser(
         "pull", help="Pull changes from the remote wiki."
+    )
+    pull_parser.add_argument(
+        "-o",
+        "--overwrite",
+        action="store_true",
+        help="Overwrite any uncommitted local changes.",
     )
     pull_parser.add_argument(
         "-v", "--verbose", action="store_true", help="Show more detailed logs."
@@ -176,8 +230,11 @@ def main() -> None:
     }
     if "message" in args:
         kwargs["message"] = args.message
+    if "overwrite" in args:
+        kwargs["overwrite"] = args.overwrite
 
-    ACTIONS[args.command](**kwargs)
+    exit_code = ACTIONS[args.command](**kwargs)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
