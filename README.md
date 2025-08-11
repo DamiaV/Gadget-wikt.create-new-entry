@@ -12,6 +12,8 @@ Files sync is performed through the `sync.py` tool. In order to know which files
 
 Each of the commands below have a `-v`/`--verbose` option.
 
+⚠️ **Important**: The following commands do not interact with git. To push and pull changes to and from the GitHub repository, use the `git` command.
+
 ### Pull remote changes
 
 To pull remote changes, run `python3 sync.py pull`.
