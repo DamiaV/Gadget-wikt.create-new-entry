@@ -13,8 +13,7 @@ export default defineComponent({
     language: { type: T.Language, required: true },
   },
   emits: ["style:bold", "style:italic", "insert-char"],
-  setup(props) {
-    console.log(props.language.ipaSymbols);
+  setup() {
     return {
       cdxIconBold,
       cdxIconItalic,
@@ -25,10 +24,16 @@ export default defineComponent({
 
 <template>
   <div class="cne-edit-tools">
-    <cdx-button aria-label="Gras" size="small" @click="$emit('style:bold')">
+    <cdx-button
+      class="format-btn"
+      aria-label="Gras"
+      size="small"
+      @click="$emit('style:bold')"
+    >
       <cdx-icon :icon="cdxIconBold"></cdx-icon>
     </cdx-button>
     <cdx-button
+      class="format-btn"
       aria-label="Italique"
       size="small"
       @click="$emit('style:italic')"
@@ -51,3 +56,9 @@ export default defineComponent({
     </template>
   </div>
 </template>
+
+<style>
+.cne-edit-tools .format-btn {
+  margin-right: 0.25em;
+}
+</style>
