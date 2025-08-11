@@ -1,3 +1,7 @@
 {
-    "pagePrefix": "MediaWiki:Gadget-wikt.create-new-entry/"
+    "gadgetName": "wikt.create-new-entry",
+    "dependencies": [
+        "vue",
+        "@wikimedia/codex"
+    ]
 }

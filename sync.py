@@ -8,6 +8,7 @@ import dataclasses
 import json
 import pathlib
 import re
+import os
 import subprocess
 import sys
 import typing
@@ -20,7 +21,9 @@ import pywikibot.exceptions as pwb_ex
 class Config:
     """This class represents the current local config."""
 
+    gadget_name: str
     page_prefix: str
+    dependencies: list[str]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -28,6 +31,7 @@ class File:
     """This class links a local source file to its remote wiki page."""
 
     local_path: pathlib.Path
+    src_path: pathlib.Path
     remote_title: str
     is_tracked: bool
     is_modified: bool
@@ -41,19 +45,81 @@ def load_config() -> Config:
     """
     with open("config.json", encoding="UTF-8") as f:
         settings = json.load(f)
-    return Config(page_prefix=settings["pagePrefix"])
+    gadget_name = settings["gadgetName"]
+    return Config(
+        gadget_name=gadget_name,
+        page_prefix=f"MediaWiki:Gadget-{gadget_name}/",
+        dependencies=settings["dependencies"],
+    )
+
+
+def generate_gadget_definition(
+    config: Config, files: set[File], codex_icons: set[str]
+) -> str:
+    """
+    Generate the definition for the gadget.
+
+    :param config: The current config.
+    :param files: The gadget’s source files.
+    :param codex_icons: The set of Codex icons used by the gadget.
+    :return: The gadget definition string.
+    """
+    prefix = config.gadget_name
+    deps = ", ".join(config.dependencies)
+    icons = ", ".join(sorted(codex_icons, key=str.lower))
+    sources = " | ".join(
+        sorted(
+            (f"{prefix}/{file.src_path}" for file in files),
+            key=lambda p: " " if "main" in p else p.lower(),
+        )
+    )
+    return (
+        f"{prefix} [ResourceLoader | package | dependencies = {deps} | codexIcons = {icons}]"
+        f" | {sources}"
+    )
 
 
 def is_file_tracked(path: pathlib.Path) -> bool:
+    """
+    Check whether the given file is tracked by git.
+
+    :param path: The file to check.
+    :return: True if the file is tracked, False otherwise.
+    """
     # pylint: disable=subprocess-run-check
     result = subprocess.run(["git", "ls-files", "--error-unmatch", str(path)])
     return result.returncode == 0
 
 
 def is_file_modified(path: pathlib.Path) -> bool:
+    """
+    Check whether the given file has been modified compared to the current git head.
+
+    :param path: The file to check.
+    :return: True if the file has been modified, False otherwise.
+    """
     # pylint: disable=subprocess-run-check
     result = subprocess.run(["git", "diff", "--exit-code", str(path)])
     return result.returncode != 0
+
+
+def extract_codex_icon_names(js_code: str) -> set[str]:
+    """
+    Extract the Codex icons imported in the given JS code.
+
+    :param js_code: The JS code to extract icons from.
+    :return: The set of imported icons.
+    """
+    icons = set()
+
+    for match in re.finditer(
+        r"import { ((?:\w+(?:, )?)+) } from \"(?:(?:../)+|./)icons\.json\";",
+        js_code,
+        flags=re.MULTILINE,
+    ):
+        icons |= set(match[1].split(", "))
+
+    return icons
 
 
 def commonjs_to_esm(commonjs_code: str) -> str:
@@ -92,13 +158,16 @@ def extract_local_file_structure(config: Config) -> set[File]:
     :return: A set containing File objects representing the local source files.
     """
     files = set()
+    allowed_exts = (".js", ".vue", ".json")
 
     for path in pathlib.Path("src").rglob("*"):
-        if path.is_file():
+        if path.is_file() and os.path.splitext(path.name)[1] in allowed_exts:
+            relative_path = str(path.relative_to("src"))
             files.add(
                 File(
                     local_path=path,
-                    remote_title=config.page_prefix + "/".join(path.parts[1:]),
+                    src_path=relative_path,
+                    remote_title=config.page_prefix + relative_path,
                     is_tracked=is_file_tracked(path),
                     is_modified=is_file_modified(path),
                 )
@@ -164,6 +233,7 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
     files = extract_local_file_structure(config)
     exit_code = 0
 
+    codex_icons = set()
     site = pwb.Site()
     print("Pushing changes with message:", message)
     for file in files:
@@ -176,13 +246,35 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
 
         page = pwb.Page(site, file.remote_title)
         with file.local_path.open("r") as f:
-            page.text = esm_to_commonjs(f.read())
+            js_code = f.read()
+            codex_icons |= extract_codex_icon_names(js_code)
+            page.text = esm_to_commonjs(js_code)
         try:
             page.save(summary=message, quiet=True)
+            if verbose:
+                print("Done.")
         except pwb_ex.PageRelatedError as e:
-            print(f"The page [[{file.remote_title}]] could not be saved:", str(e))
+            print(f"The page [[{file.remote_title}]] could not be saved:", e)
             exit_code = 1
-    print("Done.")
+
+    print("Updating gadget definition…")
+    gadget_definition = generate_gadget_definition(config, files, codex_icons)
+    gadget_defs = pwb.Page(site, "MediaWiki:Gadgets-definition")
+    gadget_defs.text = re.sub(
+        rf"^\*\s*{config.gadget_name}\s*\[.+?$",
+        "* " + gadget_definition,
+        gadget_defs.text,
+        flags=re.MULTILINE,
+    )
+    try:
+        gadget_defs.save(
+            summary=f"Mise à jour automatique de la définition de [[{config.page_prefix[:-1]}]]",
+            quiet=True,
+        )
+        print("Done.")
+    except pwb_ex.PageRelatedError:
+        print(f"The page {gadget_defs.title(as_link=True)} could not be saved:", e)
+        exit_code = 2
 
     return exit_code
 
