@@ -1,41 +1,89 @@
+<!-- <nowiki> -->
 <script>
-import { defineComponent } from "vue";
-import CounterButton from "./components/CounterButton.vue";
+import { defineComponent, ref } from "vue";
+import { CdxButton, CdxTabs, CdxTab } from "@wikimedia/codex";
+import EntryForm from "./components/EntryForm.vue";
+import L from "./languages.js";
 
 export default defineComponent({
   components: {
-    CounterButton,
+    CdxButton,
+    CdxTabs,
+    CdxTab,
+    EntryForm,
   },
   setup() {
-    console.log("init VueJS app");
+    const languages = L.loadLanguages();
+
+    /**
+     * @type {import("./types.js").FormData}
+     */
+    const initialFormData = {
+      entries: [
+        // Create an empty initial entry
+        {
+          language: languages[0],
+          definitions: [
+            {
+              text: "",
+              examples: [],
+            },
+          ],
+        },
+      ],
+    };
+
+    const showForm = ref(false);
+    const formData = ref(initialFormData);
+
+    function onInsertWikitext() {
+      console.log(formData.value);
+    }
+
+    /**
+     * @param {import("./types.js").FormEntryUpdateEvent} event
+     */
+    function onEntryUpdate(event) {
+      const entry = formData.value.entries[event.index];
+      entry.language = event.entry.language;
+      entry.definitions = event.entry.definitions;
+    }
+
+    return {
+      showForm,
+      formData,
+      onEntryUpdate,
+      onInsertWikitext,
+    };
   },
 });
 </script>
 
 <template>
-  <div>
-    <a href="https://vuejs.org/" target="_blank">
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg"
-        class="logo vue"
-        alt="Vue logo"
-      />
-    </a>
+  <div v-if="!showForm">
+    <cdx-button action="progressive" weight="quiet" @click="showForm = true">
+      Ouvrir le gadget de création d’entrée
+    </cdx-button>
   </div>
-  <counter-button msg="VueJS" />
-</template>
 
-<style>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+  <template v-if="showForm">
+    <cdx-button action="progressive" weight="primary" @click="onInsertWikitext">
+      Insérer le code
+    </cdx-button>
+    <cdx-tabs>
+      <cdx-tab
+        v-for="(entry, i) in formData.entries"
+        :key="i"
+        :name="`tab-${i}`"
+        :label="`Entrée en ${entry.language.name}`"
+      >
+        <entry-form
+          :index="i"
+          :model-value="entry"
+          @update:model-value="onEntryUpdate"
+        ></entry-form>
+      </cdx-tab>
+    </cdx-tabs>
+  </template>
+</template>
+<!-- </nowiki> -->

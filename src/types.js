@@ -1,0 +1,413 @@
+/**
+ * Data type definitions for the gadget.
+ */
+// <nowiki>
+
+/**
+ * Codex Icons
+ */
+
+/*
+ * Event types
+ */
+
+/**
+ * @typedef {{index: number, entry: FormEntry}} FormEntryUpdateEvent
+ */
+
+/**
+ * @typedef {{index: number, definition: Definition}} DefinitionUpdateEvent
+ */
+
+/*
+ * Data types
+ */
+
+/**
+ * @typedef {{entries: FormEntry[]}} FormData
+ */
+
+/**
+ * @typedef {{
+ *  language: Language,
+ *  definitions: Definition[]
+ * }} FormEntry
+ */
+
+/**
+ * Type for a single definition and its examples.
+ * @typedef {{text: string, examples: Example[]}} Definition
+ */
+
+/**
+ * Type for a single word usage example.
+ * @typedef {{
+ *  text: string,
+ *  translation?: string,
+ *  transcription?: string,
+ *  source?: string,
+ *  link?: string,
+ *  disableTranslation?: boolean
+ * }} Example
+ */
+
+/**
+ * This class represents a grammatical property with a name and an associated template.
+ */
+class GrammaticalProperty {
+  /**
+   * @param {string} label Property’s label.
+   * @param {string?} template Property’s template if any.
+   */
+  constructor(label, template) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this._label = label;
+    /**
+     * @type {string}
+     * @private
+     */
+    this._template = template || "";
+  }
+
+  /**
+   * @return {string} The label.
+   */
+  get label() {
+    return this._label;
+  }
+
+  /**
+   * @return {string} The template if any.
+   */
+  get template() {
+    return this._template;
+  }
+}
+
+/**
+ * This class represents a grammatical class.
+ */
+class GrammaticalClass {
+  /**
+   * @param {string} label Class’ label.
+   * @param {string?} sectionCode Class’ section code. If left empty, the label will be used.
+   * (as defined in [[Convention:Structure des pages#Résumé des sections]] 2,1 onwards).
+   */
+  constructor(label, sectionCode) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this._label = label;
+    /**
+     * @type {string}
+     * @private
+     */
+    this._sectionCode = sectionCode || label;
+  }
+
+  /**
+   * @return {string} Class’ label.
+   */
+  get label() {
+    return this._label;
+  }
+
+  /**
+   * @return {string} Class’ section code.
+   */
+  get sectionCode() {
+    return this._sectionCode;
+  }
+}
+
+/**
+ * @typedef {((word: string, grammarClass: string, labels: string[], pronunciation: string) => string)?} InflectionsGenerator
+ */
+
+/**
+ * A grammatical item associates a grammatical class to properties.
+ */
+class GrammaticalItem {
+  /**
+   * @param {GrammaticalClass} grammaticalClass The grammatical class.
+   * @param {GrammaticalProperty[][]?} properties Associated grammatical properties.
+   * @param {InflectionsGenerator?} generateInflections Optional function that generates inflections template.
+   */
+  constructor(grammaticalClass, properties, generateInflections) {
+    /**
+     * @type {GrammaticalClass}
+     * @private
+     */
+    this._grammaticalClass = grammaticalClass;
+    /**
+     * @type {GrammaticalProperty[][]}
+     * @private
+     */
+    this._properties = properties || [];
+    /**
+     * @type {InflectionsGenerator}
+     * @private
+     */
+    this._generateInflections = generateInflections || (() => "");
+  }
+
+  /**
+   * @return {GrammaticalClass} The grammatical class.
+   */
+  get grammaticalClass() {
+    return this._grammaticalClass;
+  }
+
+  /**
+   * @return {GrammaticalProperty[][]} The available grammatical properties.
+   */
+  get properties() {
+    return this._properties;
+  }
+
+  /**
+   * Fetches the grammatical property with the given index and label.
+   * @return {GrammaticalProperty|null}
+   */
+  getProperty(index, label) {
+    const props = this._properties[index];
+    if (!props) return null;
+    for (const prop of props) if (prop.label === label) return prop;
+    return null;
+  }
+
+  /**
+   * Generates the inflections template.
+   * @param word {string} The base word.
+   * @param labels {string[]} Grammatical properties’ labels.
+   * @param pronunciation {string} IPA pronunciation.
+   * @return {string} Template’s wikicode.
+   */
+  getInflectionsTemplate(word, labels, pronunciation) {
+    let grammarClass = this._grammaticalClass.label;
+    grammarClass =
+      grammarClass.charAt(0).toUpperCase() + grammarClass.substring(1);
+    return this._generateInflections(word, grammarClass, labels, pronunciation);
+  }
+}
+
+/**
+ * This class encapsulates data and behaviors specific to a specific language.
+ * @typedef
+ */
+class Language {
+  /**
+   * @param {string} code Language code defined in [[Module:langues/data]].
+   * @param {string|null} wikimediaCode Language code used by WikiMedia projects.
+   * @param {string|null} iso6393Code ISO 639-3 language code for Lingua Libre’s files.
+   * @param {string} name Language’s name (in French).
+   * @param {string[][]?} ipaSymbols An optional list of common IPA symbols for the language.
+   * @param {GrammaticalItem[]?} grammarItems An optional list of grammatical items.
+   * @param {((word: string) => string)?} pronGenerator An optional function that generates an approximate pronunciation based on the word.
+   */
+  constructor(
+    code,
+    wikimediaCode,
+    iso6393Code,
+    name,
+    ipaSymbols,
+    grammarItems,
+    pronGenerator
+  ) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this._code = code;
+    /**
+     * @type {string}
+     * @private
+     */
+    this._wikimediaCode = wikimediaCode;
+    /**
+     * @type {string}
+     * @private
+     */
+    this._iso6393Code = iso6393Code;
+    /**
+     * @type {string}
+     * @private
+     */
+    this._name = name;
+    /**
+     * @type {string[][]}
+     * @private
+     */
+    this._ipaSymbols = ipaSymbols || [];
+    /**
+     * @type {Record<string, GrammaticalItem>}
+     * @private
+     */
+    this._grammarItems = {};
+    /**
+     * @type {(word: string) => string}
+     * @private
+     */
+    this._pronGenerator = pronGenerator || (() => "");
+    for (const grammarItem of grammarItems || []) {
+      this._grammarItems[grammarItem.grammaticalClass.sectionCode] =
+        grammarItem;
+    }
+  }
+
+  /**
+   * @return {string} This language’s code.
+   */
+  get code() {
+    return this._code;
+  }
+
+  /**
+   * @return {string} This language’s WikiMedia code.
+   */
+  get wikimediaCode() {
+    return this._wikimediaCode;
+  }
+
+  /**
+   * @return {string} This language’s ISO 639-3 code.
+   */
+  get iso6393Code() {
+    return this._iso6393Code;
+  }
+
+  /**
+   * @return {string} This language’s name.
+   */
+  get name() {
+    return this._name;
+  }
+
+  /**
+   * @return {string[][]} The IPA symbols for this language.
+   */
+  get ipaSymbols() {
+    return this._ipaSymbols;
+  }
+
+  /**
+   * @return {Record<string, GrammaticalItem>} The grammatical items for this language.
+   */
+  get grammarItems() {
+    return this._grammarItems;
+  }
+
+  /**
+   * Fetches the grammatical item that has the given section title.
+   * @param {string} sectionName Section’s title.
+   * @return {GrammaticalItem} The grammatical item if found or undefined otherwise.
+   */
+  getGrammarItem(sectionName) {
+    return this._grammarItems[sectionName];
+  }
+
+  /**
+   * Generates the pronunciation of the given word for this language.
+   * @param {string} word The word.
+   * @return {string} The pronunciation or an empty string if no function was defined in the constructor.
+   */
+  generatePronunciation(word) {
+    return this._pronGenerator(word);
+  }
+}
+
+/**
+ * A simple class that defines useful properties of sister wikis.
+ */
+class Wiki {
+  /**
+   * Create a new Wiki object.
+   * @param {string} label Wiki’s French name.
+   * @param {string} templateName Wiki’s link template.
+   * @param {string} urlDomain Wiki’s URL pattern.
+   * @param {string?} urlBase Wiki’s search URL.
+   * @param {string[]?} showOnlyForLangs A list of language code for which to enable this wiki.
+   */
+  constructor(label, templateName, urlDomain, urlBase, showOnlyForLangs) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this.name = label;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.templateName = templateName;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.urlDomain = urlDomain;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.urlBase = urlBase || "w/index.php?search=";
+    /**
+     * @type {string[]}
+     * @private
+     */
+    this.showOnlyForLangs = showOnlyForLangs || [];
+  }
+}
+
+/**
+ * A simple class that defines properties of an article’s section.
+ */
+class ArticleSection {
+  /**
+   * Creates a new article section object.
+   * @param {string label} Section’s label.
+   * @param {string} code Section’s template code.
+   * @param {number} level Section’s level.
+   * @param {string?} help Section’s help page name.
+   * @param {boolean?} hidden Whether this section should be hidden from the form (used for generated sections).
+   */
+  constructor(label, code, level, help, hidden) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this.label = label;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.code = code;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.help = help;
+    /**
+     * @type {number}
+     * @private
+     */
+    this.level = level;
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.hidden = !!hidden;
+  }
+}
+
+export default {
+  GrammaticalProperty,
+  GrammaticalClass,
+  GrammaticalItem,
+  Language,
+  Wiki,
+  ArticleSection,
+};
+// </nowiki>
