@@ -103,6 +103,10 @@ def pull(verbose: bool = False) -> None:
         if verbose:
             print(f"{file.remote_title} -> {file.local_path}")
         page = pwb.Page(site, file.remote_title)
+        if not page.exists():
+            if verbose:
+                print("Page does not exist, skipping.")
+            continue
         text = commonjs_to_esm(page.text)
         with file.local_path.open("w") as f:
             f.write(text)
