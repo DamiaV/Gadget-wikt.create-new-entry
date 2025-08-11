@@ -15,6 +15,12 @@ dist-ssr
 # Python
 .venv
 
+# Pywikibot
+apicache
+throttle.ctrl
+pywikibot-*.lwp
+user-*.py
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

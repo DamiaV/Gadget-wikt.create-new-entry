@@ -1,3 +1,0 @@
-script pour pull et push fichiers sources sur frwikt
--> version locale avec import from/export default pour meilleure intégration avec VSCode
--> script transformera depuis et vers require/module.exports

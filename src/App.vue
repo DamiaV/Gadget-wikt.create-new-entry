@@ -1,8 +1,8 @@
 <script>
-const { defineComponent } = require("vue");
-const CounterButton = require("./components/CounterButton.vue");
+import { defineComponent } from "vue";
+import CounterButton from "./components/CounterButton.vue";
 
-module.exports = defineComponent({
+export default defineComponent({
   components: {
     CounterButton,
   },

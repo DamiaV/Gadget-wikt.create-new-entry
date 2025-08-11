@@ -1,8 +1,8 @@
 <script>
-const { defineComponent, ref } = require("vue");
-const { CdxButton } = require("@wikimedia/codex");
+import { defineComponent, ref } from "vue";
+import { CdxButton } from "@wikimedia/codex";
 
-module.exports = defineComponent({
+export default defineComponent({
   components: {
     CdxButton,
   },
