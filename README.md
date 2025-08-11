@@ -4,7 +4,7 @@ The gadget to create new entries on [fr.wiktionary.org](https://fr.wiktionary.or
 
 ## Local testing
 
-To test the gadget locally, run `npm run dev` the go to the address show in the terminal.
+To test the gadget locally, run `npm run dev` then go to the address show in the terminal.
 
 ## Syncing with the wiki
 
