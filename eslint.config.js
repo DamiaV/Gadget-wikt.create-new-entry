@@ -13,6 +13,6 @@ export default defineConfig([
       globals: { ...globals.browser },
     },
   },
-  eslintVue.configs["flat/essential"],
+  eslintVue.configs["flat/recommended"],
   eslintPluginPrettierRecommended,
 ]);
