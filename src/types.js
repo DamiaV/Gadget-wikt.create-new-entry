@@ -24,13 +24,16 @@
  */
 
 /**
- * @typedef {{entries: FormEntry[]}} FormData
+ * @typedef {{
+ *  language: Language,
+ *  entries: FormEntry[]
+ * }} FormData
  */
 
 /**
  * @typedef {{
- *  language: Language,
- *  definitions: Definition[]
+ *  definitions: Definition[],
+ *  pronunciation?: string
  * }} FormEntry
  */
 

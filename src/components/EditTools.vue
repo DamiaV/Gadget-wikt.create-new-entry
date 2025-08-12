@@ -1,8 +1,9 @@
+<!-- <nowiki> -->
 <script>
 import { defineComponent } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconBold, cdxIconItalic } from "../../icons.json";
-import T from "../types.js";
+import W from "../wikitext.js";
 
 export default defineComponent({
   components: {
@@ -10,7 +11,11 @@ export default defineComponent({
     CdxIcon,
   },
   props: {
-    language: { type: T.Language, required: true },
+    showFormatButtons: { type: Boolean, default: true },
+    /**
+     * @type {import("vue").PropType<string[][]>}
+     */
+    characters: { type: Array, default: () => [W.specialCharacters] },
   },
   emits: ["style:bold", "style:italic", "insert-char"],
   setup() {
@@ -24,41 +29,48 @@ export default defineComponent({
 
 <template>
   <div class="cne-edit-tools">
-    <cdx-button
-      class="format-btn"
-      aria-label="Gras"
-      size="small"
-      @click="$emit('style:bold')"
-    >
-      <cdx-icon :icon="cdxIconBold"></cdx-icon>
-    </cdx-button>
-    <cdx-button
-      class="format-btn"
-      aria-label="Italique"
-      size="small"
-      @click="$emit('style:italic')"
-    >
-      <cdx-icon :icon="cdxIconItalic"></cdx-icon>
-    </cdx-button>
-    <template v-if="$props.language.ipaSymbols.length != 0">
-      <template v-for="(chars, i) in $props.language.ipaSymbols" :key="i">
-        <template v-if="i > 0">—</template>
-        <cdx-button
-          v-for="(char, j) in chars"
-          :key="j"
-          size="small"
-          weight="quiet"
-          @click="$emit('insert-char', char)"
-        >
-          {{ char }}
-        </cdx-button>
-      </template>
+    <template v-if="$props.showFormatButtons">
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Gras"
+        title="Mettre en gras"
+        size="small"
+        @click="$emit('style:bold')"
+      >
+        <cdx-icon :icon="cdxIconBold"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Italique"
+        title="Mettre en italique"
+        size="small"
+        @click="$emit('style:italic')"
+      >
+        <cdx-icon :icon="cdxIconItalic"></cdx-icon>
+      </cdx-button>
+    </template>
+    <template v-for="(chars, i) in $props.characters" :key="i">
+      <span v-if="i > 0" class="separator">—</span>
+      <a
+        v-for="(char, j) in chars"
+        :key="j"
+        href="#"
+        title="Cliquer pour insérer le caractère"
+        @click.prevent="$emit('insert-char', char)"
+      >
+        {{ char }}
+      </a>
     </template>
   </div>
 </template>
 
 <style>
-.cne-edit-tools .format-btn {
+.cne-edit-tools .format-btn,
+.cne-edit-tools .separator,
+.cne-edit-tools a {
   margin-right: 0.25em;
 }
 </style>
+<!-- </nowiki> -->

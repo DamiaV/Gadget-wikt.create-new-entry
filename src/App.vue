@@ -1,28 +1,34 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref } from "vue";
-import { CdxButton, CdxTabs, CdxTab } from "@wikimedia/codex";
+import { defineComponent, ref, useTemplateRef } from "vue";
+import { CdxButton, CdxIcon, CdxTabs, CdxTab } from "@wikimedia/codex";
+import { cdxIconDownload } from "../icons.json";
 import EntryForm from "./components/EntryForm.vue";
 import L from "./languages.js";
 
 export default defineComponent({
   components: {
     CdxButton,
+    CdxIcon,
     CdxTabs,
     CdxTab,
     EntryForm,
   },
   setup() {
     const languages = L.loadLanguages();
+    /**
+     * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
+     */
+    const form = useTemplateRef("form");
 
     /**
      * @type {import("./types.js").FormData}
      */
     const initialFormData = {
+      language: languages[0],
       entries: [
         // Create an empty initial entry
         {
-          language: languages[0],
           definitions: [
             {
               text: "",
@@ -36,24 +42,25 @@ export default defineComponent({
     const showForm = ref(false);
     const formData = ref(initialFormData);
 
-    function onInsertWikitext() {
-      console.log(formData.value);
-    }
-
     /**
      * @param {import("./types.js").FormEntryUpdateEvent} event
      */
     function onEntryUpdate(event) {
-      const entry = formData.value.entries[event.index];
-      entry.language = event.entry.language;
-      entry.definitions = event.entry.definitions;
+      formData.value.entries[event.index] = event.entry;
+    }
+
+    function onSubmit() {
+      if (!form.value.checkValidity()) return;
+      console.log(formData.value);
     }
 
     return {
+      form,
       showForm,
       formData,
+      cdxIconDownload,
       onEntryUpdate,
-      onInsertWikitext,
+      onSubmit,
     };
   },
 });
@@ -66,8 +73,9 @@ export default defineComponent({
     </cdx-button>
   </div>
 
-  <template v-if="showForm">
-    <cdx-button action="progressive" weight="primary" @click="onInsertWikitext">
+  <form v-if="showForm" ref="form" @submit.prevent="onSubmit">
+    <cdx-button type="submit" action="progressive" weight="primary">
+      <cdx-icon :icon="cdxIconDownload"></cdx-icon>
       Insérer le code
     </cdx-button>
     <cdx-tabs>
@@ -75,15 +83,16 @@ export default defineComponent({
         v-for="(entry, i) in formData.entries"
         :key="i"
         :name="`tab-${i}`"
-        :label="`Entrée en ${entry.language.name}`"
+        :label="`Entrée ${i + 1}`"
       >
         <entry-form
           :index="i"
+          :language="formData.language"
           :model-value="entry"
           @update:model-value="onEntryUpdate"
         ></entry-form>
       </cdx-tab>
     </cdx-tabs>
-  </template>
+  </form>
 </template>
 <!-- </nowiki> -->
