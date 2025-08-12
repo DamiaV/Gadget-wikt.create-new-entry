@@ -110,16 +110,13 @@ def extract_codex_icon_names(js_code: str) -> set[str]:
     :param js_code: The JS code to extract icons from.
     :return: The set of imported icons.
     """
-    icons = set()
-
-    for match in re.finditer(
-        r"import { ((?:\w+(?:, )?)+) } from \"(?:(?:../)+|./)icons\.json\";",
+    if match := re.search(
+        r'import { (\w+(?:, \w+)*) } from "(?:\.\./)+icons\.json";',
         js_code,
         flags=re.MULTILINE,
     ):
-        icons |= set(match[1].split(", "))
-
-    return icons
+        return set(match[1].split(", "))
+    return set()
 
 
 def commonjs_to_esm(commonjs_code: str) -> str:
