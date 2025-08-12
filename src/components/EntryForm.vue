@@ -78,25 +78,21 @@ export default defineComponent({
         :model-value="definition"
         @update:model-value="onDefinitionUpdate"
       ></definition-form>
-
       <input-with-toolbar
+        v-model="pronunciation"
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
-        :model-value="pronunciation"
         @update:model-value="onPronunciationUpdate"
       >
         <template #label>Prononciation</template>
         <template #help-text>
-          Si vous ne maitrisez pas l’
-          <a
+          Si vous ne maitrisez pas l’<a
             class="plainlinks"
             href="/wiki/alphabet phonétique international"
             target="_blank"
             title="S’ouvre dans un nouvel onglet"
-          >
-            alphabet phonétique international
-          </a>
-          , ne remplissez pas ce champ.
+            >alphabet phonétique international</a
+          >, ne remplissez pas ce champ.
         </template>
       </input-with-toolbar>
     </cdx-tab>

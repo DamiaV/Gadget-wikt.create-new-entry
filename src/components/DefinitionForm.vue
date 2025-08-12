@@ -53,9 +53,9 @@ export default defineComponent({
 
 <template>
   <input-with-toolbar
+    v-model="definition"
     required
     text-area
-    :model-value="definition"
     @update:model-value="onDefinitionUpdate"
   >
     <template #label>Définition {{ index + 1 }}</template>
