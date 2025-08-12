@@ -3,5 +3,8 @@
     "dependencies": [
         "vue",
         "@wikimedia/codex"
+    ],
+    "ignoredFiles": [
+        "main-dev.js"
     ]
 }

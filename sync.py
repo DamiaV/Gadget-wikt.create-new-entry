@@ -4,11 +4,7 @@ require/module.exports syntax to ESM import from/export default syntax. in all .
 """
 
 import argparse
-import dataclasses
-import json
-import pathlib
 import re
-import os
 import subprocess
 import sys
 import typing
@@ -16,45 +12,11 @@ import typing
 import pywikibot as pwb
 import pywikibot.exceptions as pwb_ex
 
-
-@dataclasses.dataclass(frozen=True)
-class Config:
-    """This class represents the current local config."""
-
-    gadget_name: str
-    page_prefix: str
-    dependencies: list[str]
-
-
-@dataclasses.dataclass(frozen=True)
-class File:
-    """This class links a local source file to its remote wiki page."""
-
-    local_path: pathlib.Path
-    src_path: pathlib.Path
-    remote_title: str
-    is_tracked: bool
-    is_modified: bool
-
-
-def load_config() -> Config:
-    """
-    Load the current config from "config.json".
-
-    :return: A Config object.
-    """
-    with open("config.json", encoding="UTF-8") as f:
-        settings = json.load(f)
-    gadget_name = settings["gadgetName"]
-    return Config(
-        gadget_name=gadget_name,
-        page_prefix=f"MediaWiki:Gadget-{gadget_name}/",
-        dependencies=settings["dependencies"],
-    )
+from build_scripts import workspace as w
 
 
 def generate_gadget_definition(
-    config: Config, files: set[File], codex_icons: set[str]
+    config: w.Config, files: set[w.File], codex_icons: set[str]
 ) -> str:
     """
     Generate the definition for the gadget.
@@ -77,30 +39,6 @@ def generate_gadget_definition(
         f"{prefix} [ResourceLoader | package | dependencies = {deps} | codexIcons = {icons}]"
         f" | {sources}"
     )
-
-
-def is_file_tracked(path: pathlib.Path) -> bool:
-    """
-    Check whether the given file is tracked by git.
-
-    :param path: The file to check.
-    :return: True if the file is tracked, False otherwise.
-    """
-    # pylint: disable=subprocess-run-check
-    result = subprocess.run(["git", "ls-files", "--error-unmatch", str(path)])
-    return result.returncode == 0
-
-
-def is_file_modified(path: pathlib.Path) -> bool:
-    """
-    Check whether the given file has been modified compared to the current git head.
-
-    :param path: The file to check.
-    :return: True if the file has been modified, False otherwise.
-    """
-    # pylint: disable=subprocess-run-check
-    result = subprocess.run(["git", "diff", "--exit-code", str(path)])
-    return result.returncode != 0
 
 
 def extract_codex_icon_names(js_code: str) -> set[str]:
@@ -147,32 +85,6 @@ def esm_to_commonjs(esm_code: str) -> str:
     return commonjs_code
 
 
-def extract_local_file_structure(config: Config) -> set[File]:
-    """
-    Extract the local sources’ structure.
-
-    :param config: The current config.
-    :return: A set containing File objects representing the local source files.
-    """
-    files = set()
-    allowed_exts = (".js", ".vue", ".json")
-
-    for path in pathlib.Path("src").rglob("*"):
-        if path.is_file() and os.path.splitext(path.name)[1] in allowed_exts:
-            relative_path = str(path.relative_to("src"))
-            files.add(
-                File(
-                    local_path=path,
-                    src_path=relative_path,
-                    remote_title=config.page_prefix + relative_path,
-                    is_tracked=is_file_tracked(path),
-                    is_modified=is_file_modified(path),
-                )
-            )
-
-    return files
-
-
 def pull(verbose: bool = False, overwrite: bool = False) -> int:
     """
     Pull changes from the remote wiki.
@@ -180,8 +92,8 @@ def pull(verbose: bool = False, overwrite: bool = False) -> int:
     :param verbose: If True, show more detailed logs.
     :param overwrite: If True, overwrite any uncommitted changes.
     """
-    config = load_config()
-    files = extract_local_file_structure(config)
+    config = w.load_config()
+    files = w.extract_local_file_structure(config)
 
     site = pwb.Site()
     print("Pulling changes from remote wiki…")
@@ -261,8 +173,8 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
     :param force: If True, untracked files will be pushed.
     :param message: The edit message.
     """
-    config = load_config()
-    files = extract_local_file_structure(config)
+    config = w.load_config()
+    files = w.extract_local_file_structure(config)
     exit_code = 0
 
     codex_icons = set()
