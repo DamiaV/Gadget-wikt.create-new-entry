@@ -55,7 +55,6 @@ export default defineComponent({
     }
 
     return {
-      form,
       showForm,
       formData,
       cdxIconDownload,
