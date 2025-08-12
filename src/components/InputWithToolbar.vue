@@ -1,5 +1,5 @@
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
 import EditTools from "./EditTools.vue";
 import W from "../wikitext.js";
@@ -31,6 +31,11 @@ export default defineComponent({
     const textInputType = props.textArea ? CdxTextArea : CdxTextInput;
 
     /**
+     * @type {Readonly<import("vue").ShallowRef<CdxTextArea | CdxTextInput>>}
+     */
+    const textInput = useTemplateRef("textInput");
+
+    /**
      * Called when the input’s text is updated.
      * @param {string} text The new text.
      */
@@ -50,11 +55,59 @@ export default defineComponent({
     }
 
     /**
-     * Insert the given character(s) into the text input.
+     * Transform the text of the wrapped input with the given transformer function.
+     * @param {(beforeSelection: string, selection: string, afterSelection: string) => string} tranformer A function to apply to the text.
+     */
+    function transformText(tranformer) {
+      /**
+       * @type {HTMLInputElement | HTMLTextAreaElement}
+       */
+      let node;
+      // Dig into the component’s refs to get to the actual DOM element
+      const refs = textInput.value.$refs;
+      if (refs.input) node = refs.input;
+      else if (refs.textarea) node = refs.textarea;
+      else return;
+      const selectionStart = node.selectionStart;
+      const selectionEnd = node.selectionEnd;
+      const text = value.value;
+      const beforeSelection = text.substring(0, selectionStart);
+      const selection = text.substring(selectionStart, selectionEnd);
+      const afterSelection = text.substring(selectionEnd);
+
+      value.value = tranformer(beforeSelection, selection, afterSelection);
+      textInput.value.focus();
+    }
+
+    /**
+     * Insert the given character(s) into the text input at the cursor position.
      * @param {string} char The character(s) to insert.
      */
     function onInsertChar(char) {
-      console.log(char); // TODO
+      transformText(
+        (beforeSelection, _, afterSelection) =>
+          `${beforeSelection}${char}${afterSelection}`
+      );
+    }
+
+    /**
+     * Wrap the input’s selected text with `''' '''` to make it bold.
+     */
+    function onBold() {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}'''${selection}'''${afterSelection}`
+      );
+    }
+
+    /**
+     * Wrap the input’s selected text with `'' ''` to make it italicized.
+     */
+    function onItalic() {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}''${selection}''${afterSelection}`
+      );
     }
 
     return {
@@ -65,6 +118,8 @@ export default defineComponent({
       onInput,
       onInvalid,
       onInsertChar,
+      onBold,
+      onItalic,
     };
   },
 });
@@ -76,9 +131,12 @@ export default defineComponent({
       :show-format-buttons="$props.showFormatButtons"
       :characters="$props.specialCharacters"
       @insert-char="onInsertChar"
+      @style:bold="onBold"
+      @style:italic="onItalic"
     ></edit-tools>
     <component
       :is="textInputType"
+      ref="textInput"
       v-model="value"
       :required="required"
       @update:model-value="onInput"
