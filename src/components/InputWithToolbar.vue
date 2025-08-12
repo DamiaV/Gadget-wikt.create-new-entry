@@ -79,8 +79,8 @@ export default defineComponent({
     ></edit-tools>
     <component
       :is="textInputType"
+      v-model="value"
       :required="required"
-      :model-value="value"
       @update:model-value="onInput"
       @invalid="onInvalid"
     ></component>
