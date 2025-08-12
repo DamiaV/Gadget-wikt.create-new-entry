@@ -1,3 +1,4 @@
+<!-- <nowiki> -->
 <script>
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
@@ -147,3 +148,4 @@ export default defineComponent({
     <template #help-text><slot name="help-text"></slot></template>
   </cdx-field>
 </template>
+<!-- </nowiki> -->

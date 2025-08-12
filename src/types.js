@@ -3,20 +3,26 @@
  */
 // <nowiki>
 
-/**
- * Codex Icons
- */
-
 /*
  * Event types
  */
 
 /**
- * @typedef {{index: number, entry: FormEntry}} FormEntryUpdateEvent
+ * @typedef {{entries: FormEntry[]}} FormEntriesUpdateEvent
  */
 
 /**
- * @typedef {{index: number, definition: Definition}} DefinitionUpdateEvent
+ * @typedef {{
+ *  index: number,
+ *  entry: FormEntry
+ * }} FormEntryUpdateEvent
+ */
+
+/**
+ * @typedef {{
+ *  index: number,
+ *  definition: Definition
+ * }} DefinitionUpdateEvent
  */
 
 /*

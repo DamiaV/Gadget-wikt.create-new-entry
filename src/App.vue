@@ -1,18 +1,16 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, ref, useTemplateRef } from "vue";
-import { CdxButton, CdxIcon, CdxTabs, CdxTab } from "@wikimedia/codex";
+import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
-import EntryForm from "./components/EntryForm.vue";
+import EntriesForm from "./components/EntriesForm.vue";
 import L from "./languages.js";
 
 export default defineComponent({
   components: {
     CdxButton,
     CdxIcon,
-    CdxTabs,
-    CdxTab,
-    EntryForm,
+    EntriesForm,
   },
   setup() {
     const languages = L.loadLanguages();
@@ -43,10 +41,10 @@ export default defineComponent({
     const formData = ref(initialFormData);
 
     /**
-     * @param {import("./types.js").FormEntryUpdateEvent} event
+     * @param {import("./types.js").FormEntriesUpdateEvent} event
      */
-    function onEntryUpdate(event) {
-      formData.value.entries[event.index] = event.entry;
+    function onEntriesUpdate(event) {
+      formData.value.entries = event.entries;
     }
 
     function onSubmit() {
@@ -58,7 +56,7 @@ export default defineComponent({
       showForm,
       formData,
       cdxIconDownload,
-      onEntryUpdate,
+      onEntriesUpdate,
       onSubmit,
     };
   },
@@ -73,25 +71,15 @@ export default defineComponent({
   </div>
 
   <form v-if="showForm" ref="form" @submit.prevent="onSubmit">
+    <entries-form
+      v-model="formData.entries"
+      :language="formData.language"
+      @update:model-value="onEntriesUpdate"
+    ></entries-form>
     <cdx-button type="submit" action="progressive" weight="primary">
       <cdx-icon :icon="cdxIconDownload"></cdx-icon>
       Insérer le code
     </cdx-button>
-    <cdx-tabs>
-      <cdx-tab
-        v-for="(entry, i) in formData.entries"
-        :key="i"
-        :name="`tab-${i}`"
-        :label="`Entrée ${i + 1}`"
-      >
-        <entry-form
-          :index="i"
-          :language="formData.language"
-          :model-value="entry"
-          @update:model-value="onEntryUpdate"
-        ></entry-form>
-      </cdx-tab>
-    </cdx-tabs>
   </form>
 </template>
 <!-- </nowiki> -->
