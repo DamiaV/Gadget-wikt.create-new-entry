@@ -218,6 +218,41 @@ def pull(verbose: bool = False, overwrite: bool = False) -> int:
     return result.returncode
 
 
+UPDATED = 1
+NO_CHANGES = 2
+ERROR = 3
+
+
+def update_wiki_page(
+    page: pwb.Page, new_text: str, summary: str, verbose: bool = False
+) -> int:
+    """
+    Update the contents of the given wiki page.
+
+    :param page: The wiki page to update.
+    :param new_text: The new content.
+    :param summary: The edit summary.
+    :param verbose: If True, show more detailed logs.
+    :return: One of the following status codes: UPDATED, NO_CHANGES, ERROR.
+    """
+    old_text = page.text
+    page.text = new_text
+    if old_text.strip() == page.text.strip():
+        if verbose:
+            print("No changes, skipping.")
+        return NO_CHANGES
+
+    try:
+        page.save(summary=summary, quiet=True)
+    except pwb_ex.PageRelatedError as e:
+        print(f"The page {page.title(as_link=True)} could not be saved:", e)
+        return ERROR
+
+    if verbose:
+        print("Done.")
+    return UPDATED
+
+
 def push(verbose: bool = False, force: bool = False, message: str = None) -> int:
     """
     Push local changes to the remote wiki.
@@ -241,36 +276,32 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
             print(f"Warning: Local file '{file.local_path}' is not tracked, skipping.")
             continue
 
-        page = pwb.Page(site, file.remote_title)
         with file.local_path.open("r") as f:
             js_code = f.read()
             codex_icons |= extract_codex_icon_names(js_code)
-            page.text = esm_to_commonjs(js_code)
-        try:
-            page.save(summary=message, quiet=True)
-            if verbose:
-                print("Done.")
-        except pwb_ex.PageRelatedError as e:
-            print(f"The page [[{file.remote_title}]] could not be saved:", e)
+
+        new_text = esm_to_commonjs(js_code)
+        page = pwb.Page(site, file.remote_title)
+        status = update_wiki_page(page, new_text, message, verbose)
+        if status == ERROR:
             exit_code = 1
 
     print("Updating gadget definition…")
     gadget_definition = generate_gadget_definition(config, files, codex_icons)
     gadget_defs = pwb.Page(site, "MediaWiki:Gadgets-definition")
-    gadget_defs.text = re.sub(
+    new_text = re.sub(
         rf"^\*\s*{config.gadget_name}\s*\[.+?$",
         "* " + gadget_definition,
         gadget_defs.text,
         flags=re.MULTILINE,
     )
-    try:
-        gadget_defs.save(
-            summary=f"Mise à jour automatique de la définition de [[{config.page_prefix[:-1]}]]",
-            quiet=True,
-        )
-        print("Done.")
-    except pwb_ex.PageRelatedError:
-        print(f"The page {gadget_defs.title(as_link=True)} could not be saved:", e)
+    status = update_wiki_page(
+        gadget_defs,
+        new_text,
+        f"Mise à jour automatique de la définition de [[{config.page_prefix[:-1]}]]",
+        verbose,
+    )
+    if status == ERROR:
         exit_code = 2
 
     return exit_code
