@@ -67,6 +67,10 @@ export default defineComponent({
 </template>
 
 <style>
+.cne-edit-tools {
+  margin-bottom: 0.25em;
+}
+
 .cne-edit-tools .format-btn,
 .cne-edit-tools .separator,
 .cne-edit-tools a {
