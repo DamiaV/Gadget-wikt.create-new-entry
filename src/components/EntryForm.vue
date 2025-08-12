@@ -2,9 +2,9 @@
 <script>
 import { CdxTab, CdxTabs } from "@wikimedia/codex";
 import { defineComponent, ref } from "vue";
-import T from "../types.js";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
+import T from "../types.js";
 
 export default defineComponent({
   components: {
