@@ -4,6 +4,7 @@ require/module.exports syntax to ESM import from/export default syntax. in all .
 """
 
 import argparse
+import pathlib
 import re
 import subprocess
 import sys
@@ -49,7 +50,7 @@ def extract_codex_icon_names(js_code: str) -> set[str]:
     :return: The set of imported icons.
     """
     if match := re.search(
-        r'import { (\w+(?:, \w+)*) } from "(?:\.\./)+icons\.json";',
+        r'import { (\w+(?:, \w+)*) } from "@wikimedia/codex-icons";',
         js_code,
         flags=re.MULTILINE,
     ):
@@ -67,19 +68,29 @@ def commonjs_to_esm(commonjs_code: str) -> str:
     esm_code = re.sub(
         r"const (.+?) = require\((.+?)\);", r"import \1 from \2;", commonjs_code
     )
+    esm_code = re.sub(
+        r'from "(?:\.\./)+icons\.json"',
+        r'from "@wikimedia/codex-icons"',
+        esm_code,
+    )
     esm_code = esm_code.replace("module.exports =", "export default")
     return esm_code
 
 
-def esm_to_commonjs(esm_code: str) -> str:
+def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
     """
     Transform an ESM module to CommonJS.
 
     :param esm_code: The ESM source code to transform.
+    :param path: The path of the file, relative to ``src/``.
     :return: The transformed CommonJS source code.
     """
+    prefix = "../" * len(path.parts)
+    commonjs_code = esm_code.replace(
+        'from "@wikimedia/codex-icons"', f'from "{prefix}icons.json"'
+    )
     commonjs_code = re.sub(
-        r"import (.+?) from (.+?);", r"const \1 = require(\2);", esm_code
+        r"import (.+?) from (.+?);", r"const \1 = require(\2);", commonjs_code
     )
     commonjs_code = commonjs_code.replace("export default", "module.exports =")
     return commonjs_code
@@ -192,7 +203,7 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
             js_code = f.read()
             codex_icons |= extract_codex_icon_names(js_code)
 
-        new_text = esm_to_commonjs(js_code)
+        new_text = esm_to_commonjs(js_code, file.src_path)
         page = pwb.Page(site, file.remote_title)
         status = update_wiki_page(page, new_text, message, verbose)
         if status == ERROR:

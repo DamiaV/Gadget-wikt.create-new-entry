@@ -2,7 +2,7 @@
 <script>
 import { defineComponent } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
-import { cdxIconBold, cdxIconItalic } from "../../icons.json";
+import { cdxIconBold, cdxIconItalic } from "@wikimedia/codex-icons";
 import W from "../wikitext.js";
 
 export default defineComponent({

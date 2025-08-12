@@ -62,12 +62,12 @@ def extract_local_file_structure(config: Config) -> set[File]:
             and os.path.splitext(path.name)[1] in allowed_exts
             and not path in config.ignored_files
         ):
-            relative_path = str(path.relative_to("src"))
+            relative_path = path.relative_to("src")
             files.add(
                 File(
                     local_path=path,
                     src_path=relative_path,
-                    remote_title=config.page_prefix + relative_path,
+                    remote_title=config.page_prefix + str(relative_path),
                     is_tracked=vcs.is_file_tracked(path),
                     is_modified=vcs.is_file_modified(path),
                 )

@@ -2,7 +2,7 @@
 <script>
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxButton, CdxIcon, CdxTabs, CdxTab } from "@wikimedia/codex";
-import { cdxIconDownload } from "../icons.json";
+import { cdxIconDownload } from "@wikimedia/codex-icons";
 import EntryForm from "./components/EntryForm.vue";
 import L from "./languages.js";
 
