@@ -109,6 +109,17 @@ export default defineComponent({
       Création d’une section en <em>{{ language.name }}</em>
     </h1>
 
+    <p>
+      Ce gadget permet de créer une section de langue complète.
+      <strong
+        >Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
+        code&nbsp;» avant de publier la page, sinon les informations que vous
+        avez entrées seront perdues.</strong
+      >
+      Vous pouvez créer plusieurs sections de types de mots en même temps en
+      cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
+    </p>
+
     <language-selector
       v-model="language"
       :languages="languages"

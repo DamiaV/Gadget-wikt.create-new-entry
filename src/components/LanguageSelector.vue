@@ -135,8 +135,9 @@ export default defineComponent({
     <template #label>Langue</template>
     <template #description>La langue de l’entrée</template>
     <template #help-text>
-      Si une langue n’est pas disponible dans le menu déroulant, chercher son
-      nom dans le champ de texte à droite.
+      Si une langue n’est pas disponible dans le menu déroulant, vous pouvez
+      chercher son nom dans le champ de texte à droite puis cliquez sur la
+      suggestion adéquate pour valider votre choix.
     </template>
     <div class="language-inputs">
       <cdx-combobox
