@@ -110,12 +110,20 @@ export default defineComponent({
     </h1>
 
     <p>
-      Ce gadget permet de créer une section de langue complète.
-      <strong
+      Ce gadget permet de créer une section de langue complète en écrivant le
+      moins de code possible.
+    </p>
+    <p>
+      <span class="important"
         >Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
         code&nbsp;» avant de publier la page, sinon les informations que vous
-        avez entrées seront perdues.</strong
+        avez entrées seront perdues.</span
       >
+      Le code sera directement inséré au bon endroit dans la zone d’édition.
+      Vérifiez bien que le code généré est correct avant de publier votre
+      modification.
+    </p>
+    <p>
       Vous pouvez créer plusieurs sections de types de mots en même temps en
       cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
     </p>
@@ -146,6 +154,12 @@ export default defineComponent({
 #cne-form h1,
 #cne-start-btn {
   text-align: center;
+}
+
+#cne-form .important {
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
 }
 
 #cne-form .submit-btn {
