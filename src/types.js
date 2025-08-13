@@ -311,6 +311,14 @@ class Language {
   }
 
   /**
+   * Indicates whether this language is officialy supported by the gadget.
+   * @return {boolean} True if it has any grammar items, false otherwise.
+   */
+  get isSupported() {
+    return Object.keys(this._grammarItems).length != 0;
+  }
+
+  /**
    * Fetches the grammatical item that has the given section title.
    * @param {string} sectionName Section’s title.
    * @return {GrammaticalItem} The grammatical item if found or undefined otherwise.

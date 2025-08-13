@@ -144,12 +144,9 @@ const GRAMMATICAL_CLASSES = {
 
 /**
  * Load all languages into the gadget.
- * @returns {import("./types.js").Language[]} The list of loaded languages.
+ * @returns The list of loaded languages.
  */
 function loadLanguages() {
-  /**
-   * @type {import("./types.js").Language[]}
-   */
   const languages = [];
 
   /*
@@ -1964,7 +1961,7 @@ function loadLanguages() {
  * Return a default Language object for the given code and name.
  * @param code {string} The language’s code.
  * @param name {string} The language’s name.
- * @returns {import("./types").Language} A new Language object.
+ * @returns A new Language object.
  */
 function getDefaultLanguage(code, name) {
   // Add most common classes on top

@@ -5,15 +5,19 @@ import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
 import EntriesForm from "./components/EntriesForm.vue";
 import L from "./languages.js";
+import LanguageSelector from "./components/LanguageSelector.vue";
 
 export default defineComponent({
   components: {
     CdxButton,
     CdxIcon,
+    LanguageSelector,
     EntriesForm,
   },
   setup() {
     const languages = L.loadLanguages();
+    const language = ref(languages[0]); // TODO check for cookie first
+
     /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
      */
@@ -23,7 +27,7 @@ export default defineComponent({
      * @type {import("./types.js").FormData}
      */
     const initialFormData = {
-      language: languages[0],
+      language: language.value,
       entries: [
         // Create an empty initial entry
         {
@@ -47,6 +51,13 @@ export default defineComponent({
       formData.value.entries = event.entries;
     }
 
+    /**
+     * @param {import("./types.js").Language} language The selected language.
+     */
+    function onLanguageSelection(language) {
+      formData.value.language = language;
+    }
+
     function onSubmit() {
       if (!form.value.checkValidity()) return;
       console.log(formData.value);
@@ -55,8 +66,11 @@ export default defineComponent({
     return {
       showForm,
       formData,
+      language,
+      languages,
       cdxIconDownload,
       onEntriesUpdate,
+      onLanguageSelection,
       onSubmit,
     };
   },
@@ -70,16 +84,37 @@ export default defineComponent({
     </cdx-button>
   </div>
 
-  <form v-if="showForm" ref="form" @submit.prevent="onSubmit">
+  <form v-if="showForm" ref="form" class="cne-form" @submit.prevent="onSubmit">
+    <h1>
+      Création d’une section en <em>{{ language.name }}</em>
+    </h1>
+
+    <language-selector
+      v-model="language"
+      :languages="languages"
+      @update:model-value="onLanguageSelection"
+    ></language-selector>
     <entries-form
       v-model="formData.entries"
       :language="formData.language"
       @update:model-value="onEntriesUpdate"
     ></entries-form>
-    <cdx-button type="submit" action="progressive" weight="primary">
+    <cdx-button
+      class="submit-btn"
+      type="submit"
+      action="progressive"
+      weight="primary"
+    >
       <cdx-icon :icon="cdxIconDownload"></cdx-icon>
       Insérer le code
     </cdx-button>
   </form>
 </template>
+
+<style>
+.cne-form .submit-btn {
+  margin: 1em auto;
+  display: block;
+}
+</style>
 <!-- </nowiki> -->

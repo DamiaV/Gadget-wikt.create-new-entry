@@ -53,14 +53,14 @@ export default defineComponent({
 
 <template>
   <input-with-toolbar
-    v-model="definition"
+    v-model.trim="definition"
     required
     text-area
     @update:model-value="onDefinitionUpdate"
   >
     <template #label>Définition {{ index + 1 }}</template>
     <template #description>
-      Entrez une courte définition, pas plus d’une ou deux phrases si possible.
+      Une courte définition, pas plus d’une ou deux phrases si possible
     </template>
     <template #help-text>
       La définition ne doit pas être recopiée depuis un autre dictionnaire.

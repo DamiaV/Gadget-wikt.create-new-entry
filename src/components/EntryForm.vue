@@ -79,7 +79,7 @@ export default defineComponent({
         @update:model-value="onDefinitionUpdate"
       ></definition-form>
       <input-with-toolbar
-        v-model="pronunciation"
+        v-model.trim="pronunciation"
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
         @update:model-value="onPronunciationUpdate"
