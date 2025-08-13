@@ -171,6 +171,12 @@ export default defineComponent({
 </template>
 
 <style>
+#cne-form {
+  border: 1px solid var(--border-color-base, #a2a9b1);
+  border-radius: 3px;
+  padding: 0 0.5em;
+}
+
 #cne-form h1,
 #cne-start-btn {
   text-align: center;
