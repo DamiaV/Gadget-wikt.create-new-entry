@@ -2,6 +2,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { CdxCombobox, CdxField } from "@wikimedia/codex";
+import T from "../types.js";
 import L from "../languages.js";
 
 export default defineComponent({
@@ -14,11 +15,14 @@ export default defineComponent({
      * @type {import("vue").PropType<import("../types.js").Language[]>}
      */
     languages: { type: Array, required: true },
-    modelValue: { type: L.Language, required: true },
+    modelValue: { type: T.Language, required: true },
   },
   emits: ["update:model-value"],
   setup(props, ctx) {
     const languages = {};
+    /**
+     * @type {import("vue").Ref<import("@wikimedia/codex").MenuItemData[]>}
+     */
     const languageItems = ref([]);
 
     for (const language of props.languages) {
