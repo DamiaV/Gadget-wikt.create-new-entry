@@ -2,6 +2,7 @@
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { CdxCombobox, CdxField, CdxLookup } from "@wikimedia/codex";
+import { cdxIconSearch } from "@wikimedia/codex-icons";
 import LL from "../wiki_deps/wikt.core.languages.js";
 import T from "../types.js";
 import L from "../languages.js";
@@ -122,6 +123,7 @@ export default defineComponent({
       menuSelection,
       menuItems,
       menuConfig,
+      cdxIconSearch,
       onLanguageSelection,
       onInput,
       onMenuSelection,
@@ -135,9 +137,9 @@ export default defineComponent({
     <template #label>Langue</template>
     <template #description>La langue de l’entrée</template>
     <template #help-text>
-      Si une langue n’est pas disponible dans le menu déroulant, vous pouvez
-      chercher son nom dans le champ de texte à droite puis cliquez sur la
-      suggestion adéquate pour valider votre choix.
+      Si une langue n’est pas disponible dans le menu déroulant à gauche, vous
+      pouvez chercher son nom dans le champ de texte à droite. Cliquez ensuite
+      sur une des suggestions pour valider votre choix.
     </template>
     <div class="language-inputs">
       <cdx-combobox
@@ -151,6 +153,8 @@ export default defineComponent({
         v-model:selected="menuSelection"
         :menu-items="menuItems"
         :menu-config="menuConfig"
+        :start-icon="cdxIconSearch"
+        clearable
         placeholder="Rechercher une langue…"
         @input="onInput"
         @update:selected="onMenuSelection"
