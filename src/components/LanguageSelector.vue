@@ -1,14 +1,16 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref } from "vue";
-import { CdxCombobox, CdxField } from "@wikimedia/codex";
+import { computed, defineComponent, ref } from "vue";
+import { CdxCombobox, CdxField, CdxLookup } from "@wikimedia/codex";
 import T from "../types.js";
 import L from "../languages.js";
+import LL from "../wiki_deps/wikt.core.languages.js";
 
 export default defineComponent({
   components: {
     CdxField,
     CdxCombobox,
+    CdxLookup,
   },
   props: {
     /**
@@ -19,64 +21,140 @@ export default defineComponent({
   },
   emits: ["update:model-value"],
   setup(props, ctx) {
-    const languages = {};
     /**
-     * @type {import("vue").Ref<import("@wikimedia/codex").MenuItemData[]>}
+     * @type {import("@wikimedia/codex").MenuItemData[]}
      */
-    const languageItems = ref([]);
-
-    for (const language of props.languages) {
-      languages[language.code] = language;
-      languageItems.value.push({
-        label: language.name,
-        value: language.code,
-        description: `code\u00a0: ${language.code}${!language.isSupported ? " (support minimal)" : ""}`,
+    const languagesData = [];
+    for (const [code, langData] of LL.getLanguages().entries()) {
+      languagesData.push({
+        label: langData.name,
+        value: code,
       });
     }
 
-    const langCode = ref(props.modelValue.code);
-
-    /**
-     * @param {string} code The selected language code.
-     */
-    function onLanguageSelection(code) {
-      if (!code || !languages[code]) {
-        const language = L.getDefaultLanguage(code, code);
-        console.log(language);
-        languages[code] = language;
-        languageItems.value.push({
+    const languageItems = computed(() => {
+      /**
+       * @type {import("@wikimedia/codex").MenuItemData[]}
+       */
+      const items = [];
+      for (const language of props.languages) {
+        items.push({
           label: language.name,
-          value: language.code,
-          description: `code\u00a0: ${language.code}${!language.isSupported ? " (support minimal)" : ""}`,
+          value: language.name,
+          supportingText: `(${language.code})`,
+          description: !language.isSupported ? "Support réduit" : "",
         });
       }
-      langCode.value = code;
-      ctx.emit("update:model-value", languages[code]);
+      items.sort((i1, i2) => {
+        const code1 = i1.supportingText.slice(1, -1);
+        const code2 = i2.supportingText.slice(1, -1);
+        if (code1 === "fr") return -1;
+        if (code2 === "fr") return 1;
+        if (code1 === "conv") return 1;
+        if (code2 === "conv") return -1;
+        return i1.label.localeCompare(i2.label);
+      });
+      return items;
+    });
+
+    const langName = ref(props.modelValue.name);
+
+    const menuSelection = ref(null);
+    const menuItems = ref([]);
+
+    const menuConfig = {
+      boldLabel: true,
+    };
+
+    /**
+     * @param {string} name The selected language name.
+     */
+    function onLanguageSelection(name) {
+      let lang = props.languages.find((lang) => lang.name === name);
+      if (!name || !lang) return;
+      langName.value = name;
+      ctx.emit("update:model-value", lang);
+    }
+
+    /**
+     * Filter items on input.
+     *
+     * @param {string} value
+     */
+    function onInput(value) {
+      if (value) {
+        value = value.toLocaleLowerCase();
+        menuItems.value = languagesData
+          .filter((item) => item.label.toLocaleLowerCase().includes(value))
+          .sort((i1, i2) => {
+            const name1 = i1.label.toLocaleLowerCase();
+            const name2 = i2.label.toLocaleLowerCase();
+            if (name1.startsWith(value) && !name2.startsWith(value)) return -1;
+            if (!name1.startsWith(value) && name2.startsWith(value)) return 1;
+            return name1.localeCompare(name2);
+          })
+          .slice(0, 10);
+      }
+    }
+
+    /**
+     * @param {string|null} code The selected code.
+     */
+    function onMenuSelection(code) {
+      if (!code) return;
+      ctx.emit("update:model-value", L.getDefaultLanguage(code));
     }
 
     return {
       languageItems,
-      langCode,
+      langName,
+      menuSelection,
+      menuItems,
+      menuConfig,
       onLanguageSelection,
+      onInput,
+      onMenuSelection,
     };
   },
 });
 </script>
 
 <template>
-  <cdx-field>
+  <cdx-field class="cne-language-selector">
     <template #label>Langue</template>
     <template #description>La langue de l’entrée</template>
     <template #help-text>
-      Si une langue n’est pas disponible dans la liste, tapez son code pour
-      l’ajouter.
+      Si une langue n’est pas disponible dans le menu déroulant, chercher son
+      nom dans le champ de texte à droite.
     </template>
-    <cdx-combobox
-      v-model:selected.trim="langCode"
-      required
-      :menu-items="languageItems"
-      @update:selected="onLanguageSelection"
-    ></cdx-combobox>
+    <div class="language-inputs">
+      <cdx-combobox
+        v-model:selected.trim="langName"
+        required
+        :menu-items="languageItems"
+        @update:selected="onLanguageSelection"
+      ></cdx-combobox>
+      <cdx-lookup
+        v-model:selected="menuSelection"
+        :menu-items="menuItems"
+        :menu-config="menuConfig"
+        placeholder="Rechercher une langue…"
+        @input="onInput"
+        @update:selected="onMenuSelection"
+      >
+        <template #no-results>Aucun résultat.</template>
+      </cdx-lookup>
+    </div>
   </cdx-field>
 </template>
+
+<style>
+.cne-language-selector .language-inputs {
+  display: flex;
+}
+
+.cne-language-selector .language-inputs .cdx-lookup {
+  margin-left: 1em;
+}
+</style>
 <!-- </nowiki>-->

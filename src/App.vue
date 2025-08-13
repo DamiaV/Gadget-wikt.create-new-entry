@@ -8,6 +8,8 @@ import EntriesForm from "./components/EntriesForm.vue";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import L from "./languages.js";
 
+const COOKIE_NAME = "cne_lang";
+
 export default defineComponent({
   components: {
     CdxButton,
@@ -16,10 +18,21 @@ export default defineComponent({
     EntriesForm,
   },
   setup() {
-    const previousLangCode = C.getCookie("cne_lang");
-    console.log(previousLangCode);
-    const languages = L.loadLanguages();
-    const language = ref(languages[0]); // TODO check for cookie first
+    const languages = ref(L.loadLanguages());
+    const previousLangCode = C.getCookie(COOKIE_NAME);
+    let startLanguage;
+    for (const lang of languages.value) {
+      if (lang.code === previousLangCode) {
+        startLanguage = lang;
+        break;
+      }
+    }
+    if (!startLanguage) {
+      startLanguage = L.getDefaultLanguage(previousLangCode);
+      if (startLanguage) languages.value.push(startLanguage);
+      else startLanguage = languages.value[0];
+    }
+    const language = ref(startLanguage);
 
     /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
@@ -58,6 +71,10 @@ export default defineComponent({
      * @param {import("./types.js").Language} language The selected language.
      */
     function onLanguageSelection(language) {
+      if (!languages.value.some((lang) => lang.code === language.code))
+        languages.value.push(language);
+      const newLocal = COOKIE_NAME;
+      C.setCookie(newLocal, language.code, 30);
       formData.value.language = language;
     }
 

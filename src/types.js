@@ -216,6 +216,7 @@ class Language {
    * @param {string[][]?} ipaSymbols An optional list of common IPA symbols for the language.
    * @param {GrammaticalItem[]?} grammarItems An optional list of grammatical items.
    * @param {((word: string) => string)?} pronGenerator An optional function that generates an approximate pronunciation based on the word.
+   * @param {boolean?} isSupported Indicate whether this language is officialy supported by this gadget.
    */
   constructor(
     code,
@@ -224,7 +225,8 @@ class Language {
     name,
     ipaSymbols,
     grammarItems,
-    pronGenerator
+    pronGenerator,
+    isSupported = true
   ) {
     /**
      * @type {string}
@@ -261,6 +263,12 @@ class Language {
      * @private
      */
     this._pronGenerator = pronGenerator || (() => "");
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._isSupported = isSupported;
+
     for (const grammarItem of grammarItems || []) {
       this._grammarItems[grammarItem.grammaticalClass.sectionCode] =
         grammarItem;
@@ -310,11 +318,10 @@ class Language {
   }
 
   /**
-   * Indicates whether this language is officialy supported by the gadget.
-   * @return {boolean} True if it has any grammar items, false otherwise.
+   * @return {boolean} True if this language is officialy supported by the gadget, false otherwise.
    */
   get isSupported() {
-    return Object.keys(this._grammarItems).length != 0;
+    return this._isSupported;
   }
 
   /**

@@ -2,6 +2,7 @@
  * This object contains the data for languages needed by the gadget.
  */
 // <nowiki>
+import L from "./wiki_deps/wikt.core.languages.js";
 import T from "./types.js";
 
 /**
@@ -1958,12 +1959,17 @@ function loadLanguages() {
 }
 
 /**
- * Return a default Language object for the given code and name.
- * @param {string} code The language’s code.
- * @param {string} name The language’s name.
- * @returns A new Language object.
+ * Return a default Language object for the given code.
+ * @param {string} code The language’s code .
+ * @returns A new Language object or null if the given code is not registered.
  */
-function getDefaultLanguage(code, name) {
+function getDefaultLanguage(code) {
+  const langData = L.getLanguage(code, true);
+  if (!langData) return null;
+  if (langData.aliasOf) code = langData.aliasOf; // We don’t want to use the alias
+  let name = L.getLanguageName(code, true);
+  if (!name) return null;
+
   // Add most common classes on top
   const topClasses = [
     "ADJECTIVE",
@@ -1984,7 +1990,7 @@ function getDefaultLanguage(code, name) {
       topClasses.push(k);
     }
   }
-  return new T.Language(code, null, null, name, [], items);
+  return new T.Language(code, null, null, name, [], items, null, false);
 }
 
 export default {
