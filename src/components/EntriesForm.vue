@@ -62,5 +62,15 @@ export default defineComponent({
         @update:model-value="onEntryUpdate"
       ></entry-form>
     </cdx-tab>
+    <cdx-tab name="etymology" label="Étymologie">🚧 En construction 🏗️</cdx-tab>
+    <cdx-tab name="wiki-links" label="Liens wikis"
+      >🚧 En construction 🏗️</cdx-tab
+    >
+    <cdx-tab name="references" label="Références"
+      >🚧 En construction 🏗️</cdx-tab
+    >
+    <cdx-tab name="categories" label="Catégories"
+      >🚧 En construction 🏗️</cdx-tab
+    >
   </cdx-tabs>
 </template>

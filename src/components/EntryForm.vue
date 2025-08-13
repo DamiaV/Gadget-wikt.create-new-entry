@@ -69,8 +69,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-tabs class="cne-entry-tabs">
-    <cdx-tab name="definitions" label="Définitions">
+  <cdx-tabs class="cne-entry-tabs" framed>
+    <cdx-tab name="definitions" label="Définitions & exemples">
       <definition-form
         v-for="(definition, i) in definitions"
         :key="i"
@@ -78,6 +78,11 @@ export default defineComponent({
         :model-value="definition"
         @update:model-value="onDefinitionUpdate"
       ></definition-form>
+    </cdx-tab>
+    <cdx-tab name="other-sections" label="Synonymes, dérivés, etc."
+      >🚧 En construction 🏗️</cdx-tab
+    >
+    <cdx-tab name="pronunciation" label="Prononciation">
       <input-with-toolbar
         v-model.trim="pronunciation"
         :show-format-buttons="false"
