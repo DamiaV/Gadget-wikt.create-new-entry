@@ -78,7 +78,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="!showForm">
+  <div v-if="!showForm" id="cne-start-btn">
     <cdx-button action="progressive" weight="quiet" @click="showForm = true">
       Ouvrir le gadget de création d’entrée
     </cdx-button>
@@ -112,7 +112,8 @@ export default defineComponent({
 </template>
 
 <style>
-#cne-form h1 {
+#cne-form h1,
+#cne-start-btn {
   text-align: center;
 }
 
