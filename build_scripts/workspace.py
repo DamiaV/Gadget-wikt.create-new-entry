@@ -6,14 +6,19 @@ import pathlib
 from . import vcs
 
 
+SRC_DIR = pathlib.Path("src")
+WIKI_DEPS_DIR = SRC_DIR / "wiki_deps"
+
+
 @dataclasses.dataclass(frozen=True)
 class Config:
     """This class represents the local config.json file."""
 
     gadget_name: str
     page_prefix: str
+    gadget_deps: list[str]
+    wiki_deps: list[str]
     ignored_files: set[pathlib.Path]
-    dependencies: list[str]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -39,10 +44,9 @@ def load_config() -> Config:
     return Config(
         gadget_name=gadget_name,
         page_prefix=f"MediaWiki:Gadget-{gadget_name}/",
-        dependencies=settings["dependencies"],
-        ignored_files={
-            pathlib.Path("src", file) for file in settings.get("ignoredFiles", [])
-        },
+        gadget_deps=settings["gadgetDependencies"],
+        wiki_deps=settings["wikiDependencies"],
+        ignored_files={SRC_DIR / file for file in settings.get("ignoredFiles", [])},
     )
 
 
@@ -53,16 +57,17 @@ def extract_local_file_structure(config: Config) -> set[File]:
     :param config: The current config.
     :return: A set containing File objects representing the local source files.
     """
-    files = set()
+    files: set[File] = set()
     allowed_exts = (".js", ".vue", ".json")
 
-    for path in pathlib.Path("src").rglob("*"):
+    for path in SRC_DIR.rglob("*"):
         if (
             path.is_file()
             and os.path.splitext(path.name)[1] in allowed_exts
-            and not path in config.ignored_files
+            and path not in config.ignored_files
+            and not str(path).startswith(str(WIKI_DEPS_DIR))
         ):
-            relative_path = path.relative_to("src")
+            relative_path = path.relative_to(SRC_DIR)
             files.add(
                 File(
                     local_path=path,
@@ -73,4 +78,4 @@ def extract_local_file_structure(config: Config) -> set[File]:
                 )
             )
 
-    return files
+    return sorted(files, key=lambda file: str(file).lower())

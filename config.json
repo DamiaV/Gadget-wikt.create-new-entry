@@ -1,8 +1,13 @@
 {
     "gadgetName": "wikt.create-new-entry",
-    "dependencies": [
+    "gadgetDependencies": [
         "vue",
         "@wikimedia/codex"
+    ],
+    "wikiDependencies": [
+        "wikt.core.cookies.js",
+        "wikt.core.languages.js",
+        "wikt.core.languages.json"
     ],
     "ignoredFiles": [
         "main-dev.js"

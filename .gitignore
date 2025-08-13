@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+src/wiki_deps
+
 # Python
 .venv
 __pycache__
