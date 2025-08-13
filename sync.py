@@ -351,6 +351,10 @@ def main() -> None:
         kwargs["overwrite"] = args.overwrite
 
     exit_code = ACTIONS[args.command](**kwargs)
+    if exit_code:
+        print(
+            "Process terminated with errors, run the command again with --verbose for more details."
+        )
     sys.exit(exit_code)
 
 
