@@ -12,6 +12,9 @@ export default defineConfig([
       ecmaVersion: 2016,
       globals: { ...globals.browser },
     },
+    rules: {
+      eqeqeq: ["error", "always"],
+    },
   },
   eslintVue.configs["flat/recommended"],
   eslintPluginPrettierRecommended,
