@@ -29,6 +29,7 @@ export default defineComponent({
       languagesData.push({
         label: langData.name,
         value: code,
+        supportingText: `(${code})`,
       });
     }
 
@@ -62,8 +63,12 @@ export default defineComponent({
     const menuSelection = ref(null);
     const menuItems = ref([]);
 
+    /**
+     * @type {import("@wikimedia/codex").MenuConfig}
+     */
     const menuConfig = {
       boldLabel: true,
+      visibleItemLimit: 10,
     };
 
     /**
@@ -132,6 +137,7 @@ export default defineComponent({
         v-model:selected.trim="langName"
         required
         :menu-items="languageItems"
+        :menu-config="menuConfig"
         @update:selected="onLanguageSelection"
       ></cdx-combobox>
       <cdx-lookup
