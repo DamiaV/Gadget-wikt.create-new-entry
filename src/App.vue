@@ -84,7 +84,7 @@ export default defineComponent({
     </cdx-button>
   </div>
 
-  <form v-if="showForm" ref="form" class="cne-form" @submit.prevent="onSubmit">
+  <form v-if="showForm" id="cne-form" ref="form" @submit.prevent="onSubmit">
     <h1>
       Création d’une section en <em>{{ language.name }}</em>
     </h1>
@@ -112,7 +112,11 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-form .submit-btn {
+#cne-form h1 {
+  text-align: center;
+}
+
+#cne-form .submit-btn {
   margin: 1em auto;
   display: block;
 }
