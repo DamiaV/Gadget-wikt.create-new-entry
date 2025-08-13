@@ -107,7 +107,9 @@ export default defineComponent({
      */
     function onMenuSelection(code) {
       if (!code) return;
-      ctx.emit("update:model-value", L.getDefaultLanguage(code));
+      const language = L.getDefaultLanguage(code);
+      langName.value = language.name;
+      ctx.emit("update:model-value", language);
     }
 
     return {
