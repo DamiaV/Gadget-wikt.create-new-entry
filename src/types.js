@@ -32,6 +32,7 @@
 /**
  * @typedef {{
  *  language: Language,
+ *  stub: boolean,
  *  entries: Entry[]
  * }} FormData
  */

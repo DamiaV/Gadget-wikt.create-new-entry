@@ -1,7 +1,7 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, ref, useTemplateRef } from "vue";
-import { CdxButton, CdxIcon } from "@wikimedia/codex";
+import { CdxButton, CdxCheckbox, CdxIcon } from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import EntriesForm from "./components/EntriesForm.vue";
@@ -14,6 +14,7 @@ export default defineComponent({
   components: {
     CdxButton,
     CdxIcon,
+    CdxCheckbox,
     LanguageSelector,
     EntriesForm,
   },
@@ -34,6 +35,8 @@ export default defineComponent({
     }
     const language = ref(startLanguage);
 
+    const isStub = ref(false);
+
     /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
      */
@@ -44,6 +47,7 @@ export default defineComponent({
      */
     const initialFormData = {
       language: language.value,
+      stub: isStub.value,
       entries: [
         // Create an empty initial entry
         {
@@ -78,6 +82,14 @@ export default defineComponent({
       formData.value.language = language;
     }
 
+    /**
+     * @param {boolean} checked Whether the stub checkbox is checked.
+     */
+    function onStubUpdate(checked) {
+      isStub.value = checked;
+      formData.value.stub = checked;
+    }
+
     function onSubmit() {
       if (!form.value.checkValidity()) return;
       console.log(formData.value);
@@ -88,9 +100,11 @@ export default defineComponent({
       formData,
       language,
       languages,
+      isStub,
       cdxIconDownload,
       onEntriesUpdate,
       onLanguageSelection,
+      onStubUpdate,
       onSubmit,
     };
   },
@@ -133,6 +147,12 @@ export default defineComponent({
       :languages="languages"
       @update:model-value="onLanguageSelection"
     ></language-selector>
+    <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
+      Ébauche
+      <template #description>
+        Cochez cette case pour insérer un bandeau d’ébauche.
+      </template>
+    </cdx-checkbox>
     <entries-form
       v-model="formData.entries"
       :language="formData.language"
@@ -160,6 +180,10 @@ export default defineComponent({
   font-weight: bold;
   font-style: italic;
   text-decoration: underline;
+}
+
+#cne-form .cne-language-selector {
+  margin-bottom: 1em;
 }
 
 #cne-form .submit-btn {

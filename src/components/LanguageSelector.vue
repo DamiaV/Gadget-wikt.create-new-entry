@@ -133,7 +133,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-field class="cne-language-selector">
+  <cdx-field class="cne-language-selector" is-fieldset>
     <template #label>Langue</template>
     <template #description>La langue de l’entrée</template>
     <template #help-text>
