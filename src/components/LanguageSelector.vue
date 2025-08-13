@@ -2,9 +2,9 @@
 <script>
 import { computed, defineComponent, ref } from "vue";
 import { CdxCombobox, CdxField, CdxLookup } from "@wikimedia/codex";
+import LL from "../wiki_deps/wikt.core.languages.js";
 import T from "../types.js";
 import L from "../languages.js";
-import LL from "../wiki_deps/wikt.core.languages.js";
 
 export default defineComponent({
   components: {
@@ -60,7 +60,10 @@ export default defineComponent({
 
     const langName = ref(props.modelValue.name);
 
-    const menuSelection = ref(null);
+    const menuSelection = ref("");
+    /**
+     * @type {import("vue").Ref<import("@wikimedia/codex").MenuItemData[]>}
+     */
     const menuItems = ref([]);
 
     /**
@@ -109,6 +112,7 @@ export default defineComponent({
       if (!code) return;
       const language = L.getDefaultLanguage(code);
       langName.value = language.name;
+      menuSelection.value = ""; // Reset lookup selection
       ctx.emit("update:model-value", language);
     }
 
