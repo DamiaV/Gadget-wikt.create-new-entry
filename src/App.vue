@@ -3,9 +3,10 @@
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
+import C from "./wiki_deps/wikt.core.cookies.js";
 import EntriesForm from "./components/EntriesForm.vue";
-import L from "./languages.js";
 import LanguageSelector from "./components/LanguageSelector.vue";
+import L from "./languages.js";
 
 export default defineComponent({
   components: {
@@ -15,6 +16,8 @@ export default defineComponent({
     EntriesForm,
   },
   setup() {
+    const previousLangCode = C.getCookie("cne_lang");
+    console.log(previousLangCode);
     const languages = L.loadLanguages();
     const language = ref(languages[0]); // TODO check for cookie first
 
