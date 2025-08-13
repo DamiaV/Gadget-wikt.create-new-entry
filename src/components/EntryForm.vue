@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-tabs>
+  <cdx-tabs class="cne-entry-tabs">
     <cdx-tab name="definitions" label="Définitions">
       <definition-form
         v-for="(definition, i) in definitions"
@@ -98,4 +98,11 @@ export default defineComponent({
     </cdx-tab>
   </cdx-tabs>
 </template>
+
+<style>
+.cne-entry-tabs .cdx-tabs__content {
+  margin-top: 1em;
+}
+</style>
+
 <!-- </nowiki> -->
