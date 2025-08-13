@@ -1959,8 +1959,8 @@ function loadLanguages() {
 
 /**
  * Return a default Language object for the given code and name.
- * @param code {string} The language’s code.
- * @param name {string} The language’s name.
+ * @param {string} code The language’s code.
+ * @param {string} name The language’s name.
  * @returns A new Language object.
  */
 function getDefaultLanguage(code, name) {

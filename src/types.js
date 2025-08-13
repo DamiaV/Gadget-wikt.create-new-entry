@@ -206,7 +206,6 @@ class GrammaticalItem {
 
 /**
  * This class encapsulates data and behaviors specific to a specific language.
- * @typedef
  */
 class Language {
   /**
