@@ -8,13 +8,13 @@
  */
 
 /**
- * @typedef {{entries: FormEntry[]}} FormEntriesUpdateEvent
+ * @typedef {{entries: Entry[]}} FormEntriesUpdateEvent
  */
 
 /**
  * @typedef {{
  *  index: number,
- *  entry: FormEntry
+ *  entry: Entry
  * }} FormEntryUpdateEvent
  */
 
@@ -32,7 +32,7 @@
 /**
  * @typedef {{
  *  language: Language,
- *  entries: FormEntry[]
+ *  entries: Entry[]
  * }} FormData
  */
 
@@ -40,7 +40,7 @@
  * @typedef {{
  *  definitions: Definition[],
  *  pronunciation?: string
- * }} FormEntry
+ * }} Entry
  */
 
 /**

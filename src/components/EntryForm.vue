@@ -1,7 +1,7 @@
 <!-- <nowiki> -->
 <script>
-import { CdxTab, CdxTabs } from "@wikimedia/codex";
 import { defineComponent, ref } from "vue";
+import { CdxTab, CdxTabs } from "@wikimedia/codex";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
@@ -17,7 +17,7 @@ export default defineComponent({
     index: { type: Number, required: true },
     language: { type: T.Language, required: true },
     /**
-     * @type {import("vue").PropType<import("../types.js").FormEntry>}
+     * @type {import("vue").PropType<import("../types.js").Entry>}
      */
     modelValue: { type: Object, required: true },
   },

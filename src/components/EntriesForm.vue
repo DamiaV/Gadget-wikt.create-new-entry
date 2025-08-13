@@ -13,7 +13,7 @@ export default defineComponent({
   props: {
     language: { type: T.Language, required: true },
     /**
-     * @type {import("vue").PropType<import("../types.js").FormEntry[]>}
+     * @type {import("vue").PropType<import("../types.js").Entry[]>}
      */
     modelValue: { type: Array, required: true },
   },
