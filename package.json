@@ -11,13 +11,13 @@
     "lint:fix": "eslint src --fix"
   },
   "dependencies": {
+    "@wikimedia/codex": "^2.2.1",
+    "@wikimedia/codex-icons": "^2.2.1",
     "vue": "^3.5.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@vitejs/plugin-vue": "^6.0.1",
-    "@wikimedia/codex": "^2.2.1",
-    "@wikimedia/codex-icons": "^2.2.1",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
