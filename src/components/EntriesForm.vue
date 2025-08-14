@@ -42,7 +42,7 @@ export default defineComponent({
     }
 
     const openDialog = ref(false);
-    const entryIdToDelete = ref(-1);
+    const entryIndexToDelete = ref(-1);
 
     /**
      * @type {import("@wikimedia/codex").PrimaryModalAction}
@@ -88,14 +88,38 @@ export default defineComponent({
      */
     function onDeleteConfirm() {
       openDialog.value = false;
-      const value = entryIdToDelete.value;
+      const index = entryIndexToDelete.value;
       const entriesNb = entries.value.length;
+      if (index < 0 || index >= entriesNb) return;
+
       const nearestEntry =
-        value === entriesNb - 1
+        index === entriesNb - 1
           ? entries.value[entriesNb - 2]
-          : entries.value[value + 1];
-      entries.value.splice(value, 1);
+          : entries.value[index + 1];
+      entries.value.splice(index, 1);
       activeTab.value = `tab-${nearestEntry.id}`;
+      fireEvent();
+    }
+
+    /**
+     * Move the given entry one position to the left.
+     * @param {number} entryIndex The index of the entry to move.
+     */
+    function onMoveEntryLeft(entryIndex) {
+      if (entryIndex === 0) return;
+      const entry = entries.value.splice(entryIndex, 1)[0];
+      entries.value.splice(entryIndex - 1, 0, entry);
+      fireEvent();
+    }
+
+    /**
+     * Move the given entry one position to the right.
+     * @param {number} entryIndex The index of the entry to move.
+     */
+    function onMoveEntryRight(entryIndex) {
+      if (entryIndex === entries.value.length - 1) return;
+      const entry = entries.value.splice(entryIndex, 1)[0];
+      entries.value.splice(entryIndex + 1, 0, entry);
       fireEvent();
     }
 
@@ -103,13 +127,15 @@ export default defineComponent({
       entries,
       activeTab,
       openDialog,
-      entryIdToDelete,
+      entryIndexToDelete,
       primaryAction,
       defaultAction,
       cdxIconAdd,
       onAddEntry,
       onEntryUpdate,
       onDeleteConfirm,
+      onMoveEntryLeft,
+      onMoveEntryRight,
     };
   },
 });
@@ -125,6 +151,7 @@ export default defineComponent({
     <cdx-icon :icon="cdxIconAdd"></cdx-icon>
     Ajouter une entrée
   </cdx-button>
+
   <cdx-tabs v-model:active="activeTab">
     <cdx-tab
       v-for="(entry, i) in entries"
@@ -137,11 +164,15 @@ export default defineComponent({
         :language="$props.language"
         :model-value="entry"
         :enable-delete-btn="entries.length > 1"
+        :can-move-left="i != 0"
+        :can-move-right="i < entries.length - 1"
         @update:model-value="onEntryUpdate"
         @delete="
-          entryIdToDelete = $event;
+          entryIndexToDelete = $event;
           openDialog = true;
         "
+        @move:left="onMoveEntryLeft"
+        @move:right="onMoveEntryRight"
       ></entry-form>
     </cdx-tab>
     <cdx-tab name="etymology" label="Étymologie">🚧 En construction 🏗️</cdx-tab>
@@ -155,6 +186,7 @@ export default defineComponent({
       >🚧 En construction 🏗️</cdx-tab
     >
   </cdx-tabs>
+
   <cdx-dialog
     v-model:open="openDialog"
     title="Confirmation de suppression"

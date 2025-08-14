@@ -2,7 +2,11 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { CdxButton, CdxIcon, CdxTab, CdxTabs } from "@wikimedia/codex";
-import { cdxIconClose } from "@wikimedia/codex-icons";
+import {
+  cdxIconClose,
+  cdxIconPrevious,
+  cdxIconNext,
+} from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
@@ -19,13 +23,15 @@ export default defineComponent({
   props: {
     index: { type: Number, required: true },
     language: { type: T.Language, required: true },
-    enableDeleteBtn: { type: Boolean, require: true },
+    enableDeleteBtn: { type: Boolean, default: false },
+    canMoveLeft: { type: Boolean, default: true },
+    canMoveRight: { type: Boolean, default: true },
     /**
      * @type {import("vue").PropType<import("../types.js").Entry>}
      */
     modelValue: { type: Object, required: true },
   },
-  emits: ["update:model-value", "delete"],
+  emits: ["update:model-value", "delete", "move:left", "move:right"],
   setup(props, ctx) {
     const definitions = ref(props.modelValue.definitions);
     const pronunciation = ref(props.modelValue.pronunciation || "");
@@ -67,6 +73,8 @@ export default defineComponent({
       definitions,
       pronunciation,
       cdxIconClose,
+      cdxIconPrevious,
+      cdxIconNext,
       onDefinitionUpdate,
       onPronunciationUpdate,
     };
@@ -75,16 +83,39 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-button
-    type="button"
-    class="delete-entry-btn"
-    action="destructive"
-    :disabled="!$props.enableDeleteBtn"
-    @click="$emit('delete', $props.index)"
-  >
-    <cdx-icon :icon="cdxIconClose"></cdx-icon>
-    Supprimer l’entrée
-  </cdx-button>
+  <div class="cne-entry-action-btns">
+    <cdx-button
+      type="button"
+      class="delete-entry-btn"
+      action="destructive"
+      :disabled="!$props.enableDeleteBtn"
+      @click="$emit('delete', $props.index)"
+    >
+      <cdx-icon :icon="cdxIconClose"></cdx-icon>
+      Supprimer l’entrée
+    </cdx-button>
+
+    <cdx-button
+      type="button"
+      aria-label="Déplacer à gauche"
+      title="Déplacer à gauche"
+      :disabled="!$props.canMoveLeft"
+      @click="$emit('move:left', $props.index)"
+    >
+      <cdx-icon :icon="cdxIconPrevious"></cdx-icon>
+    </cdx-button>
+
+    <cdx-button
+      type="button"
+      aria-label="Déplacer à droite"
+      title="Déplacer à droite"
+      :disabled="!$props.canMoveRight"
+      @click="$emit('move:right', $props.index)"
+    >
+      <cdx-icon :icon="cdxIconNext"></cdx-icon>
+    </cdx-button>
+  </div>
+
   <cdx-tabs class="cne-entry-tabs" framed>
     <cdx-tab name="definitions" label="Définitions & exemples">
       <definition-form
@@ -121,12 +152,16 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-entry-tabs .cdx-tabs__content {
-  margin-top: 1em;
+.cne-entry-action-btns > .cdx-button {
+  margin-right: 0.5em;
 }
 
 .delete-entry-btn {
   margin: 0.5em 0;
+}
+
+.cne-entry-tabs .cdx-tabs__content {
+  margin-top: 1em;
 }
 </style>
 <!-- </nowiki> -->
