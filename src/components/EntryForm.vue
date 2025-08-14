@@ -45,10 +45,6 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
-    function onDeleteEntry() {
-      ctx.emit("delete", props.index);
-    }
-
     /**
      * Called when the definition component is updated.
      * @param {import("../types.js").DefinitionUpdateEvent} event The event.
@@ -71,7 +67,6 @@ export default defineComponent({
       definitions,
       pronunciation,
       cdxIconClose,
-      onDeleteEntry,
       onDefinitionUpdate,
       onPronunciationUpdate,
     };
@@ -85,7 +80,7 @@ export default defineComponent({
     class="delete-entry-btn"
     action="destructive"
     :disabled="!$props.enableDeleteBtn"
-    @click="onDeleteEntry"
+    @click="$emit('delete', $props.index)"
   >
     <cdx-icon :icon="cdxIconClose"></cdx-icon>
     Supprimer l’entrée
