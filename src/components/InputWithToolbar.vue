@@ -32,7 +32,7 @@ export default defineComponent({
     const textInputType = props.textArea ? CdxTextArea : CdxTextInput;
 
     /**
-     * @type {Readonly<import("vue").ShallowRef<CdxTextArea | CdxTextInput>>}
+     * @type {Readonly<import("vue").ShallowRef<import("@wikimedia/codex").CdxTextArea | import("@wikimedia/codex").CdxTextInput>>}
      */
     const textInput = useTemplateRef("textInput");
 
