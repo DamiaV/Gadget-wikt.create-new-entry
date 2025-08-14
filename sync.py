@@ -68,11 +68,10 @@ def extract_codex_icon_names(js_code: str) -> set[str]:
     :return: The set of imported icons.
     """
     if match := re.search(
-        r'import { (\w+(?:, \w+)*) } from "@wikimedia/codex-icons";',
+        r'import {\s+(\w+(?:,\s+\w+)*,?)\s+} from "@wikimedia/codex-icons";',
         js_code,
-        flags=re.MULTILINE,
     ):
-        return set(match[1].split(", "))
+        return set(icon for icon in re.split(r",\s*", match[1]) if icon)
     return set()
 
 
@@ -122,7 +121,10 @@ def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
         commonjs_code,
     )
     commonjs_code = re.sub(
-        r"import (.+?) from (.+?);", r"const \1 = require(\2);", commonjs_code
+        r"import (.+?) from (.+?);",
+        r"const \1 = require(\2);",
+        commonjs_code,
+        flags=re.DOTALL,
     )
     commonjs_code = commonjs_code.replace("export default", "module.exports =")
     return commonjs_code
