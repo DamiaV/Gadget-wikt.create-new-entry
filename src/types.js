@@ -39,6 +39,7 @@
 
 /**
  * @typedef {{
+ *  id: number,
  *  definitions: Definition[],
  *  pronunciation?: string
  * }} Entry

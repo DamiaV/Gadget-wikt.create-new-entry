@@ -1,6 +1,6 @@
 <script>
 import { defineComponent, ref } from "vue";
-import { CdxTab, CdxTabs } from "@wikimedia/codex";
+import { CdxButton, CdxIcon, CdxTab, CdxTabs } from "@wikimedia/codex";
 import { cdxIconAdd } from "@wikimedia/codex-icons";
 import EntryForm from "./EntryForm.vue";
 import T from "../types.js";
@@ -9,6 +9,8 @@ export default defineComponent({
   components: {
     CdxTabs,
     CdxTab,
+    CdxButton,
+    CdxIcon,
     EntryForm,
   },
   props: {
@@ -34,22 +36,18 @@ export default defineComponent({
 
     const activeTab = ref("tab-0");
 
-    /**
-     * @param {string} tabName Name of the selected tab.
-     */
-    function onTabSelection(tabName) {
-      console.log(tabName);
-      if (tabName === "add-entry") {
-        entries.value.push({
-          definitions: [
-            {
-              text: "",
-              examples: [],
-            },
-          ],
-        });
-        activeTab.value = `tab-${entries.value.length - 1}`;
-      } else activeTab.value = tabName;
+    function onAddEntry() {
+      const id = Math.max(...entries.value.map((e) => e.id)) + 1;
+      entries.value.push({
+        id,
+        definitions: [
+          {
+            text: "",
+            examples: [],
+          },
+        ],
+      });
+      activeTab.value = `tab-${id}`;
       fireEvent();
     }
 
@@ -61,33 +59,57 @@ export default defineComponent({
       fireEvent();
     }
 
+    /**
+     * @param {number} entryIndex The index of the entry to delete.
+     */
+    function onEntryDelete(entryIndex) {
+      const nearestEntry =
+        entryIndex === entries.value.length - 1
+          ? entries.value[entries.value.length - 2]
+          : entries.value[entryIndex + 1];
+      entries.value.splice(entryIndex, 1);
+      activeTab.value = `tab-${nearestEntry.id}`;
+      fireEvent();
+    }
+
     return {
       entries,
       activeTab,
       cdxIconAdd,
-      onTabSelection,
+      onAddEntry,
       onEntryUpdate,
+      onEntryDelete,
     };
   },
 });
 </script>
 
 <template>
-  <cdx-tabs v-model:active="activeTab" @update:active="onTabSelection">
+  <cdx-button
+    type="button"
+    class="add-entry-btn"
+    action="progressive"
+    @click="onAddEntry"
+  >
+    <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+    Ajouter une entrée
+  </cdx-button>
+  <cdx-tabs v-model:active="activeTab">
     <cdx-tab
       v-for="(entry, i) in entries"
-      :key="i"
-      :name="`tab-${i}`"
-      :label="`Entrée ${i + 1}`"
+      :key="entry.id"
+      :name="`tab-${entry.id}`"
+      :label="`Nouvelle entrée ${entry.id + 1}`"
     >
       <entry-form
         :index="i"
         :language="$props.language"
         :model-value="entry"
+        :enable-delete-btn="entries.length > 1"
         @update:model-value="onEntryUpdate"
+        @delete="onEntryDelete"
       ></entry-form>
     </cdx-tab>
-    <cdx-tab name="add-entry" label="+"></cdx-tab>
     <cdx-tab name="etymology" label="Étymologie">🚧 En construction 🏗️</cdx-tab>
     <cdx-tab name="wiki-links" label="Liens wikis"
       >🚧 En construction 🏗️</cdx-tab
@@ -100,3 +122,9 @@ export default defineComponent({
     >
   </cdx-tabs>
 </template>
+
+<style>
+.add-entry-btn {
+  margin: 0.5em 0;
+}
+</style>

@@ -1,7 +1,8 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, ref } from "vue";
-import { CdxTab, CdxTabs } from "@wikimedia/codex";
+import { CdxButton, CdxIcon, CdxTab, CdxTabs } from "@wikimedia/codex";
+import { cdxIconClose } from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
@@ -10,18 +11,21 @@ export default defineComponent({
   components: {
     CdxTabs,
     CdxTab,
+    CdxButton,
+    CdxIcon,
     DefinitionForm,
     InputWithToolbar,
   },
   props: {
     index: { type: Number, required: true },
     language: { type: T.Language, required: true },
+    enableDeleteBtn: { type: Boolean, require: true },
     /**
      * @type {import("vue").PropType<import("../types.js").Entry>}
      */
     modelValue: { type: Object, required: true },
   },
-  emits: ["update:model-value"],
+  emits: ["update:model-value", "delete"],
   setup(props, ctx) {
     const definitions = ref(props.modelValue.definitions);
     const pronunciation = ref(props.modelValue.pronunciation || "");
@@ -33,11 +37,16 @@ export default defineComponent({
       const firedEvent = {
         index: props.index,
         entry: {
+          id: props.modelValue.id,
           definitions: definitions.value,
           pronunciation: pronunciation.value,
         },
       };
       ctx.emit("update:model-value", firedEvent);
+    }
+
+    function onDeleteEntry() {
+      ctx.emit("delete", props.index);
     }
 
     /**
@@ -61,6 +70,8 @@ export default defineComponent({
     return {
       definitions,
       pronunciation,
+      cdxIconClose,
+      onDeleteEntry,
       onDefinitionUpdate,
       onPronunciationUpdate,
     };
@@ -69,6 +80,16 @@ export default defineComponent({
 </script>
 
 <template>
+  <cdx-button
+    type="button"
+    class="delete-entry-btn"
+    action="destructive"
+    :disabled="!$props.enableDeleteBtn"
+    @click="onDeleteEntry"
+  >
+    <cdx-icon :icon="cdxIconClose"></cdx-icon>
+    Supprimer l’entrée
+  </cdx-button>
   <cdx-tabs class="cne-entry-tabs" framed>
     <cdx-tab name="definitions" label="Définitions & exemples">
       <definition-form
@@ -107,6 +128,10 @@ export default defineComponent({
 <style>
 .cne-entry-tabs .cdx-tabs__content {
   margin-top: 1em;
+}
+
+.delete-entry-btn {
+  margin: 0.5em 0;
 }
 </style>
 <!-- </nowiki> -->

@@ -51,6 +51,7 @@ export default defineComponent({
       entries: [
         // Create an empty initial entry
         {
+          id: 0,
           definitions: [
             {
               text: "",
