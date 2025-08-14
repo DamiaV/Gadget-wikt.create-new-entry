@@ -1,6 +1,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { CdxTab, CdxTabs } from "@wikimedia/codex";
+import { cdxIconAdd } from "@wikimedia/codex-icons";
 import EntryForm from "./EntryForm.vue";
 import T from "../types.js";
 
@@ -31,6 +32,27 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    const activeTab = ref("tab-0");
+
+    /**
+     * @param {string} tabName Name of the selected tab.
+     */
+    function onTabSelection(tabName) {
+      console.log(tabName);
+      if (tabName === "add-entry") {
+        entries.value.push({
+          definitions: [
+            {
+              text: "",
+              examples: [],
+            },
+          ],
+        });
+        activeTab.value = `tab-${entries.value.length - 1}`;
+      } else activeTab.value = tabName;
+      fireEvent();
+    }
+
     /**
      * @param {import("../types.js").FormEntryUpdateEvent} event
      */
@@ -41,6 +63,9 @@ export default defineComponent({
 
     return {
       entries,
+      activeTab,
+      cdxIconAdd,
+      onTabSelection,
       onEntryUpdate,
     };
   },
@@ -48,7 +73,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-tabs>
+  <cdx-tabs v-model:active="activeTab" @update:active="onTabSelection">
     <cdx-tab
       v-for="(entry, i) in entries"
       :key="i"
@@ -62,6 +87,7 @@ export default defineComponent({
         @update:model-value="onEntryUpdate"
       ></entry-form>
     </cdx-tab>
+    <cdx-tab name="add-entry" label="+"></cdx-tab>
     <cdx-tab name="etymology" label="Étymologie">🚧 En construction 🏗️</cdx-tab>
     <cdx-tab name="wiki-links" label="Liens wikis"
       >🚧 En construction 🏗️</cdx-tab
