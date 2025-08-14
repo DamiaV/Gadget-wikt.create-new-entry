@@ -57,6 +57,7 @@ export default defineComponent({
         v-for="(char, j) in chars"
         :key="j"
         href="#"
+        :aria-label="`Insérer un ${char}`"
         title="Cliquer pour insérer le caractère"
         @click.prevent="$emit('insert-char', char)"
       >
