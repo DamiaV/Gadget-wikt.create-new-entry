@@ -197,5 +197,9 @@ export default defineComponent({
   margin: 1em auto;
   display: block;
 }
+
+#cne-form .help-icon {
+  margin-right: 0.5em;
+}
 </style>
 <!-- </nowiki> -->

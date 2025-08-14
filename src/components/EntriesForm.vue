@@ -1,3 +1,4 @@
+<!-- <nowiki> -->
 <script>
 import { defineComponent, ref } from "vue";
 import {
@@ -206,3 +207,4 @@ export default defineComponent({
   margin: 0.5em 0;
 }
 </style>
+<!-- </nowiki> -->

@@ -6,10 +6,13 @@ import {
   cdxIconClose,
   cdxIconPrevious,
   cdxIconNext,
+  cdxIconHelpNotice,
+  cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
+import WikiLink from "./WikiLink.vue";
 
 export default defineComponent({
   components: {
@@ -19,6 +22,7 @@ export default defineComponent({
     CdxIcon,
     DefinitionForm,
     InputWithToolbar,
+    WikiLink,
   },
   props: {
     index: { type: Number, required: true },
@@ -75,6 +79,8 @@ export default defineComponent({
       cdxIconClose,
       cdxIconPrevious,
       cdxIconNext,
+      cdxIconHelpNotice,
+      cdxIconInfoFilled,
       onDefinitionUpdate,
       onPronunciationUpdate,
     };
@@ -136,14 +142,19 @@ export default defineComponent({
         :special-characters="$props.language.ipaSymbols"
         @update:model-value="onPronunciationUpdate"
       >
-        <template #label>Prononciation</template>
+        <template #label>
+          Prononciation
+          <wiki-link class="help-icon" page-title="Aide:Prononciation écrite">
+            <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+          </wiki-link>
+          <wiki-link class="help-icon" page-title="Convention:Définitions">
+            <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+          </wiki-link>
+        </template>
         <template #help-text>
-          Si vous ne maitrisez pas l’<a
-            class="plainlinks"
-            href="/wiki/alphabet phonétique international"
-            target="_blank"
-            title="S’ouvre dans un nouvel onglet"
-            >alphabet phonétique international</a
+          Si vous ne maitrisez pas l’<wiki-link
+            page-title="alphabet phonétique international"
+          ></wiki-link
           >, ne remplissez pas ce champ.
         </template>
       </input-with-toolbar>

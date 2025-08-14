@@ -1,11 +1,16 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, ref } from "vue";
+import { CdxIcon } from "@wikimedia/codex";
+import { cdxIconHelpNotice, cdxIconInfoFilled } from "@wikimedia/codex-icons";
 import InputWithToolbar from "./InputWithToolbar.vue";
+import WikiLink from "./WikiLink.vue";
 
 export default defineComponent({
   components: {
+    CdxIcon,
     InputWithToolbar,
+    WikiLink,
   },
   props: {
     index: { type: Number, required: true },
@@ -45,6 +50,8 @@ export default defineComponent({
     return {
       definition,
       examples,
+      cdxIconHelpNotice,
+      cdxIconInfoFilled,
       onDefinitionUpdate,
     };
   },
@@ -58,12 +65,25 @@ export default defineComponent({
     text-area
     @update:model-value="onDefinitionUpdate"
   >
-    <template #label>Définition {{ index + 1 }}</template>
+    <template #label>
+      Définition {{ index + 1 }}
+      <wiki-link class="help-icon" page-title="Aide:Définitions">
+        <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+      </wiki-link>
+      <wiki-link class="help-icon" page-title="Convention:Définitions">
+        <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+      </wiki-link>
+    </template>
     <template #description>
       Une courte définition, pas plus d’une ou deux phrases si possible
     </template>
     <template #help-text>
-      La définition ne doit pas être recopiée depuis un autre dictionnaire.
+      Pour des raisons de
+      <wiki-link
+        page-title="Aide:Définitions"
+        anchor="Astuces_pour_rédiger_une_définition"
+        >droit d’auteur</wiki-link
+      >, la définition ne doit pas être recopiée depuis un autre dictionnaire.
     </template>
   </input-with-toolbar>
 </template>
