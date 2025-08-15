@@ -4,7 +4,7 @@
  * @param {string} unknown The text for unknown gender.
  * @param {string} female The text for female gender.
  * @param {string} male The text for male gender.
- * @returns {string} A promise returning the text corresponding to the user’s gender.
+ * @returns {string} The text corresponding to the user’s gender.
  */
 function userGenderSwitch(gender, unknown, female, male) {
   switch (gender) {
