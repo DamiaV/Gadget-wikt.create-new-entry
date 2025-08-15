@@ -33,7 +33,7 @@ export default defineComponent({
       <cdx-button
         class="format-btn"
         type="button"
-        aria-label="Gras"
+        aria-label="Mettre en gras"
         title="Mettre en gras"
         size="small"
         @click="$emit('style:bold')"
@@ -43,7 +43,7 @@ export default defineComponent({
       <cdx-button
         class="format-btn"
         type="button"
-        aria-label="Italique"
+        aria-label="Mettre en italique"
         title="Mettre en italique"
         size="small"
         @click="$emit('style:italic')"

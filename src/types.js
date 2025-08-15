@@ -20,14 +20,14 @@
 /**
  * @typedef {{
  *  index: number,
- *  entry: Entry
+ *  entry: Entry,
  * }} FormEntryUpdateEvent
  */
 
 /**
  * @typedef {{
  *  index: number,
- *  definition: Definition
+ *  definition: Definition,
  * }} DefinitionUpdateEvent
  */
 
@@ -39,7 +39,7 @@
  * @typedef {{
  *  language: Language,
  *  stub: boolean,
- *  entries: Entry[]
+ *  entries: Entry[],
  * }} FormData
  */
 
@@ -53,7 +53,11 @@
 
 /**
  * Type for a single definition and its examples.
- * @typedef {{text: string, examples: Example[]}} Definition
+ * @typedef {{
+ *  id: number,
+ *  text: string,
+ *  examples: Example[],
+ * }} Definition
  */
 
 /**
@@ -64,7 +68,7 @@
  *  transcription?: string,
  *  source?: string,
  *  link?: string,
- *  disableTranslation?: boolean
+ *  disableTranslation?: boolean,
  * }} Example
  */
 

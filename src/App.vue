@@ -60,6 +60,7 @@ export default defineComponent({
           id: 1,
           definitions: [
             {
+              id: 1,
               text: "",
               examples: [],
             },
@@ -143,6 +144,7 @@ export default defineComponent({
         <cdx-button
           type="button"
           :title="showFormFields ? 'Enrouler' : 'Dérouler'"
+          :aria-label="showFormFields ? 'Enrouler' : 'Dérouler'"
           @click="showFormFields = !showFormFields"
         >
           <cdx-icon
@@ -210,7 +212,7 @@ export default defineComponent({
 #cne .cne-box {
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
-  padding: 0 0.5em;
+  padding: 0.5em;
 }
 
 #cne h1,
@@ -231,13 +233,6 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   margin: 0.5em 0;
-}
-
-/*
- * Ruleset used by child components
- */
-#cne .help-icon {
-  margin-right: 0.5em;
 }
 </style>
 <!-- </nowiki> -->

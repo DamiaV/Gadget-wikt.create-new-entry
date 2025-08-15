@@ -9,9 +9,9 @@ import {
   CdxTabs,
 } from "@wikimedia/codex";
 import { cdxIconAdd } from "@wikimedia/codex-icons";
-import EntryForm from "./EntryForm.vue";
 import T from "../types.js";
 import utils from "../utils.js";
+import EntryForm from "./EntryForm.vue";
 
 export default defineComponent({
   components: {
@@ -44,24 +44,15 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
-    const openDialog = ref(false);
-    const entryIndexToDelete = ref(-1);
-
-    /**
-     * @type {import("@wikimedia/codex").PrimaryModalAction}
-     */
-    const primaryAction = {
-      label: "Supprimer",
-      actionType: "destructive",
-    };
-    /**
-     * @type {import("@wikimedia/codex").ModalAction}
-     */
-    const defaultAction = {
-      label: "Annuler",
-    };
-
     const activeTab = ref("tab-1");
+
+    /**
+     * @param {import("../types.js").FormEntryUpdateEvent} event
+     */
+    function onEntryUpdate(event) {
+      entries.value[event.index] = event.entry;
+      fireEvent();
+    }
 
     function onAddEntry() {
       const id = Math.max(...entries.value.map((e) => e.id)) + 1;
@@ -78,18 +69,27 @@ export default defineComponent({
       fireEvent();
     }
 
-    /**
-     * @param {import("../types.js").FormEntryUpdateEvent} event
-     */
-    function onEntryUpdate(event) {
-      entries.value[event.index] = event.entry;
-      fireEvent();
-    }
+    const openDialog = ref(false);
+    const entryIndexToDelete = ref(-1);
 
     /**
-     * Called when the "delete" action of the deletion dialog is clicked.
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
      */
-    function onDeleteConfirm() {
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    /**
+     * Delete the entry at the selected index.
+     */
+    function deleteEntry() {
       openDialog.value = false;
       const index = entryIndexToDelete.value;
       const entriesNb = entries.value.length;
@@ -137,14 +137,14 @@ export default defineComponent({
       activeTab,
       openDialog,
       entryIndexToDelete,
-      primaryAction,
-      defaultAction,
+      dialogPrimaryAction,
+      dialogDefaultAction,
       gender,
       utils,
       cdxIconAdd,
       onAddEntry,
       onEntryUpdate,
-      onDeleteConfirm,
+      deleteEntry,
       onMoveEntryLeft,
       onMoveEntryRight,
     };
@@ -175,15 +175,15 @@ export default defineComponent({
         :language="$props.language"
         :model-value="entry"
         :enable-delete-btn="entries.length > 1"
-        :can-move-left="i != 0"
-        :can-move-right="i < entries.length - 1"
+        :can-move-before="i > 0"
+        :can-move-after="i < entries.length - 1"
         @update:model-value="onEntryUpdate"
         @delete="
           entryIndexToDelete = $event;
           openDialog = true;
         "
-        @move:left="onMoveEntryLeft"
-        @move:right="onMoveEntryRight"
+        @move:before="onMoveEntryLeft"
+        @move:after="onMoveEntryRight"
       ></entry-form>
     </cdx-tab>
     <cdx-tab name="etymology" label="Étymologie">🚧 En construction 🏗️</cdx-tab>
@@ -202,12 +202,12 @@ export default defineComponent({
     v-model:open="openDialog"
     title="Confirmation de suppression"
     use-close-button
-    :primary-action="primaryAction"
-    :default-action="defaultAction"
-    @primary="onDeleteConfirm"
+    :primary-action="dialogPrimaryAction"
+    :default-action="dialogDefaultAction"
+    @primary="deleteEntry"
     @default="openDialog = false"
   >
-    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "ŝure", "ŝur") }} de
+    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "sûre", "sûr") }} de
     vouloir supprimer cette entrée&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
