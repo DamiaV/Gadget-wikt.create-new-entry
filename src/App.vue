@@ -1,7 +1,7 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, ref, useTemplateRef } from "vue";
-import { CdxButton, CdxCheckbox, CdxIcon } from "@wikimedia/codex";
+import { CdxButton, CdxCheckbox, CdxIcon, CdxMessage } from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import EntriesForm from "./components/EntriesForm.vue";
@@ -15,6 +15,7 @@ export default defineComponent({
     CdxButton,
     CdxIcon,
     CdxCheckbox,
+    CdxMessage,
     LanguageSelector,
     EntriesForm,
   },
@@ -113,77 +114,81 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="!showForm" id="cne-start-btn">
-    <cdx-button action="progressive" weight="quiet" @click="showForm = true">
-      Ouvrir le gadget de création d’entrée
-    </cdx-button>
-  </div>
+  <div id="cne-form">
+    <div v-if="!showForm" class="cne-start-btn">
+      <cdx-button action="progressive" weight="quiet" @click="showForm = true">
+        Ouvrir le gadget de création d’entrée
+      </cdx-button>
+    </div>
 
-  <form v-if="showForm" id="cne-form" ref="form" @submit.prevent="onSubmit">
-    <h1>
-      Création d’une section en <em>{{ language.name }}</em>
-    </h1>
+    <form v-if="showForm" ref="form" class="cne-box" @submit.prevent="onSubmit">
+      <h1>
+        Création d’une section en <em>{{ language.name }}</em>
+      </h1>
 
-    <p>
-      Ce gadget permet de créer une section de langue complète en écrivant le
-      moins de code possible.
-    </p>
-    <p>
-      <span class="important"
-        >Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
-        code&nbsp;» avant de publier la page, sinon les informations que vous
-        avez entrées seront perdues.</span
+      <cdx-message type="notice">
+        <p>
+          Ce gadget permet de créer une section de langue complète en écrivant
+          le moins de code possible.
+        </p>
+        <p>
+          Le code sera directement inséré au bon endroit dans la zone d’édition.
+          Vérifiez bien que le code généré est correct avant de publier votre
+          modification.
+        </p>
+        <p>
+          Vous pouvez créer plusieurs sections de types de mots en même temps en
+          cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
+        </p>
+      </cdx-message>
+      <cdx-message type="warning">
+        Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le code&nbsp;»
+        avant de publier la page, sinon les informations que vous avez entrées
+        seront perdues.
+      </cdx-message>
+
+      <language-selector
+        v-model="language"
+        :languages="languages"
+        @update:model-value="onLanguageSelection"
+      ></language-selector>
+      <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
+        Ébauche
+        <template #description>
+          Cochez cette case pour insérer un bandeau d’ébauche.
+        </template>
+      </cdx-checkbox>
+      <entries-form
+        v-model="formData.entries"
+        :language="formData.language"
+        @update:model-value="onEntriesUpdate"
+      ></entries-form>
+      <cdx-button
+        class="submit-btn"
+        type="submit"
+        action="progressive"
+        weight="primary"
       >
-      Le code sera directement inséré au bon endroit dans la zone d’édition.
-      Vérifiez bien que le code généré est correct avant de publier votre
-      modification.
-    </p>
-    <p>
-      Vous pouvez créer plusieurs sections de types de mots en même temps en
-      cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
-    </p>
-
-    <language-selector
-      v-model="language"
-      :languages="languages"
-      @update:model-value="onLanguageSelection"
-    ></language-selector>
-    <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
-      Ébauche
-      <template #description>
-        Cochez cette case pour insérer un bandeau d’ébauche.
-      </template>
-    </cdx-checkbox>
-    <entries-form
-      v-model="formData.entries"
-      :language="formData.language"
-      @update:model-value="onEntriesUpdate"
-    ></entries-form>
-    <cdx-button
-      class="submit-btn"
-      type="submit"
-      action="progressive"
-      weight="primary"
-    >
-      <cdx-icon :icon="cdxIconDownload"></cdx-icon>
-      Insérer le code
-    </cdx-button>
-  </form>
+        <cdx-icon :icon="cdxIconDownload"></cdx-icon>
+        Insérer le code
+      </cdx-button>
+    </form>
+  </div>
 </template>
 
 <style>
-#cne-form {
+#cne-form .cne-box {
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
   padding: 0 0.5em;
 }
 
 #cne-form h1,
-#cne-start-btn {
+#cne-form .cne-start-btn {
   text-align: center;
 }
 
-#cne-form .important {
+#cne-form .cne-gadget-description .important {
   font-weight: bold;
   font-style: italic;
   text-decoration: underline;
@@ -198,6 +203,9 @@ export default defineComponent({
   display: block;
 }
 
+/*
+ * Ruleset used by child components
+ */
 #cne-form .help-icon {
   margin-right: 0.5em;
 }
