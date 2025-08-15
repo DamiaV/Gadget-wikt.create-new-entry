@@ -93,12 +93,13 @@ def commonjs_to_esm(commonjs_code: str, path: pathlib.Path, config: w.Config) ->
         'from "@wikimedia/codex-icons"',
         esm_code,
     )
-    for dep in config.wiki_deps:
-        esm_code = re.sub(
-            rf'from "(?:./|(?:../)+){dep}";',
-            f'from "{prefix}wiki_deps/{dep}";',
-            esm_code,
-        )
+    if "wiki_deps" not in path.parts:
+        for dep in config.wiki_deps:
+            esm_code = re.sub(
+                rf'from "(?:./|(?:../)+){dep}";',
+                f'from "{prefix}wiki_deps/{dep}";',
+                esm_code,
+            )
     esm_code = esm_code.replace("module.exports =", "export default")
     return esm_code
 
@@ -115,11 +116,12 @@ def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
     commonjs_code = esm_code.replace(
         'from "@wikimedia/codex-icons"', f'from "{prefix}icons.json"'
     )
-    commonjs_code = re.sub(
-        r'from "(?:./|(?:../)+)wiki_deps/([^"]+)";',
-        rf'from "{prefix}\1";',
-        commonjs_code,
-    )
+    if "wiki_deps" not in path.parts:
+        commonjs_code = re.sub(
+            r'from "(?:./|(?:../)+)wiki_deps/([^"]+)";',
+            rf'from "{prefix}\1";',
+            commonjs_code,
+        )
     commonjs_code = re.sub(
         r"import (.+?) from (.+?);",
         r"const \1 = require(\2);",
