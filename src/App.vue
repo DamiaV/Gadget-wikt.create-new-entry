@@ -1,19 +1,16 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, inject, ref, useTemplateRef } from "vue";
+import { defineComponent, ref, useTemplateRef } from "vue";
+import { CdxButton, CdxCheckbox, CdxIcon, CdxMessage } from "@wikimedia/codex";
 import {
-  CdxButton,
-  CdxCheckbox,
-  CdxDialog,
-  CdxIcon,
-  CdxMessage,
-} from "@wikimedia/codex";
-import { cdxIconDownload } from "@wikimedia/codex-icons";
+  cdxIconCollapse,
+  cdxIconDownload,
+  cdxIconExpand,
+} from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import EntriesForm from "./components/EntriesForm.vue";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import L from "./languages.js";
-import utils from "./utils.js";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -23,7 +20,6 @@ export default defineComponent({
     CdxIcon,
     CdxCheckbox,
     CdxMessage,
-    CdxDialog,
     LanguageSelector,
     EntriesForm,
   },
@@ -73,6 +69,7 @@ export default defineComponent({
     };
 
     const showForm = ref(false);
+    const showFormFields = ref(false);
     const formData = ref(initialFormData);
 
     /**
@@ -106,20 +103,15 @@ export default defineComponent({
       console.log(formData.value);
     }
 
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
-    const gender = config.userGender;
-
     return {
       showForm,
+      showFormFields,
       formData,
       language,
       languages,
       isStub,
-      gender,
-      utils,
+      cdxIconCollapse,
+      cdxIconExpand,
       cdxIconDownload,
       onEntriesUpdate,
       onLanguageSelection,
@@ -131,113 +123,120 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="cne-form">
+  <div id="cne">
     <div v-if="!showForm" class="cne-start-btn">
-      <cdx-button action="progressive" weight="quiet" @click="showForm = true">
+      <cdx-button
+        action="progressive"
+        weight="quiet"
+        type="button"
+        @click="
+          showForm = true;
+          showFormFields = true;
+        "
+      >
         Ouvrir le gadget de création d’entrée
       </cdx-button>
     </div>
 
     <form v-if="showForm" ref="form" class="cne-box" @submit.prevent="onSubmit">
+      <div class="cne-form-toolbar">
+        <cdx-button
+          type="button"
+          :title="showFormFields ? 'Enrouler' : 'Dérouler'"
+          @click="showFormFields = !showFormFields"
+        >
+          <cdx-icon
+            :icon="showFormFields ? cdxIconCollapse : cdxIconExpand"
+          ></cdx-icon>
+        </cdx-button>
+      </div>
+
       <h1>
         Création d’une section en <em>{{ language.name }}</em>
       </h1>
 
-      <cdx-message type="notice">
-        <p>
-          Ce gadget permet de créer une section de langue complète en écrivant
-          le moins de code possible.
-        </p>
-        <p>
-          Le code sera directement inséré au bon endroit dans la zone d’édition.
-          Vérifiez bien que le code généré est correct avant de publier votre
-          modification.
-        </p>
-        <p>
-          Vous pouvez créer plusieurs sections de types de mots en même temps en
-          cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
-        </p>
-      </cdx-message>
-      <cdx-message type="warning">
-        Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le code&nbsp;»
-        avant de publier la page, sinon les informations que vous avez entrées
-        seront perdues.
-      </cdx-message>
+      <div v-show="showFormFields">
+        <cdx-message type="notice">
+          <p>
+            Ce gadget permet de créer une section de langue complète en écrivant
+            le moins de code possible.
+          </p>
+          <p>
+            Le code sera directement inséré au bon endroit dans la zone
+            d’édition. Vérifiez bien que le code généré est correct avant de
+            publier votre modification.
+          </p>
+          <p>
+            Vous pouvez créer plusieurs sections de types de mots en même temps
+            en cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
+          </p>
+        </cdx-message>
+        <cdx-message type="warning">
+          Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
+          code&nbsp;» avant de publier la page, sinon les informations que vous
+          avez entrées seront perdues.
+        </cdx-message>
 
-      <language-selector
-        v-model="language"
-        :languages="languages"
-        @update:model-value="onLanguageSelection"
-      ></language-selector>
-      <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
-        Ébauche
-        <template #description>
-          Cochez cette case pour insérer un bandeau d’ébauche.
-        </template>
-      </cdx-checkbox>
-      <entries-form
-        v-model="formData.entries"
-        :language="formData.language"
-        @update:model-value="onEntriesUpdate"
-      ></entries-form>
+        <language-selector
+          v-model="language"
+          :languages="languages"
+          @update:model-value="onLanguageSelection"
+        ></language-selector>
+        <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
+          Ébauche
+          <template #description>
+            Cochez cette case pour insérer un bandeau d’ébauche.
+          </template>
+        </cdx-checkbox>
+        <entries-form
+          v-model="formData.entries"
+          :language="formData.language"
+          @update:model-value="onEntriesUpdate"
+        ></entries-form>
 
-      <hr />
-      <div class="bottom-btns">
-        <cdx-button type="button" action="destructive" weight="primary">
-          Annuler et fermer
-        </cdx-button>
-        <cdx-button type="submit" action="progressive" weight="primary">
-          <cdx-icon :icon="cdxIconDownload"></cdx-icon>
-          Insérer le code
-        </cdx-button>
+        <hr />
+        <div class="bottom-btns">
+          <cdx-button type="submit" action="progressive" weight="primary">
+            <cdx-icon :icon="cdxIconDownload"></cdx-icon>
+            Insérer le code
+          </cdx-button>
+        </div>
       </div>
     </form>
-
-    <cdx-dialog
-      v-model:open="openDialog"
-      title="Confirmation de suppression"
-      use-close-button
-      :primary-action="primaryAction"
-      :default-action="defaultAction"
-      @primary="onDeleteConfirm"
-      @default="openDialog = false"
-    >
-      Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "ŝure", "ŝur") }} de
-      vouloir tout annuler et fermer le gadget&nbsp;?
-      <template #footer-text>
-        Toute les informations seront définitivement perdues.
-      </template>
-    </cdx-dialog>
   </div>
 </template>
 
 <style>
-#cne-form .cne-box {
+#cne .cne-box {
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
   padding: 0 0.5em;
 }
 
-#cne-form h1,
-#cne-form .cne-start-btn {
+#cne h1,
+#cne .cne-start-btn {
   text-align: center;
 }
 
-#cne-form .cne-language-selector {
+#cne .cne-form-toolbar {
+  float: left;
+  margin-top: 1em;
+}
+
+#cne .cne-language-selector {
   margin-bottom: 1em;
 }
 
-#cne-form .bottom-btns {
+#cne .bottom-btns {
   display: flex;
   justify-content: center;
-  gap: 1em;
   margin: 0.5em 0;
 }
 
 /*
  * Ruleset used by child components
  */
-#cne-form .help-icon {
+#cne .help-icon {
   margin-right: 0.5em;
 }
 </style>
