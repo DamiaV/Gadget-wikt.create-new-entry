@@ -3,6 +3,12 @@
  */
 // <nowiki>
 
+/**
+ * @typedef {{
+ *  userGender: string,
+ * }} AppConfig
+ */
+
 /*
  * Event types
  */

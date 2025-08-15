@@ -1,12 +1,19 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref, useTemplateRef } from "vue";
-import { CdxButton, CdxCheckbox, CdxIcon, CdxMessage } from "@wikimedia/codex";
+import { defineComponent, inject, ref, useTemplateRef } from "vue";
+import {
+  CdxButton,
+  CdxCheckbox,
+  CdxDialog,
+  CdxIcon,
+  CdxMessage,
+} from "@wikimedia/codex";
 import { cdxIconDownload } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import EntriesForm from "./components/EntriesForm.vue";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import L from "./languages.js";
+import utils from "./utils.js";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -16,9 +23,11 @@ export default defineComponent({
     CdxIcon,
     CdxCheckbox,
     CdxMessage,
+    CdxDialog,
     LanguageSelector,
     EntriesForm,
   },
+  inject: ["config"],
   setup() {
     const languages = ref(L.loadLanguages());
     const previousLangCode = C.getCookie(COOKIE_NAME);
@@ -97,12 +106,20 @@ export default defineComponent({
       console.log(formData.value);
     }
 
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+    const gender = config.userGender;
+
     return {
       showForm,
       formData,
       language,
       languages,
       isStub,
+      gender,
+      utils,
       cdxIconDownload,
       onEntriesUpdate,
       onLanguageSelection,
@@ -163,16 +180,34 @@ export default defineComponent({
         :language="formData.language"
         @update:model-value="onEntriesUpdate"
       ></entries-form>
-      <cdx-button
-        class="submit-btn"
-        type="submit"
-        action="progressive"
-        weight="primary"
-      >
-        <cdx-icon :icon="cdxIconDownload"></cdx-icon>
-        Insérer le code
-      </cdx-button>
+
+      <hr />
+      <div class="bottom-btns">
+        <cdx-button type="button" action="destructive" weight="primary">
+          Annuler et fermer
+        </cdx-button>
+        <cdx-button type="submit" action="progressive" weight="primary">
+          <cdx-icon :icon="cdxIconDownload"></cdx-icon>
+          Insérer le code
+        </cdx-button>
+      </div>
     </form>
+
+    <cdx-dialog
+      v-model:open="openDialog"
+      title="Confirmation de suppression"
+      use-close-button
+      :primary-action="primaryAction"
+      :default-action="defaultAction"
+      @primary="onDeleteConfirm"
+      @default="openDialog = false"
+    >
+      Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "ŝure", "ŝur") }} de
+      vouloir tout annuler et fermer le gadget&nbsp;?
+      <template #footer-text>
+        Toute les informations seront définitivement perdues.
+      </template>
+    </cdx-dialog>
   </div>
 </template>
 
@@ -192,9 +227,11 @@ export default defineComponent({
   margin-bottom: 1em;
 }
 
-#cne-form .submit-btn {
-  margin: 1em auto;
-  display: block;
+#cne-form .bottom-btns {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  margin: 0.5em 0;
 }
 
 /*

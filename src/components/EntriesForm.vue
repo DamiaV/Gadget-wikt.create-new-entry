@@ -1,6 +1,6 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
   CdxDialog,
@@ -11,6 +11,7 @@ import {
 import { cdxIconAdd } from "@wikimedia/codex-icons";
 import EntryForm from "./EntryForm.vue";
 import T from "../types.js";
+import utils from "../utils.js";
 
 export default defineComponent({
   components: {
@@ -21,6 +22,7 @@ export default defineComponent({
     CdxDialog,
     EntryForm,
   },
+  inject: ["config"],
   props: {
     language: { type: T.Language, required: true },
     /**
@@ -124,6 +126,12 @@ export default defineComponent({
       fireEvent();
     }
 
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+    const gender = config.userGender;
+
     return {
       entries,
       activeTab,
@@ -131,6 +139,8 @@ export default defineComponent({
       entryIndexToDelete,
       primaryAction,
       defaultAction,
+      gender,
+      utils,
       cdxIconAdd,
       onAddEntry,
       onEntryUpdate,
@@ -197,7 +207,8 @@ export default defineComponent({
     @primary="onDeleteConfirm"
     @default="openDialog = false"
   >
-    Êtes-vous sûr·e de vouloir supprimer cette entrée&nbsp;?
+    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "ŝure", "ŝur") }} de
+    vouloir supprimer cette entrée&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>
