@@ -148,7 +148,6 @@ export default defineComponent({
     function onMoveExampleUp(exampleIndex) {
       if (exampleIndex === 0) return;
       const example = examples.value.splice(exampleIndex, 1)[0];
-      console.log(example);
       examples.value.splice(exampleIndex - 1, 0, example);
       fireEvent();
     }
