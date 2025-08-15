@@ -133,45 +133,44 @@ export default defineComponent({
 </script>
 
 <template>
-  <cdx-field class="cne-language-selector" is-fieldset>
+  <cdx-field class="cne-language-selector cne-box" is-fieldset>
     <template #label>Langue</template>
-    <template #description>La langue de l’entrée</template>
-    <template #help-text>
-      Si une langue n’est pas disponible dans le menu déroulant à gauche, vous
-      pouvez chercher son nom dans le champ de texte à droite. Cliquez ensuite
-      sur une des suggestions pour valider votre choix.
-    </template>
-    <div class="language-inputs">
-      <cdx-combobox
-        v-model:selected.trim="langName"
-        required
-        :menu-items="languageItems"
-        :menu-config="menuConfig"
-        @update:selected="onLanguageSelection"
-      ></cdx-combobox>
-      <cdx-lookup
-        v-model:selected="menuSelection"
-        :menu-items="menuItems"
-        :menu-config="menuConfig"
-        :start-icon="cdxIconSearch"
-        clearable
-        placeholder="Rechercher une langue…"
-        @input="onInput"
-        @update:selected="onMenuSelection"
-      >
-        <template #no-results>Aucun résultat.</template>
-      </cdx-lookup>
-    </div>
+    <cdx-field>
+      <template #description>La langue de l’entrée.</template>
+      <template #help-text>
+        Si une langue n’est pas disponible dans le menu déroulant à gauche, vous
+        pouvez chercher son nom dans le champ de texte à droite. Cliquez ensuite
+        sur une des suggestions pour valider votre choix.
+      </template>
+      <div class="language-inputs">
+        <cdx-combobox
+          v-model:selected.trim="langName"
+          required
+          :menu-items="languageItems"
+          :menu-config="menuConfig"
+          @update:selected="onLanguageSelection"
+        ></cdx-combobox>
+        <cdx-lookup
+          v-model:selected="menuSelection"
+          :menu-items="menuItems"
+          :menu-config="menuConfig"
+          :start-icon="cdxIconSearch"
+          clearable
+          placeholder="Rechercher une langue…"
+          @input="onInput"
+          @update:selected="onMenuSelection"
+        >
+          <template #no-results>Aucun résultat.</template>
+        </cdx-lookup>
+      </div>
+    </cdx-field>
   </cdx-field>
 </template>
 
 <style>
 .cne-language-selector .language-inputs {
   display: flex;
-}
-
-.cne-language-selector .language-inputs .cdx-lookup {
-  margin-left: 1em;
+  gap: 1em;
 }
 </style>
 <!-- </nowiki>-->
