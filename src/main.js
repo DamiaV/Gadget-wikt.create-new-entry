@@ -18,6 +18,6 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
 
   const app = createMwApp(App);
   app.provide("config", config);
-  app.mount("#app");
+  app.mount("#gadget-create-new-entry");
 })();
 // </nowiki>

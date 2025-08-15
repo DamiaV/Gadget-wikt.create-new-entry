@@ -10,4 +10,4 @@ const config = {
 
 const app = createApp(App);
 app.provide("config", config);
-app.mount("#app");
+app.mount("#gadget-create-new-entry");

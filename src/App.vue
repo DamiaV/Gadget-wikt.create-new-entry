@@ -124,7 +124,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="cne">
+  <div class="cne">
     <div v-if="!showForm" class="cne-start-btn">
       <cdx-button
         action="progressive"
@@ -209,27 +209,27 @@ export default defineComponent({
 </template>
 
 <style>
-#cne .cne-box {
+.cne .cne-box {
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
   padding: 0.5em;
 }
 
-#cne h1,
-#cne .cne-start-btn {
+.cne h1,
+.cne .cne-start-btn {
   text-align: center;
 }
 
-#cne .cne-form-toolbar {
+.cne .cne-form-toolbar {
   float: left;
   margin-top: 1em;
 }
 
-#cne .cne-language-selector {
+.cne .cne-language-selector {
   margin-bottom: 1em;
 }
 
-#cne .bottom-btns {
+.cne .bottom-btns {
   display: flex;
   justify-content: center;
   margin: 0.5em 0;
