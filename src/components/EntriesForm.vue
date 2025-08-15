@@ -55,7 +55,7 @@ export default defineComponent({
     }
 
     function onAddEntry() {
-      const id = Math.max(...entries.value.map((e) => e.id)) + 1;
+      const id = utils.getNextId(entries.value);
       entries.value.push({
         id,
         definitions: [

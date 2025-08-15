@@ -78,9 +78,8 @@ export default defineComponent({
     }
 
     function onAddDefinition() {
-      const id = Math.max(...definitions.value.map((e) => e.id)) + 1;
       definitions.value.push({
-        id,
+        id: utils.getNextId(definitions.value),
         text: "",
         examples: [],
       });
@@ -129,24 +128,24 @@ export default defineComponent({
     }
 
     /**
-     * Move the given definition one position to the left.
+     * Move the given definition one position upwards.
      * @param {number} definitionIndex The index of the definition to move.
      */
     function onMoveDefinitionUp(definitionIndex) {
       if (definitionIndex === 0) return;
-      const entry = definitions.value.splice(definitionIndex, 1)[0];
-      definitions.value.splice(definitionIndex - 1, 0, entry);
+      const definition = definitions.value.splice(definitionIndex, 1)[0];
+      definitions.value.splice(definitionIndex - 1, 0, definition);
       fireEvent();
     }
 
     /**
-     * Move the given definition one position to the right.
+     * Move the given definition one position downwards.
      * @param {number} definitionIndex The index of the definition to move.
      */
     function onMoveDefinitionDown(definitionIndex) {
       if (definitionIndex === definitions.value.length - 1) return;
-      const entry = definitions.value.splice(definitionIndex, 1)[0];
-      definitions.value.splice(definitionIndex + 1, 0, entry);
+      const definition = definitions.value.splice(definitionIndex, 1)[0];
+      definitions.value.splice(definitionIndex + 1, 0, definition);
       fireEvent();
     }
 
@@ -250,12 +249,7 @@ export default defineComponent({
           @move:after="onMoveDefinitionDown"
         ></definition-form>
       </div>
-      <cdx-button
-        class="cne-add-definition-btn"
-        type="button"
-        action="progressive"
-        @click="onAddDefinition"
-      >
+      <cdx-button type="button" action="progressive" @click="onAddDefinition">
         <cdx-icon :icon="cdxIconAdd"></cdx-icon>
         Ajouter une définition
       </cdx-button>

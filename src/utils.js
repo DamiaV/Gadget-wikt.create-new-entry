@@ -18,8 +18,19 @@ function userGenderSwitch(gender, unknown, female, male) {
   }
 }
 
+/**
+ * Return the next id from the given array.
+ * @param {{id: number}[]} objectsWithId An array of objects with an numerical "id" property.
+ * @returns {number} The maximum id of the list + 1, or 1 if the array is empty.
+ */
+function getNextId(objectsWithId) {
+  if (objectsWithId.length === 0) return 1;
+  return Math.max(...objectsWithId.map((e) => e.id)) + 1;
+}
+
 // </nowiki>
 
 export default {
   userGenderSwitch,
+  getNextId,
 };

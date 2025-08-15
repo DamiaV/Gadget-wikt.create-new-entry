@@ -31,6 +31,13 @@
  * }} DefinitionUpdateEvent
  */
 
+/**
+ * @typedef {{
+ *  index: number,
+ *  example: Example,
+ * }} ExampleUpdateEvent
+ */
+
 /*
  * Data types
  */
@@ -63,6 +70,7 @@
 /**
  * Type for a single word usage example.
  * @typedef {{
+ *  id: number,
  *  text: string,
  *  translation?: string,
  *  transcription?: string,
