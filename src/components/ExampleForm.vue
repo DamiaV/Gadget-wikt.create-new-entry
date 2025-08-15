@@ -12,6 +12,9 @@ import {
   cdxIconArrowDown,
   cdxIconArrowUp,
   cdxIconClose,
+  cdxIconCollapse,
+  cdxIconEllipsis,
+  cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
@@ -48,6 +51,8 @@ export default defineComponent({
     const disableTranslation = ref(!!props.modelValue.disableTranslation);
 
     const showTranscription = ref(false);
+
+    const showFields = ref(true);
 
     function fireEvent() {
       /**
@@ -130,11 +135,15 @@ export default defineComponent({
       link,
       disableTranslation,
       showTranscription,
+      showFields,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconArrowDown,
       cdxIconArrowUp,
       cdxIconClose,
+      cdxIconCollapse,
+      cdxIconExpand,
+      cdxIconEllipsis,
       onExampleTextUpdate,
       onExampleTranslationUpdate,
       onExampleTranscriptionUpdate,
@@ -154,9 +163,23 @@ export default defineComponent({
         <wiki-link page-title="Aide:Exemples">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
+
         <wiki-link page-title="Convention:Exemples">
           <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
         </wiki-link>
+
+        <cdx-button
+          type="button"
+          size="small"
+          :aria-label="showFields ? 'Enrouler' : 'Dérouler'"
+          :title="showFields ? 'Enrouler' : 'Dérouler'"
+          @click="showFields = !showFields"
+        >
+          <cdx-icon
+            :icon="showFields ? cdxIconCollapse : cdxIconExpand"
+          ></cdx-icon>
+        </cdx-button>
+
         <cdx-button
           v-show="$props.canMoveBefore || $props.canMoveAfter"
           type="button"
@@ -168,6 +191,7 @@ export default defineComponent({
         >
           <cdx-icon :icon="cdxIconArrowUp"></cdx-icon>
         </cdx-button>
+
         <cdx-button
           v-show="$props.canMoveBefore || $props.canMoveAfter"
           type="button"
@@ -179,6 +203,7 @@ export default defineComponent({
         >
           <cdx-icon :icon="cdxIconArrowDown"></cdx-icon>
         </cdx-button>
+
         <cdx-button
           v-show="$props.enableDeleteBtn"
           type="button"
@@ -194,89 +219,92 @@ export default defineComponent({
       </span>
     </template>
 
-    <input-with-toolbar
-      v-model.trim="text"
-      required
-      text-area
-      @update:model-value="onExampleTextUpdate"
-    >
-      <template #label>Texte</template>
-      <template #description>
-        Un court exemple d’utilisation du mot défini, tiré de la littérature, du
-        web, etc. Le mot défini doit être mis en <strong>gras</strong>.
-      </template>
-      <template #help-text>
-        L’orthographe et la typographie originales doivent être conservées,
-        fautes d’orthographe incluses (pas besoin de mettre «&nbsp;sic&nbsp;»).
-        Les mots en <em>italique</em> dans le texte original doivent l’être
-        aussi dans l’exemple.
-      </template>
-    </input-with-toolbar>
-
-    <cdx-field>
-      <cdx-toggle-switch
-        v-model="disableTranslation"
-        @update:model-value="onDisableTranslationUpdate"
+    <div v-if="showFields">
+      <input-with-toolbar
+        v-model.trim="text"
+        required
+        text-area
+        @update:model-value="onExampleTextUpdate"
       >
-        Désactiver la traduction
-      </cdx-toggle-switch>
-      <template #help-text>
-        Ne cochez que dans le cas d’un texte en moyen français qui est
-        facilement lisible.
-      </template>
-    </cdx-field>
+        <template #label>Texte</template>
+        <template #description>
+          Un court exemple d’utilisation du mot défini, tiré de la littérature,
+          du web, etc. Le mot défini doit être mis en <strong>gras</strong>.
+        </template>
+        <template #help-text>
+          L’orthographe et la typographie originales doivent être conservées,
+          fautes d’orthographe incluses (pas besoin de mettre
+          «&nbsp;sic&nbsp;»). Les mots en <em>italique</em> dans le texte
+          original doivent l’être aussi dans l’exemple.
+        </template>
+      </input-with-toolbar>
 
-    <input-with-toolbar
-      v-show="!disableTranslation"
-      v-model.trim="translation"
-      text-area
-      @update:model-value="onExampleTranslationUpdate"
-    >
-      <template #label>Traduction</template>
-      <template #description>
-        Pour les textes qui ne sont pas en français.
-      </template>
-    </input-with-toolbar>
+      <cdx-field>
+        <cdx-toggle-switch
+          v-model="disableTranslation"
+          @update:model-value="onDisableTranslationUpdate"
+        >
+          Désactiver la traduction
+        </cdx-toggle-switch>
+        <template #help-text>
+          Ne cochez que dans le cas d’un texte en moyen français qui est
+          facilement lisible.
+        </template>
+      </cdx-field>
 
-    <cdx-field>
-      <cdx-toggle-switch v-model="showTranscription">
-        Afficher la transcription
-      </cdx-toggle-switch>
-    </cdx-field>
+      <input-with-toolbar
+        v-show="!disableTranslation"
+        v-model.trim="translation"
+        text-area
+        @update:model-value="onExampleTranslationUpdate"
+      >
+        <template #label>Traduction</template>
+        <template #description>
+          Pour les textes qui ne sont pas en français.
+        </template>
+      </input-with-toolbar>
 
-    <input-with-toolbar
-      v-show="showTranscription"
-      v-model.trim="transcription"
-      text-area
-      @update:model-value="onExampleTranscriptionUpdate"
-    >
-      <template #label>Transcription ou translittération</template>
-      <template #description>
-        Transcription/translittération en alphabet latin pour les textes dans un
-        système d’écriture autre que l’alphabet latin.
-      </template>
-    </input-with-toolbar>
+      <cdx-field>
+        <cdx-toggle-switch v-model="showTranscription">
+          Afficher la transcription
+        </cdx-toggle-switch>
+      </cdx-field>
 
-    <input-with-toolbar
-      v-model.trim.lazy="source"
-      @update:model-value="onExampleSourceUpdate"
-    >
-      <template #label>Source</template>
-      <template #description>
-        La référence de l’ouvrage ou du site web d’où provient l’exemple.
-      </template>
-    </input-with-toolbar>
+      <input-with-toolbar
+        v-show="showTranscription"
+        v-model.trim="transcription"
+        text-area
+        @update:model-value="onExampleTranscriptionUpdate"
+      >
+        <template #label>Transcription ou translittération</template>
+        <template #description>
+          Transcription/translittération en alphabet latin pour les textes dans
+          un système d’écriture autre que l’alphabet latin.
+        </template>
+      </input-with-toolbar>
 
-    <cdx-field>
-      <template #label>Lien de la source</template>
-      <template #description>
-        Le lien de la source si absente du champ ci-dessus.
-      </template>
-      <cdx-text-input
-        v-model.trim="link"
-        @update:model-value="onExampleLinkUpdate"
-      ></cdx-text-input>
-    </cdx-field>
+      <input-with-toolbar
+        v-model.trim.lazy="source"
+        @update:model-value="onExampleSourceUpdate"
+      >
+        <template #label>Source</template>
+        <template #description>
+          La référence de l’ouvrage ou du site web d’où provient l’exemple.
+        </template>
+      </input-with-toolbar>
+
+      <cdx-field>
+        <template #label>Lien de la source</template>
+        <template #description>
+          Le lien de la source si absente du champ ci-dessus.
+        </template>
+        <cdx-text-input
+          v-model.trim="link"
+          @update:model-value="onExampleLinkUpdate"
+        ></cdx-text-input>
+      </cdx-field>
+    </div>
+    <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
   </cdx-field>
 </template>
 

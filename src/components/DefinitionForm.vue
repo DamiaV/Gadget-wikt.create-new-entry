@@ -7,6 +7,9 @@ import {
   cdxIconArrowDown,
   cdxIconArrowUp,
   cdxIconClose,
+  cdxIconCollapse,
+  cdxIconEllipsis,
+  cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
@@ -39,6 +42,8 @@ export default defineComponent({
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
     const examples = ref(props.modelValue.examples);
+
+    const showFields = ref(true);
 
     function fireEvent() {
       /**
@@ -168,6 +173,7 @@ export default defineComponent({
     return {
       text,
       examples,
+      showFields,
       openExampleDeletionDialog,
       exampleIndexToDelete,
       dialogPrimaryAction,
@@ -180,6 +186,9 @@ export default defineComponent({
       cdxIconArrowDown,
       cdxIconClose,
       cdxIconAdd,
+      cdxIconCollapse,
+      cdxIconExpand,
+      cdxIconEllipsis,
       onDefinitionUpdate,
       onExampleUpdate,
       onAddExample,
@@ -200,9 +209,23 @@ export default defineComponent({
         <wiki-link page-title="Aide:Définitions">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
+
         <wiki-link page-title="Convention:Définitions">
           <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
         </wiki-link>
+
+        <cdx-button
+          type="button"
+          size="small"
+          :aria-label="showFields ? 'Enrouler' : 'Dérouler'"
+          :title="showFields ? 'Enrouler' : 'Dérouler'"
+          @click="showFields = !showFields"
+        >
+          <cdx-icon
+            :icon="showFields ? cdxIconCollapse : cdxIconExpand"
+          ></cdx-icon>
+        </cdx-button>
+
         <cdx-button
           v-show="$props.canMoveBefore || $props.canMoveAfter"
           type="button"
@@ -214,6 +237,7 @@ export default defineComponent({
         >
           <cdx-icon :icon="cdxIconArrowUp"></cdx-icon>
         </cdx-button>
+
         <cdx-button
           v-show="$props.canMoveBefore || $props.canMoveAfter"
           type="button"
@@ -225,6 +249,7 @@ export default defineComponent({
         >
           <cdx-icon :icon="cdxIconArrowDown"></cdx-icon>
         </cdx-button>
+
         <cdx-button
           v-show="$props.enableDeleteBtn"
           type="button"
@@ -239,50 +264,55 @@ export default defineComponent({
         </cdx-button>
       </span>
     </template>
-    <input-with-toolbar
-      v-model.trim="text"
-      required
-      text-area
-      @update:model-value="onDefinitionUpdate"
-    >
-      <template #label>Texte</template>
-      <template #description>
-        Une courte définition, pas plus d’une ou deux phrases si possible.
-      </template>
-      <template #help-text>
-        Pour des raisons de
-        <wiki-link
-          page-title="Aide:Définitions"
-          anchor="Astuces_pour_rédiger_une_définition"
-          >droit d’auteur</wiki-link
-        >, la définition ne doit pas être recopiée depuis un autre dictionnaire.
-      </template>
-    </input-with-toolbar>
 
-    <div class="cne-examples">
-      <example-form
-        v-for="(example, i) in examples"
-        :key="example.id"
-        :index="i"
-        enable-delete-btn
-        :can-move-before="i > 0"
-        :can-move-after="i < examples.length - 1"
-        :model-value="example"
-        @update:model-value="onExampleUpdate"
-        @delete="onDeleteExample"
-        @move:before="onMoveExampleUp"
-        @move:after="onMoveExampleDown"
-      ></example-form>
-      <cdx-button
-        class="cne-add-example-btn"
-        type="button"
-        action="progressive"
-        @click="onAddExample"
+    <div v-if="showFields">
+      <input-with-toolbar
+        v-model.trim="text"
+        required
+        text-area
+        @update:model-value="onDefinitionUpdate"
       >
-        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-        Ajouter un exemple
-      </cdx-button>
+        <template #label>Texte</template>
+        <template #description>
+          Une courte définition, pas plus d’une ou deux phrases si possible.
+        </template>
+        <template #help-text>
+          Pour des raisons de
+          <wiki-link
+            page-title="Aide:Définitions"
+            anchor="Astuces_pour_rédiger_une_définition"
+            >droit d’auteur</wiki-link
+          >, la définition ne doit pas être recopiée depuis un autre
+          dictionnaire.
+        </template>
+      </input-with-toolbar>
+
+      <div class="cne-examples">
+        <example-form
+          v-for="(example, i) in examples"
+          :key="example.id"
+          :index="i"
+          enable-delete-btn
+          :can-move-before="i > 0"
+          :can-move-after="i < examples.length - 1"
+          :model-value="example"
+          @update:model-value="onExampleUpdate"
+          @delete="onDeleteExample"
+          @move:before="onMoveExampleUp"
+          @move:after="onMoveExampleDown"
+        ></example-form>
+        <cdx-button
+          class="cne-add-example-btn"
+          type="button"
+          action="progressive"
+          @click="onAddExample"
+        >
+          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+          Ajouter un exemple
+        </cdx-button>
+      </div>
     </div>
+    <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
   </cdx-field>
 
   <cdx-dialog
