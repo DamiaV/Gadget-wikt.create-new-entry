@@ -197,7 +197,7 @@ export default defineComponent({
     @primary="onDeleteConfirm"
     @default="openDialog = false"
   >
-    Souhaitez-vous supprimer cette entrée&nbsp;?
+    Êtes-vous sûr·e de vouloir supprimer cette entrée&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>
