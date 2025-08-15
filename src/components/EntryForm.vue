@@ -163,11 +163,9 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-entry-action-btns > .cdx-button {
-  margin-right: 0.5em;
-}
-
-.delete-entry-btn {
+.cne-entry-action-btns {
+  display: flex;
+  gap: 0.5em;
   margin: 0.5em 0;
 }
 
