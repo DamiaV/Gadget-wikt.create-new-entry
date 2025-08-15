@@ -10,11 +10,11 @@ import {
 } from "@wikimedia/codex";
 import {
   cdxIconClose,
-  cdxIconPrevious,
-  cdxIconNext,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
   cdxIconAdd,
+  cdxIconArrowPrevious,
+  cdxIconArrowNext,
 } from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -178,8 +178,8 @@ export default defineComponent({
       gender,
       utils,
       cdxIconClose,
-      cdxIconPrevious,
-      cdxIconNext,
+      cdxIconArrowPrevious,
+      cdxIconArrowNext,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconAdd,
@@ -217,7 +217,7 @@ export default defineComponent({
       :disabled="!$props.canMoveBefore"
       @click="$emit('move:before', $props.index)"
     >
-      <cdx-icon :icon="cdxIconPrevious"></cdx-icon>
+      <cdx-icon :icon="cdxIconArrowPrevious"></cdx-icon>
     </cdx-button>
 
     <cdx-button
@@ -228,7 +228,7 @@ export default defineComponent({
       :disabled="!$props.canMoveAfter"
       @click="$emit('move:after', $props.index)"
     >
-      <cdx-icon :icon="cdxIconNext"></cdx-icon>
+      <cdx-icon :icon="cdxIconArrowNext"></cdx-icon>
     </cdx-button>
   </div>
 
