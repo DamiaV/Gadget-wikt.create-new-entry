@@ -1,6 +1,6 @@
 /**
  * Select the text based the given gender.
- * @param {} gender A gender.
+ * @param {"unknown" | "female" | "male"} gender A gender.
  * @param {string} unknown The text for unknown gender.
  * @param {string} female The text for female gender.
  * @param {string} male The text for male gender.
