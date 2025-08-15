@@ -188,12 +188,6 @@ export default defineComponent({
   text-align: center;
 }
 
-#cne-form .cne-gadget-description .important {
-  font-weight: bold;
-  font-style: italic;
-  text-decoration: underline;
-}
-
 #cne-form .cne-language-selector {
   margin-bottom: 1em;
 }
