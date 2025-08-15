@@ -1,3 +1,4 @@
+// <nowiki>
 /**
  * Select the text based the given gender.
  * @param {"unknown" | "female" | "male"} gender A gender.
@@ -16,6 +17,8 @@ function userGenderSwitch(gender, unknown, female, male) {
       return male;
   }
 }
+
+// </nowiki>
 
 export default {
   userGenderSwitch,
