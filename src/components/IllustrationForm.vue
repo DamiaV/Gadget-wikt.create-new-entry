@@ -1,8 +1,19 @@
 <!-- <nowiki> -->
 <script>
 import { computed, defineComponent, inject, ref } from "vue";
-import { CdxField, CdxIcon, CdxRadio, CdxTextInput } from "@wikimedia/codex";
-import { cdxIconHelpNotice, cdxIconInfoFilled } from "@wikimedia/codex-icons";
+import {
+  CdxButton,
+  CdxDialog,
+  CdxField,
+  CdxIcon,
+  CdxRadio,
+  CdxTextInput,
+} from "@wikimedia/codex";
+import {
+  cdxIconClose,
+  cdxIconHelpNotice,
+  cdxIconInfoFilled,
+} from "@wikimedia/codex-icons";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -13,6 +24,8 @@ export default defineComponent({
     CdxTextInput,
     CdxIcon,
     CdxRadio,
+    CdxButton,
+    CdxDialog,
     WikiLink,
     InputWithToolbar,
   },
@@ -53,6 +66,11 @@ export default defineComponent({
     });
     const fileUrl = ref("");
 
+    const status = ref("default");
+    const messages = ref({
+      error: "",
+    });
+
     const types = [
       { label: "Image", value: "image" },
       { label: "Fichier vidéo", value: "video" },
@@ -86,6 +104,61 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    const openDeletionDialog = ref(false);
+
+    /**
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
+     */
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    /**
+     * Called when the "delete" button is clicked.
+     */
+    function onDelete() {
+      if (
+        !fileName.value &&
+        !text.value &&
+        !color.value &&
+        !alt.value &&
+        !description.value
+      )
+        deleteIllustration(); // Delete without confirmation if form is empty
+      else openDeletionDialog.value = true;
+    }
+
+    /**
+     * Delete this illustration at the selected index.
+     */
+    function deleteIllustration() {
+      openDeletionDialog.value = false;
+      ctx.emit("delete");
+    }
+
+    /**
+     * Called when the any of the file name, text, or color input is updated.
+     */
+    function onInput() {
+      status.value = "default";
+      messages.value.error = "";
+    }
+
+    /**
+     * @param {Event} event
+     */
+    function onInvalid(event) {
+      status.value = "error";
+      if (event.target) messages.value.error = event.target.validationMessage;
+    }
+
     /**
      * Called when the file name is updated.
      */
@@ -109,11 +182,22 @@ export default defineComponent({
       color,
       alt,
       fileUrl,
+      status,
+      messages,
+      dialogPrimaryAction,
+      dialogDefaultAction,
+      openDeletionDialog,
       types,
       config,
+      utils,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
+      cdxIconClose,
       fireEvent,
+      onDelete,
+      deleteIllustration,
+      onInput,
+      onInvalid,
       onFileNameUpdate,
     };
   },
@@ -133,6 +217,17 @@ export default defineComponent({
         <wiki-link page-title="Convention:Illustrations">
           <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
         </wiki-link>
+
+        <cdx-button
+          type="button"
+          size="small"
+          action="destructive"
+          aria-label="Supprimer"
+          title="Supprimer"
+          @click="onDelete"
+        >
+          <cdx-icon :icon="cdxIconClose"></cdx-icon>
+        </cdx-button>
       </span>
     </template>
 
@@ -171,7 +266,11 @@ export default defineComponent({
       {{ type_.label }}
     </cdx-radio>
 
-    <cdx-field v-if="type === 'image' || type === 'video' || type === 'audio'">
+    <cdx-field
+      v-if="type === 'image' || type === 'video' || type === 'audio'"
+      :status="status"
+      :messages="messages"
+    >
       <template #label>
         Nom du fichier sur
         <a
@@ -184,38 +283,50 @@ export default defineComponent({
       <cdx-text-input
         v-model.trim="rawFileName"
         clearable
+        required
         @change="onFileNameUpdate"
+        @update:model-value="onInput"
+        @invalid="onInvalid"
       ></cdx-text-input>
     </cdx-field>
 
-    <cdx-field v-else-if="type === 'text'">
+    <cdx-field
+      v-else-if="type === 'text'"
+      :status="status"
+      :messages="messages"
+    >
       <template #label>Texte</template>
       <cdx-text-input
         v-model.trim="text"
         clearable
+        required
         @change="fireEvent"
+        @update:model-value="onInput"
+        @invalid="onInvalid"
       ></cdx-text-input>
     </cdx-field>
 
-    <cdx-field v-else-if="type === 'color'">
+    <cdx-field
+      v-else-if="type === 'color'"
+      :status="status"
+      :messages="messages"
+    >
       <template #label>Code de la couleur</template>
       <template #description>Un code couleur CSS.</template>
       <cdx-text-input
         v-model.trim="color"
         clearable
+        required
         @change="fireEvent"
+        @update:model-value="onInput"
+        @invalid="onInvalid"
       ></cdx-text-input>
     </cdx-field>
 
     <input-with-toolbar
       v-model="description"
-      :required="
-        ((type === 'image' || type === 'video' || type === 'audio') &&
-          !!fileName) ||
-        (type === 'text' && !!text) ||
-        (type === 'color' && !!color)
-      "
       clearable
+      required
       @change="fireEvent"
     >
       <template #label>Légende</template>
@@ -244,6 +355,21 @@ export default defineComponent({
       </template>
     </cdx-field>
   </cdx-field>
+
+  <cdx-dialog
+    v-model:open="openDeletionDialog"
+    title="Confirmation de suppression"
+    use-close-button
+    :primary-action="dialogPrimaryAction"
+    :default-action="dialogDefaultAction"
+    @primary="deleteIllustration"
+    @default="openDeletionDialog = false"
+  >
+    Êtes-vous
+    {{ utils.userGenderSwitch(config.gender, "sûr·e", "sûre", "sûr") }} de
+    vouloir supprimer cette illustration&nbsp;?
+    <template #footer-text>Cette action est irréversible.</template>
+  </cdx-dialog>
 </template>
 
 <style>

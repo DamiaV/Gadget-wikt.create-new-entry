@@ -44,9 +44,7 @@ export default defineComponent({
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
     const examples = ref(props.modelValue.examples);
-    const illustration = ref(
-      props.modelValue.illustration || { type: "image", fileName: "" }
-    );
+    const illustration = ref(props.modelValue.illustration);
 
     const showFields = ref(true);
 
@@ -160,12 +158,22 @@ export default defineComponent({
      * Illustration
      */
 
+    function onAddIllustration() {
+      illustration.value = { type: "image" };
+      fireEvent();
+    }
+
     /**
      * Called when the illustration is updated.
      * @param {import("../types.js").Illustration} newIllustration The new illustration.
      */
     function onIllustrationUpdate(newIllustration) {
       illustration.value = newIllustration;
+      fireEvent();
+    }
+
+    function onDeleteIllustration() {
+      illustration.value = null;
       fireEvent();
     }
 
@@ -202,7 +210,9 @@ export default defineComponent({
       deleteExample,
       onMoveExampleUp,
       onMoveExampleDown,
+      onAddIllustration,
       onIllustrationUpdate,
+      onDeleteIllustration,
     };
   },
 });
@@ -320,9 +330,22 @@ export default defineComponent({
           </cdx-button>
         </div>
       </div>
+
+      <div v-if="!illustration">
+        <cdx-button
+          type="button"
+          action="progressive"
+          @click="onAddIllustration"
+        >
+          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+          Ajouter une illustration
+        </cdx-button>
+      </div>
       <illustration-form
+        v-else
         v-model="illustration"
         @update:model-value="onIllustrationUpdate"
+        @delete="onDeleteIllustration"
       ></illustration-form>
     </div>
     <cdx-icon
