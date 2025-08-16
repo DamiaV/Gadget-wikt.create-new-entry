@@ -34,6 +34,9 @@ function getNextId(objectsWithId) {
  * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
  */
 async function getFileUrl(pageName) {
+  // Return default image for local testing
+  if (location.hostname === "localhost")
+    return "https://upload.wikimedia.org/wikipedia/commons/2/28/Testbeeld_MK8.png";
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
