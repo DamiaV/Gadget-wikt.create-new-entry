@@ -23,7 +23,9 @@ export default defineComponent({
     LanguageSelector,
     EntriesForm,
   },
+
   inject: ["config"],
+
   setup() {
     const languages = ref(L.loadLanguages());
     const previousLangCode = C.getCookie(COOKIE_NAME);
@@ -74,6 +76,7 @@ export default defineComponent({
     const formData = ref(initialFormData);
 
     /**
+     * Update the entries.
      * @param {import("./types.js").FormEntriesUpdateEvent} event
      */
     function onEntriesUpdate(event) {
@@ -81,6 +84,7 @@ export default defineComponent({
     }
 
     /**
+     * Update the selected language.
      * @param {import("./types.js").Language} language The selected language.
      */
     function onLanguageSelection(language) {
@@ -92,6 +96,7 @@ export default defineComponent({
     }
 
     /**
+     * Update the stub article status.
      * @param {boolean} checked Whether the stub checkbox is checked.
      */
     function onStubUpdate(checked) {
@@ -105,15 +110,19 @@ export default defineComponent({
     }
 
     return {
-      showForm,
-      showFormFields,
+      // Data
       formData,
       language,
       languages,
       isStub,
+      // Visual
+      showForm,
+      showFormFields,
+      // Icons
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconDownload,
+      // Callbacks
       onEntriesUpdate,
       onLanguageSelection,
       onStubUpdate,

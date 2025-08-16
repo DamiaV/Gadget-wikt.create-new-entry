@@ -13,6 +13,7 @@ export default defineComponent({
     CdxCombobox,
     CdxLookup,
   },
+
   props: {
     /**
      * @type {import("vue").PropType<import("../types.js").Language[]>}
@@ -20,7 +21,9 @@ export default defineComponent({
     languages: { type: Array, required: true },
     modelValue: { type: T.Language, required: true },
   },
+
   emits: ["update:model-value"],
+
   setup(props, ctx) {
     /**
      * @type {import("@wikimedia/codex").MenuItemData[]}
@@ -119,12 +122,15 @@ export default defineComponent({
     }
 
     return {
+      // Data
       languageItems,
       langName,
       menuSelection,
       menuItems,
       menuConfig,
+      // Icons
       cdxIconSearch,
+      // Callbacks
       onLanguageSelection,
       onInput,
       onMenuSelection,

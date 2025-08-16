@@ -29,13 +29,16 @@ export default defineComponent({
     WikiLink,
     InputWithToolbar,
   },
+
   props: {
     /**
      * @type {import("vue").PropType<import("../types.js").Illustration>}
      */
     modelValue: { type: Object, required: true },
   },
+
   emits: ["update:model-value", "delete"],
+
   setup(props, ctx) {
     const type = ref(props.modelValue.type);
     const description = ref(props.modelValue.description || "");
@@ -89,7 +92,7 @@ export default defineComponent({
       );
     }
 
-    function fireEvent() {
+    function fireUpdateEvent() {
       /**
        * @type {import("../types.js").Illustration}
        */
@@ -115,6 +118,10 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    /**
+     * Deletion dialog
+     */
+
     const openDeletionDialog = ref(false);
 
     /**
@@ -132,7 +139,6 @@ export default defineComponent({
     };
 
     function onDelete() {
-      // Delete without confirmation if form is empty
       if (isEmpty()) deleteIllustration();
       else openDeletionDialog.value = true;
     }
@@ -141,6 +147,10 @@ export default defineComponent({
       openDeletionDialog.value = false;
       ctx.emit("delete");
     }
+
+    /**
+     * Inputs
+     */
 
     /**
      * Called when the any of the file name, text, or color input is updated.
@@ -162,9 +172,8 @@ export default defineComponent({
      * Called when the file name is updated.
      */
     function onFileNameUpdate() {
-      // FIXME try to make it work in local testing
       utils.getFileUrl(fileName.value).then((url) => (fileUrl.value = url));
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -173,6 +182,8 @@ export default defineComponent({
     const config = inject("config");
 
     return {
+      // Data
+      types,
       type,
       description,
       fileName,
@@ -181,18 +192,22 @@ export default defineComponent({
       color,
       alt,
       fileUrl,
+      // Visual
       status,
       messages,
+      // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
       openDeletionDialog,
-      types,
-      config,
+      // Other
       utils,
+      config,
+      // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconClose,
-      fireEvent,
+      // Callbacks
+      fireUpdateEvent,
       onDelete,
       deleteIllustration,
       onInput,
@@ -260,7 +275,7 @@ export default defineComponent({
       v-model="type"
       :input-value="type_.value"
       name="type"
-      @change="fireEvent"
+      @change="fireUpdateEvent"
     >
       {{ type_.label }}
     </cdx-radio>
@@ -299,7 +314,7 @@ export default defineComponent({
         v-model.trim="text"
         clearable
         required
-        @change="fireEvent"
+        @change="fireUpdateEvent"
         @update:model-value="onInput"
         @invalid="onInvalid"
       ></cdx-text-input>
@@ -316,7 +331,7 @@ export default defineComponent({
         v-model.trim="color"
         clearable
         required
-        @change="fireEvent"
+        @change="fireUpdateEvent"
         @update:model-value="onInput"
         @invalid="onInvalid"
       ></cdx-text-input>
@@ -326,7 +341,7 @@ export default defineComponent({
       v-model="description"
       clearable
       required
-      @change="fireEvent"
+      @change="fireUpdateEvent"
     >
       <template #label>Légende</template>
       <template #description>
@@ -346,7 +361,7 @@ export default defineComponent({
       <cdx-text-input
         v-model.trim="alt"
         clearable
-        @change="fireEvent"
+        @change="fireUpdateEvent"
       ></cdx-text-input>
       <template #help-text>
         Il est fortement recommandé de renseigner un texte alternatif pour une

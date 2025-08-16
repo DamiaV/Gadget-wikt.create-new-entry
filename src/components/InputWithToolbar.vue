@@ -12,6 +12,7 @@ export default defineComponent({
     CdxTextArea,
     EditTools,
   },
+
   props: {
     required: { type: Boolean, default: false },
     textArea: { type: Boolean, default: false },
@@ -23,7 +24,9 @@ export default defineComponent({
     specialCharacters: { type: Array, default: () => [W.specialCharacters] },
     modelValue: { type: String, required: true },
   },
+
   emits: ["update:model-value", "change"],
+
   setup(props, ctx) {
     const value = ref(props.modelValue);
     const status = ref("default");
@@ -55,7 +58,7 @@ export default defineComponent({
     }
 
     /**
-     * Transform the text of the wrapped input with the given transformer function.
+     * Transform the text of the wrapped input using the given transformer function.
      * @param {(beforeSelection: string, selection: string, afterSelection: string) => string} tranformer A function to apply to the text.
      */
     function transformText(tranformer) {
@@ -111,10 +114,13 @@ export default defineComponent({
     }
 
     return {
+      // Data
       textInputType,
       value,
+      // Visual
       status,
       messages,
+      // Callbacks
       onInput,
       onInvalid,
       onInsertChar,

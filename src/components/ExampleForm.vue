@@ -34,6 +34,7 @@ export default defineComponent({
     InputWithToolbar,
     WikiLink,
   },
+
   props: {
     index: { type: Number, required: true },
     enableDeleteBtn: { type: Boolean, default: false },
@@ -44,7 +45,9 @@ export default defineComponent({
      */
     modelValue: { type: Object, required: true },
   },
+
   emits: ["update:model-value", "delete", "move:before", "move:after"],
+
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
     const translation = ref(props.modelValue.translation || "");
@@ -67,7 +70,7 @@ export default defineComponent({
       );
     }
 
-    function fireEvent() {
+    function fireUpdateEvent() {
       /**
        * @type {import("../types.js").ExampleUpdateEvent}
        */
@@ -87,6 +90,10 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    /*
+     * Deletion Dialog
+     */
+
     const openDeletionDialog = ref(false);
 
     /**
@@ -104,7 +111,6 @@ export default defineComponent({
     };
 
     function onDelete() {
-      // Delete without confirmation if form is empty
       if (isEmpty()) deleteExample();
       else openDeletionDialog.value = true;
     }
@@ -120,19 +126,24 @@ export default defineComponent({
     const config = inject("config");
 
     return {
+      // Data
       text,
       translation,
       transcription,
       source,
       link,
       disableTranslation,
+      // Visual
       showTranscription,
       showFields,
+      // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
       openDeletionDialog,
+      // Other
       utils,
       config,
+      // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconArrowDown,
@@ -141,7 +152,8 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
-      fireEvent,
+      // Callbacks
+      fireUpdateEvent,
       onDelete,
       deleteExample,
     };
@@ -218,7 +230,7 @@ export default defineComponent({
         v-model.trim="text"
         required
         text-area
-        @change="fireEvent"
+        @change="fireUpdateEvent"
       >
         <template #label>Texte</template>
         <template #description>
@@ -234,7 +246,10 @@ export default defineComponent({
       </input-with-toolbar>
 
       <cdx-field>
-        <cdx-toggle-switch v-model="disableTranslation" @change="fireEvent">
+        <cdx-toggle-switch
+          v-model="disableTranslation"
+          @change="fireUpdateEvent"
+        >
           Désactiver la traduction
         </cdx-toggle-switch>
         <template #help-text>
@@ -247,7 +262,7 @@ export default defineComponent({
         v-show="!disableTranslation"
         v-model.trim="translation"
         text-area
-        @change="fireEvent"
+        @change="fireUpdateEvent"
       >
         <template #label>Traduction</template>
         <template #description>
@@ -265,7 +280,7 @@ export default defineComponent({
         v-show="showTranscription"
         v-model.trim="transcription"
         text-area
-        @change="fireEvent"
+        @change="fireUpdateEvent"
       >
         <template #label>Transcription ou translittération</template>
         <template #description>
@@ -274,7 +289,7 @@ export default defineComponent({
         </template>
       </input-with-toolbar>
 
-      <input-with-toolbar v-model.trim="source" @change="fireEvent">
+      <input-with-toolbar v-model.trim="source" @change="fireUpdateEvent">
         <template #label>Source</template>
         <template #description>
           La référence de l’ouvrage ou du site web d’où provient l’exemple.
@@ -288,7 +303,7 @@ export default defineComponent({
         </template>
         <cdx-text-input
           v-model.trim="link"
-          @change="fireEvent"
+          @change="fireUpdateEvent"
         ></cdx-text-input>
       </cdx-field>
     </div>

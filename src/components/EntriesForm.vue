@@ -15,7 +15,9 @@ export default defineComponent({
     CdxIcon,
     EntryForm,
   },
+
   inject: ["config"],
+
   props: {
     language: { type: T.Language, required: true },
     /**
@@ -23,11 +25,13 @@ export default defineComponent({
      */
     modelValue: { type: Array, required: true },
   },
+
   emits: ["update:model-value"],
+
   setup(props, ctx) {
     const entries = ref(props.modelValue);
 
-    function fireEvent() {
+    function fireUpdateEvent() {
       /**
        * @type {import("../types.js").FormEntriesUpdateEvent}
        */
@@ -40,13 +44,8 @@ export default defineComponent({
     const activeTab = ref("tab-1");
 
     /**
-     * @param {import("../types.js").FormEntryUpdateEvent} event
+     * Add a new empty entry at the end of the array.
      */
-    function onEntryUpdate(event) {
-      entries.value[event.index] = event.entry;
-      fireEvent();
-    }
-
     function onAddEntry() {
       const id = utils.getNextId(entries.value);
       entries.value.push({
@@ -60,11 +59,11 @@ export default defineComponent({
         ],
       });
       activeTab.value = `tab-${id}`;
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
-     * Delete the entry at the selected index.
+     * Delete the entry at the given index.
      * @param {number} entryIndex The index of the entry to delete.
      */
     function onDeleteEntry(entryIndex) {
@@ -77,7 +76,16 @@ export default defineComponent({
           : entries.value[entryIndex + 1];
       entries.value.splice(entryIndex, 1);
       activeTab.value = `tab-${nearestEntry.id}`;
-      fireEvent();
+      fireUpdateEvent();
+    }
+
+    /**
+     * Update an entry.
+     * @param {import("../types.js").FormEntryUpdateEvent} event
+     */
+    function onEntryUpdate(event) {
+      entries.value[event.index] = event.entry;
+      fireUpdateEvent();
     }
 
     /**
@@ -88,7 +96,7 @@ export default defineComponent({
       if (entryIndex === 0) return;
       const entry = entries.value.splice(entryIndex, 1)[0];
       entries.value.splice(entryIndex - 1, 0, entry);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -99,14 +107,18 @@ export default defineComponent({
       if (entryIndex === entries.value.length - 1) return;
       const entry = entries.value.splice(entryIndex, 1)[0];
       entries.value.splice(entryIndex + 1, 0, entry);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     return {
+      // Data
       entries,
       activeTab,
+      // Other
       utils,
+      // Icons
       cdxIconAdd,
+      // Callbacks
       onAddEntry,
       onEntryUpdate,
       onDeleteEntry,

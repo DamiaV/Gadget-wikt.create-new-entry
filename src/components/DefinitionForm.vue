@@ -30,6 +30,7 @@ export default defineComponent({
     ExampleForm,
     IllustrationForm,
   },
+
   props: {
     index: { type: Number, required: true },
     enableDeleteBtn: { type: Boolean, default: false },
@@ -40,7 +41,9 @@ export default defineComponent({
      */
     modelValue: { type: Object, required: true },
   },
+
   emits: ["update:model-value", "delete", "move:before", "move:after"],
+
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
     const examples = ref(props.modelValue.examples);
@@ -56,7 +59,7 @@ export default defineComponent({
       );
     }
 
-    function fireEvent() {
+    function fireUpdateEvent() {
       /**
        * @type {import("../types.js").DefinitionUpdateEvent}
        */
@@ -72,6 +75,10 @@ export default defineComponent({
       };
       ctx.emit("update:model-value", firedEvent);
     }
+
+    /**
+     * Deletion dialog
+     */
 
     const openDeletionDialog = ref(false);
 
@@ -90,7 +97,6 @@ export default defineComponent({
     };
 
     function onDelete() {
-      // Delete without confirmation if form is empty
       if (isEmpty()) deleteDefinition();
       else openDeletionDialog.value = true;
     }
@@ -110,25 +116,29 @@ export default defineComponent({
      */
     function onExampleUpdate(event) {
       examples.value[event.index] = event.example;
-      fireEvent();
+      fireUpdateEvent();
     }
 
+    /**
+     * Add a new empty example at the end of the array.
+     */
     function onAddExample() {
       examples.value.push({
         id: utils.getNextId(examples.value),
         text: "",
         empty: true,
       });
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
+     * Delete the example at the given index.
      * @param {number} exampleIndex The index of the example to delete.
      */
     function onDeleteExample(exampleIndex) {
       if (exampleIndex < 0 || exampleIndex >= examples.value.length) return;
       examples.value.splice(exampleIndex, 1);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -139,7 +149,7 @@ export default defineComponent({
       if (exampleIndex === 0) return;
       const example = examples.value.splice(exampleIndex, 1)[0];
       examples.value.splice(exampleIndex - 1, 0, example);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -150,30 +160,36 @@ export default defineComponent({
       if (examplesIndex === examples.value.length - 1) return;
       const example = examples.value.splice(examplesIndex, 1)[0];
       examples.value.splice(examplesIndex + 1, 0, example);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
      * Illustration
      */
 
+    /**
+     * Add a new empty image illustration.
+     */
     function onAddIllustration() {
       illustration.value = { type: "image", fileName: "", empty: true };
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
-     * Called when the illustration is updated.
+     * Delete the illustration.
+     */
+    function onDeleteIllustration() {
+      illustration.value = null;
+      fireUpdateEvent();
+    }
+
+    /**
+     * Update the illustration
      * @param {import("../types.js").Illustration} newIllustration The new illustration.
      */
     function onIllustrationUpdate(newIllustration) {
       illustration.value = newIllustration;
-      fireEvent();
-    }
-
-    function onDeleteIllustration() {
-      illustration.value = null;
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -182,15 +198,20 @@ export default defineComponent({
     const config = inject("config");
 
     return {
+      // Data
       text,
       examples,
       illustration,
+      // Visuals
       showFields,
+      // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
       openDeletionDialog,
+      // Other
       utils,
       config,
+      // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconArrowUp,
@@ -200,7 +221,8 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
-      fireEvent,
+      // Callbacks
+      fireUpdateEvent,
       onDelete,
       deleteDefinition,
       onExampleUpdate,
@@ -286,7 +308,7 @@ export default defineComponent({
           v-model.trim="text"
           required
           text-area
-          @change="fireEvent"
+          @change="fireUpdateEvent"
         >
           <template #label>Texte</template>
           <template #description>

@@ -33,6 +33,7 @@ export default defineComponent({
     InputWithToolbar,
     WikiLink,
   },
+
   props: {
     index: { type: Number, required: true },
     language: { type: T.Language, required: true },
@@ -44,7 +45,9 @@ export default defineComponent({
      */
     modelValue: { type: Object, required: true },
   },
+
   emits: ["update:model-value", "delete", "move:before", "move:after"],
+
   setup(props, ctx) {
     const definitions = ref(props.modelValue.definitions);
     const pronunciation = ref(props.modelValue.pronunciation || "");
@@ -55,7 +58,7 @@ export default defineComponent({
       );
     }
 
-    function fireEvent() {
+    function fireUpdateEvent() {
       /**
        * @type {import("../types.js").FormEntryUpdateEvent}
        */
@@ -70,6 +73,10 @@ export default defineComponent({
       };
       ctx.emit("update:model-value", firedEvent);
     }
+
+    /**
+     * Deletion dialog
+     */
 
     const openDeletionDialog = ref(false);
 
@@ -88,14 +95,10 @@ export default defineComponent({
     };
 
     function onDelete() {
-      // Delete without confirmation if form is empty
       if (isEmpty()) deleteEntry();
       else openDeletionDialog.value = true;
     }
 
-    /**
-     * Delete the entry at the selected index.
-     */
     function deleteEntry() {
       openDeletionDialog.value = false;
       ctx.emit("delete", props.index);
@@ -106,14 +109,8 @@ export default defineComponent({
      */
 
     /**
-     * Called when the definition component is updated.
-     * @param {import("../types.js").DefinitionUpdateEvent} event The event.
+     * Add a new empty definition at the end of the array.
      */
-    function onDefinitionUpdate(event) {
-      definitions.value[event.index] = event.definition;
-      fireEvent();
-    }
-
     function onAddDefinition() {
       definitions.value.push({
         id: utils.getNextId(definitions.value),
@@ -121,7 +118,7 @@ export default defineComponent({
         examples: [],
         empty: true,
       });
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -132,7 +129,16 @@ export default defineComponent({
       if (definitionIndex < 0 || definitionIndex >= definitions.value.length)
         return;
       definitions.value.splice(definitionIndex, 1);
-      fireEvent();
+      fireUpdateEvent();
+    }
+
+    /**
+     * Update a definition.
+     * @param {import("../types.js").DefinitionUpdateEvent} event The event.
+     */
+    function onDefinitionUpdate(event) {
+      definitions.value[event.index] = event.definition;
+      fireUpdateEvent();
     }
 
     /**
@@ -143,7 +149,7 @@ export default defineComponent({
       if (definitionIndex === 0) return;
       const definition = definitions.value.splice(definitionIndex, 1)[0];
       definitions.value.splice(definitionIndex - 1, 0, definition);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -154,7 +160,7 @@ export default defineComponent({
       if (definitionIndex === definitions.value.length - 1) return;
       const definition = definitions.value.splice(definitionIndex, 1)[0];
       definitions.value.splice(definitionIndex + 1, 0, definition);
-      fireEvent();
+      fireUpdateEvent();
     }
 
     /**
@@ -163,20 +169,25 @@ export default defineComponent({
     const config = inject("config");
 
     return {
+      // Data
       definitions,
       pronunciation,
+      // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
       openDeletionDialog,
+      // Other
       utils,
       config,
+      // Icons
       cdxIconClose,
       cdxIconArrowPrevious,
       cdxIconArrowNext,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconAdd,
-      fireEvent,
+      // Callbacks
+      fireUpdateEvent,
       onDelete,
       deleteEntry,
       onDefinitionUpdate,
@@ -256,7 +267,7 @@ export default defineComponent({
         v-model.trim="pronunciation"
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
-        @change="fireEvent"
+        @change="fireUpdateEvent"
       >
         <template #label>
           Prononciation

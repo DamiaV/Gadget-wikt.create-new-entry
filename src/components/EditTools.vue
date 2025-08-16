@@ -10,6 +10,7 @@ export default defineComponent({
     CdxButton,
     CdxIcon,
   },
+
   props: {
     showFormatButtons: { type: Boolean, default: true },
     /**
@@ -17,7 +18,9 @@ export default defineComponent({
      */
     characters: { type: Array, default: () => [W.specialCharacters] },
   },
+
   emits: ["style:bold", "style:italic", "insert-char"],
+
   setup() {
     return {
       cdxIconBold,
