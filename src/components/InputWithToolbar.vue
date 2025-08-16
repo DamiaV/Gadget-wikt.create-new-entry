@@ -15,6 +15,7 @@ export default defineComponent({
   props: {
     required: { type: Boolean, default: false },
     textArea: { type: Boolean, default: false },
+    clearable: { type: Boolean, default: false },
     showFormatButtons: { type: Boolean, default: true },
     /**
      * @type {import("vue").PropType<string[][]>}
@@ -22,7 +23,7 @@ export default defineComponent({
     specialCharacters: { type: Array, default: () => [W.specialCharacters] },
     modelValue: { type: String, required: true },
   },
-  emits: ["update:model-value"],
+  emits: ["update:model-value", "change"],
   setup(props, ctx) {
     const value = ref(props.modelValue);
     const status = ref("default");
@@ -44,7 +45,14 @@ export default defineComponent({
       value.value = text;
       status.value = "default";
       messages.value.error = "";
-      ctx.emit("update:model-value", text);
+      ctx.emit("update:model-value", value.value);
+    }
+
+    /**
+     * Called when the input fires a "change" event.
+     */
+    function onChange() {
+      ctx.emit("change", value.value);
     }
 
     /**
@@ -117,6 +125,7 @@ export default defineComponent({
       status,
       messages,
       onInput,
+      onChange,
       onInvalid,
       onInsertChar,
       onBold,
@@ -139,8 +148,10 @@ export default defineComponent({
       :is="textInputType"
       ref="textInput"
       v-model="value"
-      :required="required"
+      :required="$props.required"
+      :clearable="$props.clearable"
       @update:model-value="onInput"
+      @change="onChange"
       @invalid="onInvalid"
     ></component>
     <template #label><slot name="label"></slot></template>

@@ -224,7 +224,7 @@ export default defineComponent({
         v-model.trim="text"
         required
         text-area
-        @update:model-value="onExampleTextUpdate"
+        @change="onExampleTextUpdate"
       >
         <template #label>Texte</template>
         <template #description>
@@ -242,7 +242,7 @@ export default defineComponent({
       <cdx-field>
         <cdx-toggle-switch
           v-model="disableTranslation"
-          @update:model-value="onDisableTranslationUpdate"
+          @change="onDisableTranslationUpdate"
         >
           Désactiver la traduction
         </cdx-toggle-switch>
@@ -256,7 +256,7 @@ export default defineComponent({
         v-show="!disableTranslation"
         v-model.trim="translation"
         text-area
-        @update:model-value="onExampleTranslationUpdate"
+        @change="onExampleTranslationUpdate"
       >
         <template #label>Traduction</template>
         <template #description>
@@ -274,7 +274,7 @@ export default defineComponent({
         v-show="showTranscription"
         v-model.trim="transcription"
         text-area
-        @update:model-value="onExampleTranscriptionUpdate"
+        @change="onExampleTranscriptionUpdate"
       >
         <template #label>Transcription ou translittération</template>
         <template #description>
@@ -285,7 +285,7 @@ export default defineComponent({
 
       <input-with-toolbar
         v-model.trim.lazy="source"
-        @update:model-value="onExampleSourceUpdate"
+        @change="onExampleSourceUpdate"
       >
         <template #label>Source</template>
         <template #description>
@@ -300,7 +300,7 @@ export default defineComponent({
         </template>
         <cdx-text-input
           v-model.trim="link"
-          @update:model-value="onExampleLinkUpdate"
+          @change="onExampleLinkUpdate"
         ></cdx-text-input>
       </cdx-field>
     </div>

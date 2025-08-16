@@ -28,9 +28,28 @@ function getNextId(objectsWithId) {
   return Math.max(...objectsWithId.map((e) => e.id)) + 1;
 }
 
+/**
+ * Get the static URL for the given file page on Commons.
+ * @param {string} pageName The wiki page name on Commons.
+ * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
+ */
+async function getFileUrl(pageName) {
+  const params = new URLSearchParams();
+  params.append("action", "query");
+  params.append("titles", `File:${pageName}`);
+  params.append("prop", "imageinfo");
+  params.append("iiprop", "url");
+  params.append("format", "json");
+  const response = await fetch(`/w/api.php?${params}`);
+  const json = await response.json();
+  const pageInfo = json.query.pages["-1"];
+  return pageInfo.imageinfo ? pageInfo.imageinfo[0].url : null;
+}
+
 // </nowiki>
 
 export default {
   userGenderSwitch,
   getNextId,
+  getFileUrl,
 };

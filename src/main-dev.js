@@ -5,6 +5,7 @@ import App from "./App.vue";
  * @type {import("./types.js").AppConfig}
  */
 const config = {
+  word: "test",
   userGender: "unknown",
 };
 

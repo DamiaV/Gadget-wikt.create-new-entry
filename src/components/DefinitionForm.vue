@@ -17,6 +17,7 @@ import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 import ExampleForm from "./ExampleForm.vue";
+import IllustrationForm from "./IllustrationForm.vue";
 
 export default defineComponent({
   components: {
@@ -27,6 +28,7 @@ export default defineComponent({
     InputWithToolbar,
     WikiLink,
     ExampleForm,
+    IllustrationForm,
   },
   props: {
     index: { type: Number, required: true },
@@ -42,6 +44,9 @@ export default defineComponent({
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
     const examples = ref(props.modelValue.examples);
+    const illustration = ref(
+      props.modelValue.illustration || { type: "image", fileName: "" }
+    );
 
     const showFields = ref(true);
 
@@ -55,6 +60,7 @@ export default defineComponent({
           id: props.modelValue.id,
           text: text.value,
           examples: examples.value,
+          illustration: illustration.value,
         },
       };
       ctx.emit("update:model-value", firedEvent);
@@ -164,6 +170,19 @@ export default defineComponent({
     }
 
     /**
+     * Illustration
+     */
+
+    /**
+     * Called when the illustration is updated.
+     * @param {import("../types.js").Illustration} newIllustration The new illustration.
+     */
+    function onIllustrationUpdate(newIllustration) {
+      illustration.value = newIllustration;
+      fireEvent();
+    }
+
+    /**
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
@@ -172,6 +191,7 @@ export default defineComponent({
     return {
       text,
       examples,
+      illustration,
       showFields,
       openExampleDeletionDialog,
       exampleIndexToDelete,
@@ -195,6 +215,7 @@ export default defineComponent({
       deleteExample,
       onMoveExampleUp,
       onMoveExampleDown,
+      onIllustrationUpdate,
     };
   },
 });
@@ -264,52 +285,58 @@ export default defineComponent({
       </span>
     </template>
 
-    <div v-if="showFields">
-      <input-with-toolbar
-        v-model.trim="text"
-        required
-        text-area
-        @update:model-value="onDefinitionUpdate"
-      >
-        <template #label>Texte</template>
-        <template #description>
-          Une courte définition, pas plus d’une ou deux phrases si possible.
-        </template>
-        <template #help-text>
-          Pour des raisons de
-          <wiki-link
-            page-title="Aide:Définitions"
-            anchor="Astuces_pour_rédiger_une_définition"
-            >droit d’auteur</wiki-link
-          >, la définition ne doit pas être recopiée depuis un autre
-          dictionnaire.
-        </template>
-      </input-with-toolbar>
-
-      <div class="cne-examples">
-        <example-form
-          v-for="(example, i) in examples"
-          :key="example.id"
-          :index="i"
-          enable-delete-btn
-          :can-move-before="i > 0"
-          :can-move-after="i < examples.length - 1"
-          :model-value="example"
-          @update:model-value="onExampleUpdate"
-          @delete="onDeleteExample"
-          @move:before="onMoveExampleUp"
-          @move:after="onMoveExampleDown"
-        ></example-form>
-        <cdx-button
-          class="cne-add-example-btn"
-          type="button"
-          action="progressive"
-          @click="onAddExample"
+    <div v-if="showFields" class="cne-definition-grid">
+      <div class="cne-definition-form-fields">
+        <input-with-toolbar
+          v-model.trim="text"
+          required
+          text-area
+          @change="onDefinitionUpdate"
         >
-          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-          Ajouter un exemple
-        </cdx-button>
+          <template #label>Texte</template>
+          <template #description>
+            Une courte définition, pas plus d’une ou deux phrases si possible.
+          </template>
+          <template #help-text>
+            Pour des raisons de
+            <wiki-link
+              page-title="Aide:Définitions"
+              anchor="Astuces_pour_rédiger_une_définition"
+              >droit d’auteur</wiki-link
+            >, la définition ne doit pas être recopiée depuis un autre
+            dictionnaire.
+          </template>
+        </input-with-toolbar>
+
+        <div class="cne-examples">
+          <example-form
+            v-for="(example, i) in examples"
+            :key="example.id"
+            :index="i"
+            enable-delete-btn
+            :can-move-before="i > 0"
+            :can-move-after="i < examples.length - 1"
+            :model-value="example"
+            @update:model-value="onExampleUpdate"
+            @delete="onDeleteExample"
+            @move:before="onMoveExampleUp"
+            @move:after="onMoveExampleDown"
+          ></example-form>
+          <cdx-button
+            class="cne-add-example-btn"
+            type="button"
+            action="progressive"
+            @click="onAddExample"
+          >
+            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+            Ajouter un exemple
+          </cdx-button>
+        </div>
       </div>
+      <illustration-form
+        v-model="illustration"
+        @update:model-value="onIllustrationUpdate"
+      ></illustration-form>
     </div>
     <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
   </cdx-field>
@@ -342,6 +369,20 @@ export default defineComponent({
 .cne-examples {
   margin-top: 1em;
   padding-left: 2em;
+}
+
+.cne-definition-grid {
+  display: flex;
+  gap: 1em;
+}
+
+.cne-definition-form-fields {
+  flex-grow: 1;
+}
+
+.cne-illustration-form {
+  flex-grow: 0.5;
+  margin-top: 0;
 }
 </style>
 <!-- </nowiki> -->

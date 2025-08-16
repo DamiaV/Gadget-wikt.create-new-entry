@@ -5,6 +5,7 @@
 
 /**
  * @typedef {{
+ *  word: string,
  *  userGender: string,
  * }} AppConfig
  */
@@ -64,6 +65,7 @@
  *  id: number,
  *  text: string,
  *  examples: Example[],
+ *  illustration?: Illustration,
  * }} Definition
  */
 
@@ -78,6 +80,43 @@
  *  link?: string,
  *  disableTranslation?: boolean,
  * }} Example
+ */
+
+/**
+ * @typedef {MediaIllustration | TextIllustration | ColorIllustration} Illustration
+ */
+
+/**
+ * @typedef {{
+ *  type: "image" | "video" | "audio",
+ *  fileName: string,
+ *  description?: string,
+ *  alt?: string,
+ * }} MediaIllustration
+ */
+
+/**
+ * @typedef {{
+ *  type: "text",
+ *  text: string,
+ *  description?: string,
+ * }} TextIllustration
+ */
+
+/**
+ * @typedef {{
+ *  type: "audio",
+ *  fileName: string,
+ *  description?: string,
+ * }} AudioIllustration
+ */
+
+/**
+ * @typedef {{
+ *  type: "color",
+ *  color: string,
+ *  description?: string,
+ * }} ColorIllustration
  */
 
 /**

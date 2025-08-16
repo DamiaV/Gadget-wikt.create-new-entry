@@ -262,7 +262,7 @@ export default defineComponent({
         v-model.trim="pronunciation"
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
-        @update:model-value="onPronunciationUpdate"
+        @change="onPronunciationUpdate"
       >
         <template #label>
           Prononciation

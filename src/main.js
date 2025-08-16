@@ -11,6 +11,7 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
    * @type {import("./types.js").AppConfig}
    */
   const config = {
+    word: mw.config.get("wgPageName"),
     userGender: await U.getGender(
       new mw.Api({ userAgent: `Gadget-wikt.create-new-entry/${version}` })
     ),
