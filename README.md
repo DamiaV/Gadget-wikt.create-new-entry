@@ -95,3 +95,11 @@ The gadget imports dependencies that are only available on the wiki. In order to
 To do so, run `python3 sync.py updatewikideps`. It will download the dependencies into the `src/wiki_deps` directory. These are listed in `config.json` under `wikiDependencies`. The contents of these files should not be updated manually.
 
 The same actions are performed on the downloaded `.js` files as the `pull` command.
+
+## `config.py`
+
+This file contains the configuration for `sync.py`. Its structure is as follows:
+* `gadgetName`: The gadget’s name on the wiki. It comes from the title of the gadget’s description page, [MediaWiki:Gadget-*wikt.create-new-entry*](https://fr.wiktionary.org/wiki/MediaWiki:Gadget-wikt.create-new-entry), which is also the prefix of all the gadget’s source pages.
+* `gadgetDependencies`: The list of runtime npm dependencies. These are used to set the `dependencies=` option of the gadget’s definition in [MediaWiki:Gadgets-definition](https://fr.wiktionary.org/wiki/MediaWiki:Gadgets-definition).
+* `wikiDependencies`: The list of runtime wiki dependencies, in alphabetical order (tho it does not really matter). These are necessary to run the gadget locally, and are downloaded when running the `updatewikideps` command.
+* `ignoredFiles`: A list of files from the `src/` directory to ignore when running the `push` command.
