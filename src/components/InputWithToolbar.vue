@@ -39,20 +39,11 @@ export default defineComponent({
 
     /**
      * Called when the input’s text is updated.
-     * @param {string} text The new text.
      */
-    function onInput(text) {
-      value.value = text;
+    function onInput() {
       status.value = "default";
       messages.value.error = "";
       ctx.emit("update:model-value", value.value);
-    }
-
-    /**
-     * Called when the input fires a "change" event.
-     */
-    function onChange() {
-      ctx.emit("change", value.value);
     }
 
     /**
@@ -125,7 +116,6 @@ export default defineComponent({
       status,
       messages,
       onInput,
-      onChange,
       onInvalid,
       onInsertChar,
       onBold,
@@ -151,7 +141,7 @@ export default defineComponent({
       :required="$props.required"
       :clearable="$props.clearable"
       @update:model-value="onInput"
-      @change="onChange"
+      @change="$emit('change', value)"
       @invalid="onInvalid"
     ></component>
     <template #label><slot name="label"></slot></template>

@@ -67,19 +67,6 @@ export default defineComponent({
     }
 
     /*
-     * Definition
-     */
-
-    /**
-     * Called when the definition is updated.
-     * @param {string} newText The new definition.
-     */
-    function onDefinitionUpdate(newText) {
-      text.value = newText;
-      fireEvent();
-    }
-
-    /*
      * Examples
      */
 
@@ -208,7 +195,7 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
-      onDefinitionUpdate,
+      fireEvent,
       onExampleUpdate,
       onAddExample,
       onDeleteExample,
@@ -291,7 +278,7 @@ export default defineComponent({
           v-model.trim="text"
           required
           text-area
-          @change="onDefinitionUpdate"
+          @change="fireEvent"
         >
           <template #label>Texte</template>
           <template #description>

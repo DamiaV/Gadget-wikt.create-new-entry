@@ -80,7 +80,6 @@ export default defineComponent({
 
     /**
      * Called when the file name is updated.
-     * @param {string} newFileName The new file name.
      */
     function onFileNameUpdate() {
       utils.getFileUrl(fileName.value).then((url) => {
@@ -157,7 +156,7 @@ export default defineComponent({
       v-model="type"
       :input-value="type_.value"
       name="type"
-      @change="fireEvent()"
+      @change="fireEvent"
     >
       {{ type_.label }}
     </cdx-radio>
@@ -184,7 +183,7 @@ export default defineComponent({
       <cdx-text-input
         v-model.trim.lazy="text"
         clearable
-        @change="fireEvent()"
+        @change="fireEvent"
       ></cdx-text-input>
     </cdx-field>
 
@@ -194,7 +193,7 @@ export default defineComponent({
       <cdx-text-input
         v-model.trim.lazy="color"
         clearable
-        @change="fireEvent()"
+        @change="fireEvent"
       ></cdx-text-input>
     </cdx-field>
 
@@ -207,7 +206,7 @@ export default defineComponent({
         (type === 'color' && !!color)
       "
       clearable
-      @change="fireEvent()"
+      @change="fireEvent"
     >
       <template #label>Légende</template>
       <template #description>
@@ -227,7 +226,7 @@ export default defineComponent({
       <cdx-text-input
         v-model.trim.lazy="alt"
         clearable
-        @change="fireEvent()"
+        @change="fireEvent"
       ></cdx-text-input>
       <template #help-text>
         Il est fortement recommandé de renseigner un texte alternatif pour une

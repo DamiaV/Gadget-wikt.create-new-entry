@@ -50,9 +50,9 @@ export default defineComponent({
     const link = ref(props.modelValue.link || "");
     const disableTranslation = ref(!!props.modelValue.disableTranslation);
 
-    const showTranscription = ref(false);
+    const showTranscription = ref(false); // FIXME reset when component is refreshed
 
-    const showFields = ref(true);
+    const showFields = ref(true); // FIXME reset when component is refreshed
 
     function fireEvent() {
       /**
@@ -63,68 +63,14 @@ export default defineComponent({
         example: {
           id: props.modelValue.id,
           text: text.value,
-          translation: translation.value,
-          transcription: transcription.value,
+          translation: disableTranslation.value ? null : translation.value,
+          transcription: showTranscription.value ? transcription.value : null,
           source: source.value,
           link: link.value,
           disableTranslation: disableTranslation.value,
         },
       };
       ctx.emit("update:model-value", firedEvent);
-    }
-
-    /**
-     * Called when the text is updated.
-     * @param {string} newText The new text.
-     */
-    function onExampleTextUpdate(newText) {
-      text.value = newText;
-      fireEvent();
-    }
-
-    /**
-     * Called when the translation is updated.
-     * @param {string} newTranslation The new translation.
-     */
-    function onExampleTranslationUpdate(newTranslation) {
-      translation.value = newTranslation;
-      fireEvent();
-    }
-
-    /**
-     * Called when the transcription is updated.
-     * @param {string} newTranscription The new transcription.
-     */
-    function onExampleTranscriptionUpdate(newTranscription) {
-      transcription.value = newTranscription;
-      fireEvent();
-    }
-
-    /**
-     * Called when the source is updated.
-     * @param {string} newSource The new source.
-     */
-    function onExampleSourceUpdate(newSource) {
-      source.value = newSource;
-      fireEvent();
-    }
-
-    /**
-     * Called when the link is updated.
-     * @param {string} newLink The new link.
-     */
-    function onExampleLinkUpdate(newLink) {
-      link.value = newLink;
-      fireEvent();
-    }
-
-    /**
-     * Called when the switch for disable the translation is updated.
-     * @param {boolean} disable The new disabled state.
-     */
-    function onDisableTranslationUpdate(disable) {
-      disableTranslation.value = disable;
-      fireEvent();
     }
 
     return {
@@ -144,12 +90,7 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
-      onExampleTextUpdate,
-      onExampleTranslationUpdate,
-      onExampleTranscriptionUpdate,
-      onExampleSourceUpdate,
-      onExampleLinkUpdate,
-      onDisableTranslationUpdate,
+      fireEvent,
     };
   },
 });
@@ -224,7 +165,7 @@ export default defineComponent({
         v-model.trim="text"
         required
         text-area
-        @change="onExampleTextUpdate"
+        @change="fireEvent"
       >
         <template #label>Texte</template>
         <template #description>
@@ -240,10 +181,7 @@ export default defineComponent({
       </input-with-toolbar>
 
       <cdx-field>
-        <cdx-toggle-switch
-          v-model="disableTranslation"
-          @change="onDisableTranslationUpdate"
-        >
+        <cdx-toggle-switch v-model="disableTranslation" @change="fireEvent">
           Désactiver la traduction
         </cdx-toggle-switch>
         <template #help-text>
@@ -256,7 +194,7 @@ export default defineComponent({
         v-show="!disableTranslation"
         v-model.trim="translation"
         text-area
-        @change="onExampleTranslationUpdate"
+        @change="fireEvent"
       >
         <template #label>Traduction</template>
         <template #description>
@@ -274,7 +212,7 @@ export default defineComponent({
         v-show="showTranscription"
         v-model.trim="transcription"
         text-area
-        @change="onExampleTranscriptionUpdate"
+        @change="fireEvent"
       >
         <template #label>Transcription ou translittération</template>
         <template #description>
@@ -283,10 +221,7 @@ export default defineComponent({
         </template>
       </input-with-toolbar>
 
-      <input-with-toolbar
-        v-model.trim.lazy="source"
-        @change="onExampleSourceUpdate"
-      >
+      <input-with-toolbar v-model.trim="source" @change="fireEvent">
         <template #label>Source</template>
         <template #description>
           La référence de l’ouvrage ou du site web d’où provient l’exemple.
@@ -300,7 +235,7 @@ export default defineComponent({
         </template>
         <cdx-text-input
           v-model.trim="link"
-          @change="onExampleLinkUpdate"
+          @change="fireEvent"
         ></cdx-text-input>
       </cdx-field>
     </div>

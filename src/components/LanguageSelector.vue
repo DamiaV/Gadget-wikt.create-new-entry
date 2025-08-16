@@ -76,6 +76,7 @@ export default defineComponent({
     };
 
     /**
+     * Called when the combobox selection changes.
      * @param {string} name The selected language name.
      */
     function onLanguageSelection(name) {
@@ -87,7 +88,6 @@ export default defineComponent({
 
     /**
      * Filter items on input.
-     *
      * @param {string} value
      */
     function onInput(value) {
@@ -107,7 +107,8 @@ export default defineComponent({
     }
 
     /**
-     * @param {string|null} code The selected code.
+     * Called when the collapsible menu selection changes.
+     * @param {string | null} code The selected code.
      */
     function onMenuSelection(code) {
       if (!code) return;

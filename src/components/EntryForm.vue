@@ -149,19 +149,6 @@ export default defineComponent({
       fireEvent();
     }
 
-    /*
-     * Pronunciations
-     */
-
-    /**
-     * Called when the pronunciation field is updated.
-     * @param {string} text The new pronunciation.
-     */
-    function onPronunciationUpdate(text) {
-      pronunciation.value = text;
-      fireEvent();
-    }
-
     /**
      * @type {import("../types.js").AppConfig}
      */
@@ -183,13 +170,13 @@ export default defineComponent({
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconAdd,
+      fireEvent,
       onDefinitionUpdate,
       onAddDefinition,
       onDeleteDefinition,
       deleteDefinition,
       onMoveDefinitionUp,
       onMoveDefinitionDown,
-      onPronunciationUpdate,
     };
   },
 });
@@ -262,7 +249,7 @@ export default defineComponent({
         v-model.trim="pronunciation"
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
-        @change="onPronunciationUpdate"
+        @change="fireEvent"
       >
         <template #label>
           Prononciation
