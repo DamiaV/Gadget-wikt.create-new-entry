@@ -382,7 +382,7 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.gender, "sûr·e", "sûre", "sûr") }} de
+    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
     vouloir supprimer cette illustration&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
