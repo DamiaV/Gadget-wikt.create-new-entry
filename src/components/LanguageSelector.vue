@@ -1,7 +1,7 @@
 <!-- <nowiki> -->
 <script>
 import { computed, defineComponent, ref } from "vue";
-import { CdxCombobox, CdxField, CdxLookup } from "@wikimedia/codex";
+import { CdxField, CdxLookup, CdxSelect } from "@wikimedia/codex";
 import { cdxIconSearch } from "@wikimedia/codex-icons";
 import LL from "../wiki_deps/wikt.core.languages.js";
 import T from "../types.js";
@@ -10,7 +10,7 @@ import L from "../languages.js";
 export default defineComponent({
   components: {
     CdxField,
-    CdxCombobox,
+    CdxSelect,
     CdxLookup,
   },
 
@@ -45,14 +45,14 @@ export default defineComponent({
       for (const language of props.languages) {
         items.push({
           label: language.name,
-          value: language.name,
+          value: language.code,
           supportingText: `(${language.code})`,
           description: !language.isSupported ? "Support réduit" : "",
         });
       }
       items.sort((i1, i2) => {
-        const code1 = i1.supportingText.slice(1, -1);
-        const code2 = i2.supportingText.slice(1, -1);
+        const code1 = i1.value;
+        const code2 = i2.value;
         if (code1 === "fr") return -1;
         if (code2 === "fr") return 1;
         if (code1 === "conv") return 1;
@@ -62,7 +62,7 @@ export default defineComponent({
       return items;
     });
 
-    const langName = ref(props.modelValue.name);
+    const langCode = ref(props.modelValue.code);
 
     const menuSelection = ref("");
     /**
@@ -79,13 +79,13 @@ export default defineComponent({
     };
 
     /**
-     * Called when the combobox selection changes.
-     * @param {string} name The selected language name.
+     * Called when the menu selection changes.
+     * @param {string} code The selected language code.
      */
-    function onLanguageSelection(name) {
-      let lang = props.languages.find((lang) => lang.name === name);
-      if (!name || !lang) return;
-      langName.value = name;
+    function onLanguageSelection(code) {
+      const lang = props.languages.find((lang) => lang.code === code);
+      if (!code || !lang) return;
+      langCode.value = code;
       ctx.emit("update:model-value", lang);
     }
 
@@ -116,7 +116,7 @@ export default defineComponent({
     function onMenuSelection(code) {
       if (!code) return;
       const language = L.getDefaultLanguage(code);
-      langName.value = language.name;
+      langCode.value = language.code;
       menuSelection.value = ""; // Reset lookup selection
       ctx.emit("update:model-value", language);
     }
@@ -124,7 +124,7 @@ export default defineComponent({
     return {
       // Data
       languageItems,
-      langName,
+      langCode,
       menuSelection,
       menuItems,
       menuConfig,
@@ -150,13 +150,13 @@ export default defineComponent({
         sur une des suggestions pour valider votre choix.
       </template>
       <div class="language-inputs">
-        <cdx-combobox
-          v-model:selected.trim="langName"
+        <cdx-select
+          v-model:selected="langCode"
           required
           :menu-items="languageItems"
           :menu-config="menuConfig"
           @update:selected="onLanguageSelection"
-        ></cdx-combobox>
+        ></cdx-select>
         <cdx-lookup
           v-model:selected="menuSelection"
           :menu-items="menuItems"
