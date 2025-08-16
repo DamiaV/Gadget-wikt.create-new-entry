@@ -272,7 +272,7 @@ export default defineComponent({
       </span>
     </template>
 
-    <div v-if="showFields" class="cne-definition-grid">
+    <div v-show="showFields" class="cne-definition-grid">
       <div class="cne-definition-form-fields">
         <input-with-toolbar
           v-model.trim="text"
@@ -325,7 +325,11 @@ export default defineComponent({
         @update:model-value="onIllustrationUpdate"
       ></illustration-form>
     </div>
-    <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
+    <cdx-icon
+      v-show="!showFields"
+      :icon="cdxIconEllipsis"
+      title="Contenu caché"
+    ></cdx-icon>
   </cdx-field>
 
   <cdx-dialog

@@ -50,9 +50,9 @@ export default defineComponent({
     const link = ref(props.modelValue.link || "");
     const disableTranslation = ref(!!props.modelValue.disableTranslation);
 
-    const showTranscription = ref(false); // FIXME reset when component is refreshed
+    const showTranscription = ref(false);
 
-    const showFields = ref(true); // FIXME reset when component is refreshed
+    const showFields = ref(true);
 
     function fireEvent() {
       /**
