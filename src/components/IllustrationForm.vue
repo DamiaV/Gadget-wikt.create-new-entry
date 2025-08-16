@@ -13,6 +13,7 @@ import {
   cdxIconClose,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -206,6 +207,7 @@ export default defineComponent({
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconClose,
+      cdxIconSearch,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -286,13 +288,13 @@ export default defineComponent({
       :messages="messages"
     >
       <template #label>
-        Nom du fichier sur
+        Nom du fichier sur Commons
         <a
           :href="`https://commons.wikimedia.org/wiki/Special:MediaSearch?search=${encodeURIComponent(config.word)}&type=${type}`"
           target="_blank"
           title="Chercher sur Commons (S’ouvre dans un nouvel onglet)"
-          >Commons</a
-        >
+          ><cdx-icon :icon="cdxIconSearch"></cdx-icon
+        ></a>
       </template>
       <cdx-text-input
         v-model.trim="rawFileName"
