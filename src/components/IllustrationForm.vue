@@ -1,6 +1,6 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, inject, ref } from "vue";
+import { computed, defineComponent, inject, ref } from "vue";
 import { CdxField, CdxIcon, CdxRadio, CdxTextInput } from "@wikimedia/codex";
 import { cdxIconHelpNotice, cdxIconInfoFilled } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
@@ -29,7 +29,7 @@ export default defineComponent({
     /**
      * @type {import("vue").Ref<string>}
      */
-    const fileName = ref(props.modelValue.fileName || "");
+    const rawFileName = ref(props.modelValue.fileName || "");
     /**
      * @type {import("vue").Ref<string>}
      */
@@ -43,6 +43,14 @@ export default defineComponent({
      */
     const alt = ref(props.modelValue.alt || "");
 
+    const fileName = computed(() => {
+      const lowerFileName = rawFileName.value.toLocaleLowerCase();
+      if (lowerFileName.startsWith("file:"))
+        return rawFileName.value.substring(5);
+      if (lowerFileName.startsWith("image:"))
+        return rawFileName.value.substring(6);
+      return rawFileName.value;
+    });
     const fileUrl = ref("");
 
     const types = [
@@ -82,10 +90,8 @@ export default defineComponent({
      * Called when the file name is updated.
      */
     function onFileNameUpdate() {
-      utils.getFileUrl(fileName.value).then((url) => {
-        console.log(url);
-        fileUrl.value = url;
-      });
+      // FIXME try to make it work in local testing
+      utils.getFileUrl(fileName.value).then((url) => (fileUrl.value = url));
       fireEvent();
     }
 
@@ -98,6 +104,7 @@ export default defineComponent({
       type,
       description,
       fileName,
+      rawFileName,
       text,
       color,
       alt,
@@ -130,7 +137,7 @@ export default defineComponent({
     </template>
 
     <div
-      v-if="
+      v-show="
         ((type === 'image' || type === 'video' || type === 'audio') &&
           !!fileName) ||
         (type === 'color' && !!color)
@@ -138,11 +145,14 @@ export default defineComponent({
       class="cne-preview-box"
     >
       Aperçu
-      <img
+      <a
         v-if="type === 'image' && !!fileName"
-        class="cne-image-preview"
-        :src="fileUrl"
-      />
+        :href="`https://commons.wikimedia.org/wiki/File:${fileName}`"
+        target="_blank"
+        title="Voir l’image sur Commons (S’ouvre dans un nouvel onglet)"
+      >
+        <img class="cne-image-preview" :src="fileUrl" />
+      </a>
       <div
         v-else-if="type === 'color' && !!color"
         class="cne-color-preview"
@@ -172,7 +182,7 @@ export default defineComponent({
         >
       </template>
       <cdx-text-input
-        v-model.trim.lazy="fileName"
+        v-model.trim="rawFileName"
         clearable
         @change="onFileNameUpdate"
       ></cdx-text-input>
@@ -181,7 +191,7 @@ export default defineComponent({
     <cdx-field v-else-if="type === 'text'">
       <template #label>Texte</template>
       <cdx-text-input
-        v-model.trim.lazy="text"
+        v-model.trim="text"
         clearable
         @change="fireEvent"
       ></cdx-text-input>
@@ -191,7 +201,7 @@ export default defineComponent({
       <template #label>Code de la couleur</template>
       <template #description>Un code couleur CSS.</template>
       <cdx-text-input
-        v-model.trim.lazy="color"
+        v-model.trim="color"
         clearable
         @change="fireEvent"
       ></cdx-text-input>
@@ -224,7 +234,7 @@ export default defineComponent({
         Texte qui sera affiché si le fichier ne peut pas être chargé.
       </template>
       <cdx-text-input
-        v-model.trim.lazy="alt"
+        v-model.trim="alt"
         clearable
         @change="fireEvent"
       ></cdx-text-input>
@@ -251,8 +261,8 @@ export default defineComponent({
 }
 
 .cne-image-preview {
-  max-width: 5em;
-  max-height: 5em;
+  max-width: 10em;
+  max-height: 10em;
 }
 
 .cne-color-preview {
