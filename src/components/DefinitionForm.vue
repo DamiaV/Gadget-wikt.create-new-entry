@@ -48,6 +48,14 @@ export default defineComponent({
 
     const showFields = ref(true);
 
+    function isEmpty() {
+      return (
+        !text.value &&
+        examples.value.every((ex) => ex.empty) &&
+        (!illustration.value || illustration.value.empty)
+      );
+    }
+
     function fireEvent() {
       /**
        * @type {import("../types.js").DefinitionUpdateEvent}
@@ -59,6 +67,7 @@ export default defineComponent({
           text: text.value,
           examples: examples.value,
           illustration: illustration.value,
+          empty: isEmpty(),
         },
       };
       ctx.emit("update:model-value", firedEvent);
@@ -81,8 +90,8 @@ export default defineComponent({
     };
 
     function onDelete() {
-      if (!text.value && examples.value.length === 0)
-        deleteDefinition(); // Delete without confirmation if form is empty
+      // Delete without confirmation if form is empty
+      if (isEmpty()) deleteDefinition();
       else openDeletionDialog.value = true;
     }
 
@@ -108,6 +117,7 @@ export default defineComponent({
       examples.value.push({
         id: utils.getNextId(examples.value),
         text: "",
+        empty: true,
       });
       fireEvent();
     }
@@ -148,7 +158,7 @@ export default defineComponent({
      */
 
     function onAddIllustration() {
-      illustration.value = { type: "image" };
+      illustration.value = { type: "image", fileName: "", empty: true };
       fireEvent();
     }
 

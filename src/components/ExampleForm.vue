@@ -57,6 +57,16 @@ export default defineComponent({
 
     const showFields = ref(true);
 
+    function isEmpty() {
+      return (
+        !text.value &&
+        !translation.value &&
+        !transcription.value &&
+        !source.value &&
+        !link.value
+      );
+    }
+
     function fireEvent() {
       /**
        * @type {import("../types.js").ExampleUpdateEvent}
@@ -71,6 +81,7 @@ export default defineComponent({
           source: source.value,
           link: link.value,
           disableTranslation: disableTranslation.value,
+          empty: isEmpty(),
         },
       };
       ctx.emit("update:model-value", firedEvent);
@@ -93,14 +104,8 @@ export default defineComponent({
     };
 
     function onDelete() {
-      if (
-        !text.value &&
-        !transcription.value &&
-        !transcription.value &&
-        !source.value &&
-        !link.value
-      )
-        deleteExample(); // Delete without confirmation if form is empty
+      // Delete without confirmation if form is empty
+      if (isEmpty()) deleteExample();
       else openDeletionDialog.value = true;
     }
 

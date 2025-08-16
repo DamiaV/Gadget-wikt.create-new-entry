@@ -55,7 +55,8 @@
  * @typedef {{
  *  id: number,
  *  definitions: Definition[],
- *  pronunciation?: string
+ *  pronunciation?: string,
+ *  empty: boolean,
  * }} Entry
  */
 
@@ -66,6 +67,7 @@
  *  text: string,
  *  examples: Example[],
  *  illustration?: Illustration,
+ *  empty: boolean,
  * }} Definition
  */
 
@@ -79,6 +81,7 @@
  *  source?: string,
  *  link?: string,
  *  disableTranslation?: boolean,
+ *  empty: boolean,
  * }} Example
  */
 
@@ -92,6 +95,7 @@
  *  fileName: string,
  *  description?: string,
  *  alt?: string,
+ *  empty: boolean,
  * }} MediaIllustration
  */
 
@@ -100,6 +104,7 @@
  *  type: "text",
  *  text: string,
  *  description?: string,
+ *  empty: boolean,
  * }} TextIllustration
  */
 
@@ -108,6 +113,7 @@
  *  type: "audio",
  *  fileName: string,
  *  description?: string,
+ *  empty: boolean,
  * }} AudioIllustration
  */
 
@@ -116,6 +122,7 @@
  *  type: "color",
  *  color: string,
  *  description?: string,
+ *  empty: boolean,
  * }} ColorIllustration
  */
 

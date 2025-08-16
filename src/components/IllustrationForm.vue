@@ -79,6 +79,16 @@ export default defineComponent({
       { label: "Couleur", value: "color" },
     ];
 
+    function isEmpty() {
+      return (
+        !fileName.value &&
+        !text.value &&
+        !color.value &&
+        !alt.value &&
+        !description.value
+      );
+    }
+
     function fireEvent() {
       /**
        * @type {import("../types.js").Illustration}
@@ -86,6 +96,7 @@ export default defineComponent({
       const firedEvent = {
         type: type.value,
         description: description.value,
+        empty: isEmpty(),
       };
       switch (type.value) {
         case "image":
@@ -120,24 +131,12 @@ export default defineComponent({
       label: "Annuler",
     };
 
-    /**
-     * Called when the "delete" button is clicked.
-     */
     function onDelete() {
-      if (
-        !fileName.value &&
-        !text.value &&
-        !color.value &&
-        !alt.value &&
-        !description.value
-      )
-        deleteIllustration(); // Delete without confirmation if form is empty
+      // Delete without confirmation if form is empty
+      if (isEmpty()) deleteIllustration();
       else openDeletionDialog.value = true;
     }
 
-    /**
-     * Delete this illustration at the selected index.
-     */
     function deleteIllustration() {
       openDeletionDialog.value = false;
       ctx.emit("delete");

@@ -55,6 +55,7 @@ export default defineComponent({
           {
             text: "",
             examples: [],
+            empty: true,
           },
         ],
       });

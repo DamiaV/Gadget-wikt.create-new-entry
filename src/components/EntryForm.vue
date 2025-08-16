@@ -49,6 +49,12 @@ export default defineComponent({
     const definitions = ref(props.modelValue.definitions);
     const pronunciation = ref(props.modelValue.pronunciation || "");
 
+    function isEmpty() {
+      return (
+        definitions.value.every((def) => def.empty) && !pronunciation.value
+      );
+    }
+
     function fireEvent() {
       /**
        * @type {import("../types.js").FormEntryUpdateEvent}
@@ -59,6 +65,7 @@ export default defineComponent({
           id: props.modelValue.id,
           definitions: definitions.value,
           pronunciation: pronunciation.value,
+          empty: isEmpty(),
         },
       };
       ctx.emit("update:model-value", firedEvent);
@@ -81,8 +88,9 @@ export default defineComponent({
     };
 
     function onDelete() {
-      // TODO Check if forms are empty
-      openDeletionDialog.value = true;
+      // Delete without confirmation if form is empty
+      if (isEmpty()) deleteEntry();
+      else openDeletionDialog.value = true;
     }
 
     /**
@@ -111,6 +119,7 @@ export default defineComponent({
         id: utils.getNextId(definitions.value),
         text: "",
         examples: [],
+        empty: true,
       });
       fireEvent();
     }
