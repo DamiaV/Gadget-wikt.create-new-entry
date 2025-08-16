@@ -1,13 +1,7 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, inject, ref } from "vue";
-import {
-  CdxButton,
-  CdxDialog,
-  CdxIcon,
-  CdxTab,
-  CdxTabs,
-} from "@wikimedia/codex";
+import { defineComponent, ref } from "vue";
+import { CdxButton, CdxIcon, CdxTab, CdxTabs } from "@wikimedia/codex";
 import { cdxIconAdd } from "@wikimedia/codex-icons";
 import T from "../types.js";
 import utils from "../utils.js";
@@ -19,7 +13,6 @@ export default defineComponent({
     CdxTab,
     CdxButton,
     CdxIcon,
-    CdxDialog,
     EntryForm,
   },
   inject: ["config"],
@@ -69,37 +62,19 @@ export default defineComponent({
       fireEvent();
     }
 
-    const openDialog = ref(false);
-    const entryIndexToDelete = ref(-1);
-
-    /**
-     * @type {import("@wikimedia/codex").PrimaryModalAction}
-     */
-    const dialogPrimaryAction = {
-      label: "Supprimer",
-      actionType: "destructive",
-    };
-    /**
-     * @type {import("@wikimedia/codex").ModalAction}
-     */
-    const dialogDefaultAction = {
-      label: "Annuler",
-    };
-
     /**
      * Delete the entry at the selected index.
+     * @param {number} entryIndex The index of the entry to delete.
      */
-    function deleteEntry() {
-      openDialog.value = false;
-      const index = entryIndexToDelete.value;
+    function onDeleteEntry(entryIndex) {
       const entriesNb = entries.value.length;
-      if (index < 0 || index >= entriesNb) return;
+      if (entryIndex < 0 || entryIndex >= entriesNb) return;
 
       const nearestEntry =
-        index === entriesNb - 1
+        entryIndex === entriesNb - 1
           ? entries.value[entriesNb - 2]
-          : entries.value[index + 1];
-      entries.value.splice(index, 1);
+          : entries.value[entryIndex + 1];
+      entries.value.splice(entryIndex, 1);
       activeTab.value = `tab-${nearestEntry.id}`;
       fireEvent();
     }
@@ -126,25 +101,14 @@ export default defineComponent({
       fireEvent();
     }
 
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
-    const gender = config.userGender;
-
     return {
       entries,
       activeTab,
-      openDialog,
-      entryIndexToDelete,
-      dialogPrimaryAction,
-      dialogDefaultAction,
-      gender,
       utils,
       cdxIconAdd,
       onAddEntry,
       onEntryUpdate,
-      deleteEntry,
+      onDeleteEntry,
       onMoveEntryLeft,
       onMoveEntryRight,
     };
@@ -178,10 +142,7 @@ export default defineComponent({
         :can-move-before="i > 0"
         :can-move-after="i < entries.length - 1"
         @update:model-value="onEntryUpdate"
-        @delete="
-          entryIndexToDelete = $event;
-          openDialog = true;
-        "
+        @delete="onDeleteEntry"
         @move:before="onMoveEntryLeft"
         @move:after="onMoveEntryRight"
       ></entry-form>
@@ -197,20 +158,6 @@ export default defineComponent({
       >🚧 En construction 🏗️</cdx-tab
     >
   </cdx-tabs>
-
-  <cdx-dialog
-    v-model:open="openDialog"
-    title="Confirmation de suppression"
-    use-close-button
-    :primary-action="dialogPrimaryAction"
-    :default-action="dialogDefaultAction"
-    @primary="deleteEntry"
-    @default="openDialog = false"
-  >
-    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette entrée&nbsp;?
-    <template #footer-text>Cette action est irréversible.</template>
-  </cdx-dialog>
 </template>
 
 <style>

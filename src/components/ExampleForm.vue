@@ -1,8 +1,9 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
+  CdxDialog,
   CdxField,
   CdxIcon,
   CdxTextInput,
@@ -18,6 +19,7 @@ import {
   cdxIconHelpNotice,
   cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
+import utils from "../utils.js";
 import WikiLink from "./WikiLink.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 
@@ -28,6 +30,7 @@ export default defineComponent({
     CdxField,
     CdxTextInput,
     CdxToggleSwitch,
+    CdxDialog,
     InputWithToolbar,
     WikiLink,
   },
@@ -73,6 +76,44 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    const openDeletionDialog = ref(false);
+
+    /**
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
+     */
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    function onDelete() {
+      if (
+        !text.value &&
+        !transcription.value &&
+        !transcription.value &&
+        !source.value &&
+        !link.value
+      )
+        deleteExample(); // Delete without confirmation if form is empty
+      else openDeletionDialog.value = true;
+    }
+
+    function deleteExample() {
+      openDeletionDialog.value = false;
+      ctx.emit("delete", props.index);
+    }
+
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+
     return {
       text,
       translation,
@@ -82,6 +123,11 @@ export default defineComponent({
       disableTranslation,
       showTranscription,
       showFields,
+      dialogPrimaryAction,
+      dialogDefaultAction,
+      openDeletionDialog,
+      utils,
+      config,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconArrowDown,
@@ -91,6 +137,8 @@ export default defineComponent({
       cdxIconExpand,
       cdxIconEllipsis,
       fireEvent,
+      onDelete,
+      deleteExample,
     };
   },
 });
@@ -153,7 +201,7 @@ export default defineComponent({
           aria-label="Supprimer"
           title="Supprimer"
           :disabled="!$props.enableDeleteBtn"
-          @click="$emit('delete', $props.index)"
+          @click="onDelete"
         >
           <cdx-icon :icon="cdxIconClose"></cdx-icon>
         </cdx-button>
@@ -241,6 +289,21 @@ export default defineComponent({
     </div>
     <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
   </cdx-field>
+
+  <cdx-dialog
+    v-model:open="openDeletionDialog"
+    title="Confirmation de suppression"
+    use-close-button
+    :primary-action="dialogPrimaryAction"
+    :default-action="dialogDefaultAction"
+    @primary="deleteExample"
+    @default="openDeletionDialog = false"
+  >
+    Êtes-vous
+    {{ utils.userGenderSwitch(config.gender, "sûr·e", "sûre", "sûr") }} de
+    vouloir supprimer cet exemple&nbsp;?
+    <template #footer-text>Cette action est irréversible.</template>
+  </cdx-dialog>
 </template>
 
 <style>

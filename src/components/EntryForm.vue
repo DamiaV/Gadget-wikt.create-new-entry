@@ -64,6 +64,35 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    const openDeletionDialog = ref(false);
+
+    /**
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
+     */
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    function onDelete() {
+      // TODO Check if forms are empty
+      openDeletionDialog.value = true;
+    }
+
+    /**
+     * Delete the entry at the selected index.
+     */
+    function deleteEntry() {
+      openDeletionDialog.value = false;
+      ctx.emit("delete", props.index);
+    }
+
     /*
      * Definitions
      */
@@ -86,44 +115,14 @@ export default defineComponent({
       fireEvent();
     }
 
-    const openDefinitionDeletionDialog = ref(false);
-    const definitionIndexToDelete = ref(-1);
-
     /**
-     * @type {import("@wikimedia/codex").PrimaryModalAction}
-     */
-    const dialogPrimaryAction = {
-      label: "Supprimer",
-      actionType: "destructive",
-    };
-    /**
-     * @type {import("@wikimedia/codex").ModalAction}
-     */
-    const dialogDefaultAction = {
-      label: "Annuler",
-    };
-
-    /**
-     * Called when the "delete" button is clicked in a definition form.
+     * Delete the definition at the given index.
      * @param {number} definitionIndex The index of the definition to delete.
      */
     function onDeleteDefinition(definitionIndex) {
-      definitionIndexToDelete.value = definitionIndex;
-      const definition = definitions.value[definitionIndex];
-      if (!definition.text && definition.examples.length === 0)
-        deleteDefinition(); // Delete without confirmation if form is empty
-      else openDefinitionDeletionDialog.value = true;
-    }
-
-    /**
-     * Delete the definition at the selected index.
-     */
-    function deleteDefinition() {
-      openDefinitionDeletionDialog.value = false;
-      const index = definitionIndexToDelete.value;
-      if (index < 0 || index >= definitions.value.length) return;
-
-      definitions.value.splice(index, 1);
+      if (definitionIndex < 0 || definitionIndex >= definitions.value.length)
+        return;
+      definitions.value.splice(definitionIndex, 1);
       fireEvent();
     }
 
@@ -153,17 +152,15 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
-    const gender = config.userGender;
 
     return {
       definitions,
       pronunciation,
-      openDefinitionDeletionDialog,
-      definitionIndexToDelete,
       dialogPrimaryAction,
       dialogDefaultAction,
-      gender,
+      openDeletionDialog,
       utils,
+      config,
       cdxIconClose,
       cdxIconArrowPrevious,
       cdxIconArrowNext,
@@ -171,10 +168,11 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconAdd,
       fireEvent,
+      onDelete,
+      deleteEntry,
       onDefinitionUpdate,
       onAddDefinition,
       onDeleteDefinition,
-      deleteDefinition,
       onMoveDefinitionUp,
       onMoveDefinitionDown,
     };
@@ -190,7 +188,7 @@ export default defineComponent({
       class="delete-entry-btn"
       action="destructive"
       :disabled="!$props.enableDeleteBtn"
-      @click="$emit('delete', $props.index)"
+      @click="onDelete"
     >
       <cdx-icon :icon="cdxIconClose"></cdx-icon>
       Supprimer l’entrée
@@ -273,16 +271,17 @@ export default defineComponent({
   </cdx-tabs>
 
   <cdx-dialog
-    v-model:open="openDefinitionDeletionDialog"
+    v-model:open="openDeletionDialog"
     title="Confirmation de suppression"
     use-close-button
     :primary-action="dialogPrimaryAction"
     :default-action="dialogDefaultAction"
-    @primary="deleteDefinition"
-    @default="openDefinitionDeletionDialog = false"
+    @primary="deleteEntry"
+    @default="openDeletionDialog = false"
   >
-    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette définition&nbsp;?
+    Êtes-vous
+    {{ utils.userGenderSwitch(config.gender, "sûr·e", "sûre", "sûr") }} de
+    vouloir supprimer cette entrée&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

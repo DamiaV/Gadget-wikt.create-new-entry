@@ -64,6 +64,33 @@ export default defineComponent({
       ctx.emit("update:model-value", firedEvent);
     }
 
+    const openDeletionDialog = ref(false);
+
+    /**
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
+     */
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    function onDelete() {
+      if (!text.value && examples.value.length === 0)
+        deleteDefinition(); // Delete without confirmation if form is empty
+      else openDeletionDialog.value = true;
+    }
+
+    function deleteDefinition() {
+      openDeletionDialog.value = false;
+      ctx.emit("delete", props.index);
+    }
+
     /*
      * Examples
      */
@@ -85,50 +112,12 @@ export default defineComponent({
       fireEvent();
     }
 
-    const openExampleDeletionDialog = ref(false);
-    const exampleIndexToDelete = ref(-1);
-
     /**
-     * @type {import("@wikimedia/codex").PrimaryModalAction}
-     */
-    const dialogPrimaryAction = {
-      label: "Supprimer",
-      actionType: "destructive",
-    };
-    /**
-     * @type {import("@wikimedia/codex").ModalAction}
-     */
-    const dialogDefaultAction = {
-      label: "Annuler",
-    };
-
-    /**
-     * Called when the "delete" button is clicked in an example form.
      * @param {number} exampleIndex The index of the example to delete.
      */
     function onDeleteExample(exampleIndex) {
-      exampleIndexToDelete.value = exampleIndex;
-      const example = examples.value[exampleIndex];
-      if (
-        !example.text &&
-        !example.transcription &&
-        !example.transcription &&
-        !example.source &&
-        !example.link
-      )
-        deleteExample(); // Delete without confirmation if form is empty
-      else openExampleDeletionDialog.value = true;
-    }
-
-    /**
-     * Delete the example at the selected index.
-     */
-    function deleteExample() {
-      openExampleDeletionDialog.value = false;
-      const index = exampleIndexToDelete.value;
-      if (index < 0 || index >= examples.value.length) return;
-
-      examples.value.splice(index, 1);
+      if (exampleIndex < 0 || exampleIndex >= examples.value.length) return;
+      examples.value.splice(exampleIndex, 1);
       fireEvent();
     }
 
@@ -181,19 +170,17 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
-    const gender = config.userGender;
 
     return {
       text,
       examples,
       illustration,
       showFields,
-      openExampleDeletionDialog,
-      exampleIndexToDelete,
       dialogPrimaryAction,
       dialogDefaultAction,
-      gender,
+      openDeletionDialog,
       utils,
+      config,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconArrowUp,
@@ -204,10 +191,11 @@ export default defineComponent({
       cdxIconExpand,
       cdxIconEllipsis,
       fireEvent,
+      onDelete,
+      deleteDefinition,
       onExampleUpdate,
       onAddExample,
       onDeleteExample,
-      deleteExample,
       onMoveExampleUp,
       onMoveExampleDown,
       onAddIllustration,
@@ -275,7 +263,7 @@ export default defineComponent({
           aria-label="Supprimer"
           title="Supprimer"
           :disabled="!$props.enableDeleteBtn"
-          @click="$emit('delete', $props.index)"
+          @click="onDelete"
         >
           <cdx-icon :icon="cdxIconClose"></cdx-icon>
         </cdx-button>
@@ -356,16 +344,17 @@ export default defineComponent({
   </cdx-field>
 
   <cdx-dialog
-    v-model:open="openExampleDeletionDialog"
+    v-model:open="openDeletionDialog"
     title="Confirmation de suppression"
     use-close-button
     :primary-action="dialogPrimaryAction"
     :default-action="dialogDefaultAction"
-    @primary="deleteExample"
-    @default="openExampleDeletionDialog = false"
+    @primary="deleteDefinition"
+    @default="openDeletionDialog = false"
   >
-    Êtes-vous {{ utils.userGenderSwitch(gender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cet exemple&nbsp;?
+    Êtes-vous
+    {{ utils.userGenderSwitch(config.gender, "sûr·e", "sûre", "sûr") }} de
+    vouloir supprimer cette définition&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>
