@@ -106,10 +106,24 @@ export default defineComponent({
 
       wordProperties.value.length = 0;
 
+      const propertiesLists = props.language.getGrammarItem(
+        wordType.value
+      ).properties;
+      const selectedIndices = [];
+      Object.values(propertiesLists).forEach((properties, i) => {
+        if (properties.length === 1) {
+          wordProperties.value[i] = properties[0].label;
+          selectedIndices.push(i);
+        }
+      });
+
       const newLength = wordTypePropertiesData.value[wordType.value].length;
       wordPropertiesStatuses.value.length = newLength;
-      wordPropertiesStatuses.value.fill("error");
-
+      for (let i = 0; i < wordPropertiesStatuses.value.length; i++) {
+        wordPropertiesStatuses[i] = selectedIndices.includes(i)
+          ? "default"
+          : "error";
+      }
       fireUpdateEvent();
     }
 
@@ -171,6 +185,7 @@ export default defineComponent({
           v-for="(key, i) in Object.keys(
             $props.language.getGrammarItem(wordType).properties
           )"
+          v-show="wordTypePropertiesData[wordType][i].length > 1"
           :key="key"
           :status="wordPropertiesStatuses[i]"
         >
