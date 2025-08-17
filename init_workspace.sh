@@ -7,6 +7,14 @@ if [[ ! "$username" || ! "$token" ]]; then
     exit 127
 fi
 
+echo "Installing NPM dependencies…"
+
+npm install
+if [[ $? -ne 0 ]]; then
+    echo "Failed to download npm dependencies, exiting."
+    exit 4
+fi
+
 echo "Setting up Python environment…"
 
 echo "# pylint: skip-file
@@ -33,18 +41,10 @@ if [[ $? -ne 0 ]]; then
     echo "Failed to install Python requirements, exiting."
     exit 2
 fi
-python3 sync.py updatewikideps
-if [[ $? -ne 0 ]]
+python3 sync.py updatewikideps -v
+if [[ $? -ne 0 ]]; then
     echo "Failed to download wiki dependencies, exiting."
     exit 3
-fi
-
-echo "Installing NPM dependencies…"
-
-npm install
-if [[ $? -ne 0 ]]; then
-    echo "Failed to download npm dependencies, exiting."
-    exit 4
 fi
 
 echo "Done."
