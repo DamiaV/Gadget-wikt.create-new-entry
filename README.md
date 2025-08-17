@@ -4,9 +4,23 @@ The gadget to create new entries on [fr.wiktionary.org](https://fr.wiktionary.or
 
 # Setting up the workspace
 
-To setup the workspace after cloning this repository, you need to run `./init_workspace.sh` in the root directory. It will create a Python venv, install all Python packages from `requirements.txt`, and download all dependencies from the wiki.
+To setup the workspace, you need to run the following command in the root directory:
 
-If you are using VSCode, it is strongly advised you install all recommended extensions.
+```
+./init_workspace.sh <wiki username> <bot password>
+```
+It will perform the following actions:
+1. Create the `user-config.py` and `user-password.py` files for Pywikibot using the provided credentials.
+1. Create a Python venv.
+1. Install all Python packages from `requirements.txt`.
+1. Download all wiki dependencies.
+1. Install all NPM dependencies.
+
+⚠️ **Important**: If you want to push changes to the wiki, you need an account that has the interface administrator status.
+
+You can create a bot password by going to [Special:BotPasswords](https://fr.wiktionary.org/wiki/Special:BotPasswords) while logged into the account you want to use.
+
+If you are using VSCode, it is strongly advised you install all recommended extensions from `.vscode/extensions.json`.
 
 JS/Vue files are linted and formatted with ESLint and Prettier. Python files are linted with Pylint and formatted with Black. Please run these before pushing your changes.
 
@@ -38,28 +52,6 @@ Files sync is performed through the `sync.py` tool. In order to know which files
 Each of the sub-commands below have a `-v`/`--verbose` option.
 
 Run `python3 sync.py -h` for help.
-
-## Pywikibot auth
-
-In order to be able to push contents to the wiki, **you need to use an account that is an interface administrator** there. You also need to setup Pywikibot’s authentication.
-
-You will need to create two files: `user-config.py` and `user-password.py`.
-
-`user-config.py` should only contain the following code:
-```py
-family = "wiktionary"
-mylang = "fr"
-usernames[family][mylang] = "<username>"  # Username of the wiki account to use for edits
-password_file = "user-password.py"
-
-```
-
-`user-password.py` should only contain the following line:
-```py
-("<username>", "<bot password>")  # Username should be the same as user-config.py
-```
-You can create a bot password by going to [Special:BotPasswords](https://fr.wiktionary.org/wiki/Special:BotPasswords) while logged into the account you want to use.
-
 
 ## Commands
 ⚠️ **Important**: The following commands do not interact with git. To push and pull changes to and from the GitHub repository, use the `git` command.
@@ -95,6 +87,14 @@ The gadget imports dependencies that are only available on the wiki. In order to
 To do so, run `python3 sync.py updatewikideps`. It will download the dependencies into the `src/wiki_deps` directory. These are listed in `config.json` under `wikiDependencies`. The contents of these files should not be updated manually.
 
 The same actions are performed on the downloaded `.js` files as the `pull` command.
+
+## Changing Pywikibot credentials
+
+If you want to change your Pywikibot credentials, edit `user-config.py` and `user-password.py` with your new username and bot token.
+
+**Reminder: you need to use an account that has the interface administrator status if you want to push changes to the wiki.**
+
+You can create a bot password by going to [Special:BotPasswords](https://fr.wiktionary.org/wiki/Special:BotPasswords) while logged into the account you want to use.
 
 ## `config.py`
 
