@@ -42,12 +42,19 @@ async function getImageFileUrl(pageName) {
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
   params.append("prop", "imageinfo");
-  params.append("iiprop", "url");
+  params.append("iiprop", "url|mediatype");
   params.append("format", "json");
   const response = await fetch(`/w/api.php?${params}`);
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
-  return pageInfo.imageinfo ? pageInfo.imageinfo[0].url : null;
+  if (!pageInfo.imageinfo) return null;
+
+  const imageInfo = pageInfo.imageinfo[0];
+
+  // bitmap = png, jpg, gif, bmp; drawing = svg
+  return ["BITMAP", "DRAWING"].includes(imageInfo.mediatype)
+    ? imageInfo.url
+    : null;
 }
 
 /**
@@ -56,40 +63,69 @@ async function getImageFileUrl(pageName) {
  *  type: string,
  * }} VideoFileSource
  */
+/**
+ * @typedef {{
+ *  thumbUrl: string,
+ *  sources: VideoFileSource[],
+ * }} VideoFileSources
+ */
 
 /**
  * Get the static URLs for the given vide file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
- * @returns {Promise<VideoFileSource[] | null>} The corresponding static URls or null if the file does not exist.
+ * @returns {Promise<VideoFileSources | null>} The corresponding static URls or null if the file does not exist.
  */
 async function getVideoFileUrls(pageName) {
   // Return default video for local testing
   if (location.hostname === "localhost")
-    return [
-      {
-        type: 'video/ogg; codecs="theora, vorbis"',
-        src: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Test.ogv",
-      },
-      {
-        type: 'video/webm; codecs="vp8, vorbis"',
-        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.360p.webm",
-      },
-      {
-        type: 'video/webm; codecs="vp9, opus"',
-        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.240p.vp9.webm",
-      },
-    ];
+    return {
+      thumbUrl:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Test.ogv/432px--Test.ogv.jpg",
+      sources: [
+        {
+          type: 'video/ogg; codecs="theora, vorbis"',
+          src: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Test.ogv",
+        },
+        {
+          type: 'video/webm; codecs="vp8, vorbis"',
+          src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.360p.webm",
+        },
+        {
+          type: 'video/webm; codecs="vp9, opus"',
+          src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.240p.vp9.webm",
+        },
+      ],
+    };
 
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
   params.append("prop", "videoinfo");
-  params.append("viprop", "derivatives");
+  params.append("viprop", "derivatives|size|mediatype");
   params.append("format", "json");
   const response = await fetch(`/w/api.php?${params}`);
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
-  return pageInfo.videoinfo ? pageInfo.videoinfo[0].derivatives : null;
+  if (!pageInfo.videoinfo) return null;
+
+  const videoInfo = pageInfo.videoinfo[0];
+  if (videoInfo.mediatype !== "VIDEO") return null;
+
+  const params2 = new URLSearchParams();
+  params2.append("action", "query");
+  params2.append("titles", `File:${pageName}`);
+  params2.append("prop", "videoinfo");
+  params2.append("viprop", "url");
+  params2.append("viurlwidth", videoInfo.width);
+  params2.append("format", "json");
+  const response2 = await fetch(`/w/api.php?${params2}`);
+  const json2 = await response2.json();
+  const pageInfo2 = json2.query.pages["-1"];
+
+  return {
+    thumbUrl: pageInfo2.videoinfo[0].thumburl,
+    sources: videoInfo.derivatives,
+  };
 }
 
 /**

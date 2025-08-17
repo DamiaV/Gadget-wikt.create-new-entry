@@ -70,9 +70,9 @@ export default defineComponent({
     });
     const imageUrl = ref("");
     /**
-     * @type {import("../utils.js").VideoFileSource[]}
+     * @type {import("../utils.js").VideoFileSources}
      */
-    const videoUrls = ref([]);
+    const videoSources = ref({});
 
     const status = ref("default");
     const messages = ref({
@@ -186,7 +186,7 @@ export default defineComponent({
         case "video":
           utils
             .getVideoFileUrls(fileName.value)
-            .then((sources) => (videoUrls.value = sources || []));
+            .then((sources) => (videoSources.value = sources || {}));
           break;
         case "audio": // TODO
           break;
@@ -210,7 +210,7 @@ export default defineComponent({
       color,
       alt,
       imageUrl,
-      videoUrls,
+      videoSources,
       // Visual
       status,
       messages,
@@ -284,11 +284,13 @@ export default defineComponent({
 
       <video
         v-else-if="type === 'video' && fileName"
+        :key="videoSources"
+        :poster="videoSources.thumbUrl"
         class="cne-image-preview"
         controls
       >
         <source
-          v-for="(source, i) in videoUrls"
+          v-for="(source, i) in videoSources.sources"
           :key="i"
           :src="source.src"
           :type="source.type"
