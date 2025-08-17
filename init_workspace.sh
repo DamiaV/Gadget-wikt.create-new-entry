@@ -21,17 +21,17 @@ echo "# pylint: skip-file
 " > user-password.py
 
 python3 -m venv .venv
-if [[ $? -ne 0 ]]; then;
+if [[ $? -ne 0 ]]; then
     echo "Failed to create venv, exiting."
     exit 1
 fi
 pip install -r requirements.txt
-if [[ $? -ne 0 ]]; then;
+if [[ $? -ne 0 ]]; then
     echo "Failed to install Python requirements, exiting."
     exit 2
 fi
 python3 sync.py updatewikideps
-if [[ $? -ne 0 ]];
+if [[ $? -ne 0 ]]
     echo "Failed to download wiki dependencies, exiting."
     exit 3
 fi
@@ -39,7 +39,7 @@ fi
 echo "Installing NPM dependencies…"
 
 npm install
-if [[ $? -ne 0 ]];
+if [[ $? -ne 0 ]]; then
     echo "Failed to download npm dependencies, exiting."
     exit 4
 fi
