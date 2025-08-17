@@ -85,7 +85,6 @@ export default defineComponent({
     function onLanguageSelection(code) {
       const lang = props.languages.find((lang) => lang.code === code);
       if (!code || !lang) return;
-      langCode.value = code;
       ctx.emit("update:model-value", lang);
     }
 

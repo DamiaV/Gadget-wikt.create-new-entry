@@ -21,6 +21,7 @@ import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
 import utils from "../utils.js";
 import WikiLink from "./WikiLink.vue";
+import WordPropertiesSelector from "./WordPropertiesSelector.vue";
 
 export default defineComponent({
   components: {
@@ -29,6 +30,7 @@ export default defineComponent({
     CdxButton,
     CdxIcon,
     CdxDialog,
+    WordPropertiesSelector,
     DefinitionForm,
     InputWithToolbar,
     WikiLink,
@@ -49,6 +51,13 @@ export default defineComponent({
   emits: ["update:model-value", "delete", "move:before", "move:after"],
 
   setup(props, ctx) {
+    /**
+     * @type {import("vue").Ref<import("./WordPropertiesSelector.vue").WordProperties>}
+     */
+    const wordTypeProperties = ref({
+      wordType: props.modelValue.wordType,
+      properties: props.modelValue.wordProperties,
+    });
     const definitions = ref(props.modelValue.definitions);
     const pronunciation = ref(props.modelValue.pronunciation || "");
 
@@ -66,6 +75,8 @@ export default defineComponent({
         index: props.index,
         entry: {
           id: props.modelValue.id,
+          wordType: wordTypeProperties.value.wordType,
+          wordProperties: wordTypeProperties.value.properties,
           definitions: definitions.value,
           pronunciation: pronunciation.value,
           empty: isEmpty(),
@@ -102,6 +113,19 @@ export default defineComponent({
     function deleteEntry() {
       openDeletionDialog.value = false;
       ctx.emit("delete", props.index);
+    }
+
+    /*
+     * Word type properties
+     */
+
+    /**
+     * Update the word type properties.
+     * @param {import("./WordPropertiesSelector.vue").WordProperties} newWordTypeProperties The new word type properties.
+     */
+    function onWordTypePropertiesUpdate(newWordTypeProperties) {
+      wordTypeProperties.value = newWordTypeProperties;
+      fireUpdateEvent();
     }
 
     /*
@@ -170,6 +194,7 @@ export default defineComponent({
 
     return {
       // Data
+      wordTypeProperties,
       definitions,
       pronunciation,
       // Deletion dialog
@@ -190,6 +215,7 @@ export default defineComponent({
       fireUpdateEvent,
       onDelete,
       deleteEntry,
+      onWordTypePropertiesUpdate,
       onDefinitionUpdate,
       onAddDefinition,
       onDeleteDefinition,
@@ -236,6 +262,12 @@ export default defineComponent({
       <cdx-icon :icon="cdxIconArrowNext"></cdx-icon>
     </cdx-button>
   </div>
+
+  <word-properties-selector
+    v-model="wordTypeProperties"
+    :language="$props.language"
+    @update:model-value="onWordTypePropertiesUpdate"
+  ></word-properties-selector>
 
   <cdx-tabs class="cne-entry-tabs" framed>
     <cdx-tab name="definitions" label="Définitions & exemples">

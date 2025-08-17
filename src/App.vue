@@ -60,6 +60,8 @@ export default defineComponent({
         // Create an empty initial entry
         {
           id: 1,
+          wordType: "",
+          wordProperties: [],
           definitions: [
             {
               id: 1,
@@ -104,8 +106,46 @@ export default defineComponent({
       formData.value.stub = checked;
     }
 
+    /**
+     * Check whether the current `formData` is invalid.
+     * @returns {boolean} True if it is invalid, false if it is valid.
+     */
+    function isFormInvalid() {
+      /**
+       * Check whether the given entry is invalid.
+       * @param {import("./types.js").Entry} entry The entry to check.
+       * @returns {boolean} True if the entry is invalid, false if it is valid.
+       */
+      const isEntryInvalid = (entry) => {
+        const wordType = entry.wordType;
+        if (!wordType) return true;
+
+        const grammarItem = language.value.getGrammarItem(wordType);
+        if (!grammarItem) return true;
+
+        const selectedProps = entry.wordProperties;
+        const expectedPropsCount =
+          language.value.getGrammarItem(wordType).properties.length;
+
+        return (
+          // Not enough properties
+          selectedProps.length < expectedPropsCount ||
+          // Undefined properties
+          selectedProps.some((p) => !p)
+        );
+      };
+
+      return (
+        !form.value.checkValidity() ||
+        formData.value.entries.some(isEntryInvalid)
+      );
+    }
+
     function onSubmit() {
-      if (!form.value.checkValidity()) return;
+      if (isFormInvalid()) {
+        console.log("cannot insert");
+        return;
+      }
       console.log(formData.value);
     }
 
@@ -148,7 +188,7 @@ export default defineComponent({
       </cdx-button>
     </div>
 
-    <form v-if="showForm" ref="form" class="cne-box" @submit.prevent="onSubmit">
+    <form v-else ref="form" class="cne-box" @submit.prevent="onSubmit">
       <div class="cne-form-toolbar">
         <cdx-button
           type="button"

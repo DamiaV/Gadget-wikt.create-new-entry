@@ -50,6 +50,8 @@ export default defineComponent({
       const id = utils.getNextId(entries.value);
       entries.value.push({
         id,
+        wordType: "",
+        wordProperties: [],
         definitions: [
           {
             text: "",
@@ -145,8 +147,15 @@ export default defineComponent({
       v-for="(entry, i) in entries"
       :key="entry.id"
       :name="`tab-${entry.id}`"
-      :label="`Entrée ${entry.id}`"
-    >
+      :label="
+        entry.wordType && $props.language.getGrammarItem(entry.wordType)
+          ? utils.capitalize(
+              $props.language.getGrammarItem(entry.wordType).grammaticalClass
+                .label
+            )
+          : `Entrée ${entry.id}`
+      "
+      ><!-- TODO show word type label instead of code -->
       <entry-form
         :index="i"
         :language="$props.language"

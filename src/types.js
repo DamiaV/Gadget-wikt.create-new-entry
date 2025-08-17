@@ -54,6 +54,8 @@
 /**
  * @typedef {{
  *  id: number,
+ *  wordType: string,
+ *  wordProperties: string[],
  *  definitions: Definition[],
  *  pronunciation?: string,
  *  empty: boolean,
@@ -127,6 +129,12 @@
  */
 
 /**
+ * @typedef {{
+ *  readonly label: string,
+ *  readonly template: string,
+ * }} GrammaticalProperty
+ */
+/**
  * This class represents a grammatical property with a name and an associated template.
  */
 class GrammaticalProperty {
@@ -162,6 +170,12 @@ class GrammaticalProperty {
   }
 }
 
+/**
+ * @typedef {{
+ *  readonly label: string,
+ *  readonly sectionCode: string,
+ * }} GrammaticalClass
+ */
 /**
  * This class represents a grammatical class.
  */
@@ -203,6 +217,14 @@ class GrammaticalClass {
  * @typedef {((word: string, grammarClass: string, labels: string[], pronunciation: string) => string)?} InflectionsGenerator
  */
 
+/**
+ * @typedef {{
+ *  readonly grammaticalClass: GrammaticalClass,
+ *  readonly properties: GrammaticalProperty[][],
+ *  readonly getProperty: (index: number, label: string) => GrammaticalProperty | null,
+ *  readonly getInflectionsTemplate: (word: string, labels: string[], pronunciation: string) => string,
+ * }} GrammaticalItem
+ */
 /**
  * A grammatical item associates a grammatical class to properties.
  */
@@ -246,7 +268,9 @@ class GrammaticalItem {
 
   /**
    * Fetches the grammatical property with the given index and label.
-   * @return {GrammaticalProperty|null}
+   * @param {number} index
+   * @param {string} label
+   * @return {GrammaticalProperty | null}
    */
   getProperty(index, label) {
     const props = this._properties[index];
@@ -257,9 +281,9 @@ class GrammaticalItem {
 
   /**
    * Generates the inflections template.
-   * @param word {string} The base word.
-   * @param labels {string[]} Grammatical properties’ labels.
-   * @param pronunciation {string} IPA pronunciation.
+   * @param {string} word The base word.
+   * @param {string[]} labels Grammatical properties’ labels.
+   * @param {string} pronunciation IPA pronunciation.
    * @return {string} Template’s wikicode.
    */
   getInflectionsTemplate(word, labels, pronunciation) {
@@ -270,6 +294,19 @@ class GrammaticalItem {
   }
 }
 
+/**
+ * @typedef {{
+ *  readonly code: string,
+ *  readonly wikimediaCode: string,
+ *  readonly iso6393Code: string,
+ *  readonly name: string,
+ *  readonly ipaSymbols: string[][],
+ *  readonly grammarItems: Record<string, GrammaticalItem>,
+ *  readonly isSupported: boolean,
+ *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem,
+ *  readonly generatePronunciation: (word: string) => string,
+ * }} Language
+ */
 /**
  * This class encapsulates data and behaviors specific to a specific language.
  */
@@ -393,7 +430,7 @@ class Language {
   /**
    * Fetches the grammatical item that has the given section title.
    * @param {string} sectionName Section’s title.
-   * @return {GrammaticalItem} The grammatical item if found or undefined otherwise.
+   * @return {GrammaticalItem | undefined} The grammatical item if found or undefined otherwise.
    */
   getGrammarItem(sectionName) {
     return this._grammarItems[sectionName];
@@ -409,6 +446,15 @@ class Language {
   }
 }
 
+/**
+ * @typedef {{
+ *  readonly label: string,
+ *  readonly templateName: string,
+ *  readonly urlDomain: string,
+ *  readonly urlBase: string,
+ *  readonly showOnlyForLangs: string[],
+ * }} Wiki
+ */
 /**
  * A simple class that defines useful properties of sister wikis.
  */
@@ -451,12 +497,21 @@ class Wiki {
 }
 
 /**
+ * @typedef {{
+ *  readonly label: string,
+ *  readonly code: string,
+ *  readonly level: number,
+ *  readonly help?: string,
+ *  readonly hidden?: boolean,
+ * }} ArticleSection
+ */
+/**
  * A simple class that defines properties of an article’s section.
  */
 class ArticleSection {
   /**
    * Creates a new article section object.
-   * @param {string label} Section’s label.
+   * @param {string} label Section’s label.
    * @param {string} code Section’s template code.
    * @param {number} level Section’s level.
    * @param {string?} help Section’s help page name.

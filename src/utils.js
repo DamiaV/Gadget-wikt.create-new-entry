@@ -49,10 +49,20 @@ async function getFileUrl(pageName) {
   return pageInfo.imageinfo ? pageInfo.imageinfo[0].url : null;
 }
 
+/**
+ * Capitalize the first letter of the given string.
+ * @param {string} s A string.
+ * @returns {string} The input string with its first letter capitalized.
+ */
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+
 // </nowiki>
 
 export default {
   userGenderSwitch,
   getNextId,
   getFileUrl,
+  capitalize,
 };
