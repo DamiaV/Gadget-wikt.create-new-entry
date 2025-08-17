@@ -381,9 +381,6 @@ export default defineComponent({
         @update:model-value="onInput"
         @invalid="onInvalid"
       ></cdx-text-input>
-      <cdx-button type="button" title="Rafraichir la prévisualisation">
-        <cdx-icon :icon="cdxIconReload"></cdx-icon>
-      </cdx-button>
     </cdx-field>
 
     <cdx-field
