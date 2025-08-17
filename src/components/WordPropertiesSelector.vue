@@ -120,7 +120,7 @@ export default defineComponent({
       const newLength = wordTypePropertiesData.value[wordType.value].length;
       wordPropertiesStatuses.value.length = newLength;
       for (let i = 0; i < wordPropertiesStatuses.value.length; i++) {
-        wordPropertiesStatuses[i] = selectedIndices.includes(i)
+        wordPropertiesStatuses.value[i] = selectedIndices.includes(i)
           ? "default"
           : "error";
       }
