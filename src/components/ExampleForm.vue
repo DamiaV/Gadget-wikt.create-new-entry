@@ -20,7 +20,6 @@ import {
   cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
-import WikiLink from "./WikiLink.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import CollapsedPreview from "./CollapsedPreview.vue";
 
@@ -33,7 +32,6 @@ export default defineComponent({
     CdxToggleSwitch,
     CdxDialog,
     InputWithToolbar,
-    WikiLink,
     CollapsedPreview,
   },
 
@@ -168,14 +166,6 @@ export default defineComponent({
     <template #label>
       Exemple {{ $props.index + 1 }}
       <span class="cne-fieldset-btns">
-        <wiki-link page-title="Aide:Exemples">
-          <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-        </wiki-link>
-
-        <wiki-link page-title="Convention:Exemples">
-          <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-        </wiki-link>
-
         <cdx-button
           type="button"
           size="small"

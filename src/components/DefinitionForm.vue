@@ -52,6 +52,7 @@ export default defineComponent({
     const illustration = ref(props.modelValue.illustration);
 
     const showFields = ref(true);
+    const showExamples = ref(true);
 
     function isEmpty() {
       return (
@@ -206,6 +207,7 @@ export default defineComponent({
       illustration,
       // Visuals
       showFields,
+      showExamples,
       // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -327,30 +329,65 @@ export default defineComponent({
           </template>
         </input-with-toolbar>
 
-        <div class="cne-examples">
-          <example-form
-            v-for="(example, i) in examples"
-            :key="example.id"
-            :index="i"
-            enable-delete-btn
-            :can-move-before="i > 0"
-            :can-move-after="i < examples.length - 1"
-            :model-value="example"
-            @update:model-value="onExampleUpdate"
-            @delete="onDeleteExample"
-            @move:before="onMoveExampleUp"
-            @move:after="onMoveExampleDown"
-          ></example-form>
-          <cdx-button
-            class="cne-add-example-btn"
-            type="button"
-            action="progressive"
-            @click="onAddExample"
-          >
-            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-            Ajouter un exemple
-          </cdx-button>
-        </div>
+        <cdx-field class="cne-box" is-fieldset>
+          <template #label>
+            Exemples
+            <span class="cne-fieldset-btns">
+              <wiki-link page-title="Aide:Exemples">
+                <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+              </wiki-link>
+
+              <wiki-link page-title="Convention:Exemples">
+                <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+              </wiki-link>
+
+              <cdx-button
+                type="button"
+                size="small"
+                :aria-label="showExamples ? 'Enrouler' : 'Dérouler'"
+                :title="showExamples ? 'Enrouler' : 'Dérouler'"
+                @click="showExamples = !showExamples"
+              >
+                <cdx-icon
+                  :icon="showExamples ? cdxIconCollapse : cdxIconExpand"
+                ></cdx-icon>
+              </cdx-button>
+            </span>
+          </template>
+
+          <div v-show="showExamples" class="cne-examples">
+            <example-form
+              v-for="(example, i) in examples"
+              :key="example.id"
+              :index="i"
+              enable-delete-btn
+              :can-move-before="i > 0"
+              :can-move-after="i < examples.length - 1"
+              :model-value="example"
+              @update:model-value="onExampleUpdate"
+              @delete="onDeleteExample"
+              @move:before="onMoveExampleUp"
+              @move:after="onMoveExampleDown"
+            ></example-form>
+            <cdx-button
+              class="cne-add-example-btn"
+              type="button"
+              action="progressive"
+              @click="onAddExample"
+            >
+              <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+              Ajouter un exemple
+            </cdx-button>
+          </div>
+          <collapsed-preview
+            v-show="!showExamples"
+            :text="
+              examples.length === 0
+                ? 'Aucun exemple'
+                : `${examples.length} exemple${examples.length > 1 ? 's' : ''}`
+            "
+          ></collapsed-preview>
+        </cdx-field>
       </div>
 
       <div v-if="!illustration">
@@ -392,11 +429,6 @@ export default defineComponent({
 <style>
 .cne-definition-form {
   margin-bottom: 1em;
-}
-
-.cne-examples {
-  margin-top: 1em;
-  padding-left: 2em;
 }
 
 .cne-definition-grid {
