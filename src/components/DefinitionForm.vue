@@ -416,7 +416,6 @@ export default defineComponent({
 }
 
 .cne-illustration-form {
-  flex-grow: 0.5;
   margin-top: 0;
 }
 </style>
