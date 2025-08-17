@@ -10,11 +10,11 @@ To setup the workspace, you need to run the following command in the root direct
 ./init_workspace.sh <wiki username> <bot password>
 ```
 It will perform the following actions:
+1. Install all NPM dependencies.
 1. Create the `user-config.py` and `user-password.py` files for Pywikibot using the provided credentials.
 1. Create a Python venv.
 1. Install all Python packages from `requirements.txt`.
 1. Download all wiki dependencies.
-1. Install all NPM dependencies.
 
 ⚠️ **Important**: If you want to push changes to the wiki, you need an account that has the interface administrator status.
 
