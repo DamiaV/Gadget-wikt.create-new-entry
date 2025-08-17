@@ -79,23 +79,15 @@ export default defineComponent({
     watch(wordTypesData, () => {
       wordType.value = "";
       wordTypeStatus.value = "error";
-      wordTypeMessages.value.error = "Veuillez sélectionner une option";
       fireUpdateEvent();
     });
 
     const wordTypeStatus = ref("error");
-    const wordTypeMessages = ref({
-      error: "Veuillez sélectionner une option",
-    });
 
     /**
      * @type {import("vue").Ref<string[]>}
      */
     const wordPropertiesStatuses = ref([]);
-    /**
-     * @type {import("vue").Ref<{error?: string}[]>}
-     */
-    const wordPropertiesMessages = ref([]);
 
     function fireUpdateEvent() {
       /**
@@ -117,11 +109,6 @@ export default defineComponent({
       wordPropertiesStatuses.value.length = newLength;
       wordPropertiesStatuses.value.fill("error");
 
-      wordPropertiesMessages.value.length = newLength;
-      wordPropertiesMessages.value.fill({
-        error: "Veuillez sélectionner une option",
-      });
-
       fireUpdateEvent();
     }
 
@@ -131,7 +118,6 @@ export default defineComponent({
      */
     function onWordPropertySelection(index, value) {
       wordPropertiesStatuses.value[index] = "default";
-      wordPropertiesMessages.value[index].error = "";
       wordProperties.value[index] = value;
       fireUpdateEvent();
     }
@@ -144,9 +130,7 @@ export default defineComponent({
       wordProperties,
       // Visual
       wordTypeStatus,
-      wordTypeMessages,
       wordPropertiesStatuses,
-      wordPropertiesMessages,
       // Icons
       cdxIconHelpNotice,
       // Callbacks
@@ -169,7 +153,7 @@ export default defineComponent({
     </template>
 
     <div class="cne-word-type-selects">
-      <cdx-field :status="wordTypeStatus" :messages="wordTypeMessages">
+      <cdx-field :status="wordTypeStatus">
         <template #label>Classe grammaticale</template>
         <cdx-select
           v-model:selected="wordType"
@@ -184,7 +168,6 @@ export default defineComponent({
           v-for="(_, i) in $props.language.getGrammarItem(wordType).properties"
           :key="i"
           :status="wordPropertiesStatuses[i]"
-          :messages="wordPropertiesMessages[i]"
         >
           <template #label>TODO label</template>
           <cdx-select
