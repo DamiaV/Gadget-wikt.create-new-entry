@@ -68,7 +68,11 @@ export default defineComponent({
         return rawFileName.value.substring(6);
       return rawFileName.value;
     });
-    const fileUrl = ref("");
+    const imageUrl = ref("");
+    /**
+     * @type {import("../utils.js").VideoFileSource[]}
+     */
+    const videoUrls = ref([]);
 
     const status = ref("default");
     const messages = ref({
@@ -173,7 +177,20 @@ export default defineComponent({
      * Called when the file name is updated.
      */
     function onFileNameUpdate() {
-      utils.getFileUrl(fileName.value).then((url) => (fileUrl.value = url));
+      switch (type.value) {
+        case "image":
+          utils
+            .getImageFileUrl(fileName.value)
+            .then((url) => (imageUrl.value = url));
+          break;
+        case "video":
+          utils
+            .getVideoFileUrls(fileName.value)
+            .then((sources) => (videoUrls.value = sources || []));
+          break;
+        case "audio": // TODO
+          break;
+      }
       fireUpdateEvent();
     }
 
@@ -192,7 +209,8 @@ export default defineComponent({
       text,
       color,
       alt,
-      fileUrl,
+      imageUrl,
+      videoUrls,
       // Visual
       status,
       messages,
@@ -250,25 +268,49 @@ export default defineComponent({
     <div
       v-show="
         ((type === 'image' || type === 'video' || type === 'audio') &&
-          !!fileName) ||
-        (type === 'color' && !!color)
+          fileName) ||
+        (type === 'color' && color)
       "
       class="cne-preview-box"
     >
       Aperçu
-      <a
-        v-if="type === 'image' && !!fileName"
-        :href="`https://commons.wikimedia.org/wiki/File:${fileName}`"
-        target="_blank"
-        title="Voir l’image sur Commons (S’ouvre dans un nouvel onglet)"
+
+      <img
+        v-if="type === 'image' && fileName"
+        class="cne-image-preview"
+        :src="imageUrl"
+        :alt="alt"
+      />
+
+      <video
+        v-else-if="type === 'video' && fileName"
+        class="cne-image-preview"
+        controls
       >
-        <img class="cne-image-preview" :src="fileUrl" />
-      </a>
+        <source
+          v-for="(source, i) in videoUrls"
+          :key="i"
+          :src="source.src"
+          :type="source.type"
+        />
+        Impossible de lire la vidéo
+      </video>
+
       <div
-        v-else-if="type === 'color' && !!color"
+        v-else-if="type === 'color' && color"
         class="cne-color-preview"
         :style="{ backgroundColor: color }"
       ></div>
+
+      <a
+        v-show="
+          (type === 'image' || type === 'video' || type === 'audio') && fileName
+        "
+        :href="`https://commons.wikimedia.org/wiki/File:${fileName}`"
+        target="_blank"
+        title="Voir le fichier sur Commons (S’ouvre dans un nouvel onglet)"
+        >Fichier</a
+      >
     </div>
 
     <cdx-radio
@@ -400,11 +442,12 @@ export default defineComponent({
   align-items: center;
   flex-direction: column;
   gap: 0.5em;
+  margin: 0 0 1em 1em;
 }
 
 .cne-image-preview {
-  max-width: 10em;
-  max-height: 10em;
+  max-width: 20em;
+  max-height: 20em;
 }
 
 .cne-color-preview {

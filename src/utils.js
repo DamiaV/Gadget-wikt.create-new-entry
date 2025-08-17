@@ -29,14 +29,15 @@ function getNextId(objectsWithId) {
 }
 
 /**
- * Get the static URL for the given file page on Commons.
+ * Get the static URL for the given image file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
  * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
  */
-async function getFileUrl(pageName) {
+async function getImageFileUrl(pageName) {
   // Return default image for local testing
   if (location.hostname === "localhost")
     return "https://upload.wikimedia.org/wikipedia/commons/2/28/Testbeeld_MK8.png";
+
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
@@ -47,6 +48,48 @@ async function getFileUrl(pageName) {
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
   return pageInfo.imageinfo ? pageInfo.imageinfo[0].url : null;
+}
+
+/**
+ * @typedef {{
+ *  src: string,
+ *  type: string,
+ * }} VideoFileSource
+ */
+
+/**
+ * Get the static URLs for the given vide file page on Commons.
+ * @param {string} pageName The wiki page name on Commons.
+ * @returns {Promise<VideoFileSource[] | null>} The corresponding static URls or null if the file does not exist.
+ */
+async function getVideoFileUrls(pageName) {
+  // Return default video for local testing
+  if (location.hostname === "localhost")
+    return [
+      {
+        type: 'video/ogg; codecs="theora, vorbis"',
+        src: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Test.ogv",
+      },
+      {
+        type: 'video/webm; codecs="vp8, vorbis"',
+        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.360p.webm",
+      },
+      {
+        type: 'video/webm; codecs="vp9, opus"',
+        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.240p.vp9.webm",
+      },
+    ];
+
+  const params = new URLSearchParams();
+  params.append("action", "query");
+  params.append("titles", `File:${pageName}`);
+  params.append("prop", "videoinfo");
+  params.append("viprop", "derivatives");
+  params.append("format", "json");
+  const response = await fetch(`/w/api.php?${params}`);
+  const json = await response.json();
+  const pageInfo = json.query.pages["-1"];
+  return pageInfo.videoinfo ? pageInfo.videoinfo[0].derivatives : null;
 }
 
 /**
@@ -63,6 +106,7 @@ function capitalize(s) {
 export default {
   userGenderSwitch,
   getNextId,
-  getFileUrl,
+  getImageFileUrl,
+  getVideoFileUrls,
   capitalize,
 };
