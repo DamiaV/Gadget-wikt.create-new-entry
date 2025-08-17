@@ -25,6 +25,9 @@ if [[ $? -ne 0 ]]; then
     echo "Failed to create venv, exiting."
     exit 1
 fi
+
+source .venv/bin/activate
+
 pip install -r requirements.txt
 if [[ $? -ne 0 ]]; then
     echo "Failed to install Python requirements, exiting."
