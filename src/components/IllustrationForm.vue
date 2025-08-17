@@ -13,6 +13,7 @@ import {
   cdxIconClose,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconReload,
   cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
@@ -70,9 +71,13 @@ export default defineComponent({
     });
     const imageUrl = ref("");
     /**
-     * @type {import("../utils.js").VideoFileSources}
+     * @type {import("vue").Ref<import("../utils.js").VideoFileSources>}
      */
     const videoSources = ref({});
+    /**
+     * @type {import("vue").Ref<import("../utils.js").MediaFileSource[]>}
+     */
+    const audioSources = ref([]);
 
     const status = ref("default");
     const messages = ref({
@@ -173,23 +178,37 @@ export default defineComponent({
       if (event.target) messages.value.error = event.target.validationMessage;
     }
 
+    function onTypeUpdate() {
+      imageUrl.value = "";
+      videoSources.value = {};
+      audioSources.value = [];
+
+      if (["image", "video", "audio"].includes(type.value)) onFileNameUpdate();
+      else fireUpdateEvent();
+    }
+
     /**
      * Called when the file name is updated.
      */
     function onFileNameUpdate() {
-      switch (type.value) {
-        case "image":
-          utils
-            .getImageFileUrl(fileName.value)
-            .then((url) => (imageUrl.value = url));
-          break;
-        case "video":
-          utils
-            .getVideoFileUrls(fileName.value)
-            .then((sources) => (videoSources.value = sources || {}));
-          break;
-        case "audio": // TODO
-          break;
+      if (fileName.value) {
+        switch (type.value) {
+          case "image":
+            utils
+              .getImageFileUrl(fileName.value)
+              .then((url) => (imageUrl.value = url));
+            break;
+          case "video":
+            utils
+              .getVideoFileUrls(fileName.value)
+              .then((sources) => (videoSources.value = sources || {}));
+            break;
+          case "audio":
+            utils
+              .getAudioFileUrls(fileName.value)
+              .then((sources) => (audioSources.value = sources || []));
+            break;
+        }
       }
       fireUpdateEvent();
     }
@@ -211,6 +230,7 @@ export default defineComponent({
       alt,
       imageUrl,
       videoSources,
+      audioSources,
       // Visual
       status,
       messages,
@@ -226,12 +246,14 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconClose,
       cdxIconSearch,
+      cdxIconReload,
       // Callbacks
       fireUpdateEvent,
       onDelete,
       deleteIllustration,
       onInput,
       onInvalid,
+      onTypeUpdate,
       onFileNameUpdate,
     };
   },
@@ -267,8 +289,9 @@ export default defineComponent({
 
     <div
       v-show="
-        ((type === 'image' || type === 'video' || type === 'audio') &&
-          fileName) ||
+        (type === 'image' && imageUrl) ||
+        (type === 'video' && videoSources.sources) ||
+        (type === 'audio' && audioSources.length) ||
         (type === 'color' && color)
       "
       class="cne-preview-box"
@@ -276,14 +299,14 @@ export default defineComponent({
       Aperçu
 
       <img
-        v-if="type === 'image' && fileName"
+        v-if="type === 'image'"
         class="cne-image-preview"
         :src="imageUrl"
         :alt="alt"
       />
 
       <video
-        v-else-if="type === 'video' && fileName"
+        v-else-if="type === 'video'"
         :key="videoSources"
         :poster="videoSources.thumbUrl"
         class="cne-image-preview"
@@ -298,8 +321,18 @@ export default defineComponent({
         Impossible de lire la vidéo
       </video>
 
+      <audio v-else-if="type === 'audio'" :key="audioSources" controls>
+        <source
+          v-for="(source, i) in audioSources"
+          :key="i"
+          :src="source.src"
+          :type="source.type"
+        />
+        Impossible de lire le fichier
+      </audio>
+
       <div
-        v-else-if="type === 'color' && color"
+        v-else-if="type === 'color'"
         class="cne-color-preview"
         :style="{ backgroundColor: color }"
       ></div>
@@ -321,7 +354,7 @@ export default defineComponent({
       v-model="type"
       :input-value="type_.value"
       name="type"
-      @change="fireUpdateEvent"
+      @change="onTypeUpdate"
     >
       {{ type_.label }}
     </cdx-radio>
@@ -348,6 +381,9 @@ export default defineComponent({
         @update:model-value="onInput"
         @invalid="onInvalid"
       ></cdx-text-input>
+      <cdx-button type="button" title="Rafraichir la prévisualisation">
+        <cdx-icon :icon="cdxIconReload"></cdx-icon>
+      </cdx-button>
     </cdx-field>
 
     <cdx-field

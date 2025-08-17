@@ -61,17 +61,17 @@ async function getImageFileUrl(pageName) {
  * @typedef {{
  *  src: string,
  *  type: string,
- * }} VideoFileSource
+ * }} MediaFileSource
  */
 /**
  * @typedef {{
  *  thumbUrl: string,
- *  sources: VideoFileSource[],
+ *  sources: MediaFileSource[],
  * }} VideoFileSources
  */
 
 /**
- * Get the static URLs for the given vide file page on Commons.
+ * Get the static URLs for the given video file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
  * @returns {Promise<VideoFileSources | null>} The corresponding static URls or null if the file does not exist.
  */
@@ -129,6 +129,46 @@ async function getVideoFileUrls(pageName) {
 }
 
 /**
+ * Get the static URLs for the given audio file page on Commons.
+ * @param {string} pageName The wiki page name on Commons.
+ * @returns {Promise<MediaFileSource[] | null>} The corresponding static URls or null if the file does not exist.
+ */
+async function getAudioFileUrls(pageName) {
+  // Return default audio for local testing
+  if (location.hostname === "localhost")
+    return [
+      {
+        type: 'audio/ogg; codecs="vorbis"',
+        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/35/WikiTest.mid/WikiTest.mid.ogg",
+      },
+      {
+        type: "audio/mpeg",
+        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/35/WikiTest.mid/WikiTest.mid.mp3",
+      },
+      {
+        type: "audio/midi",
+        src: "https://upload.wikimedia.org/wikipedia/commons/3/35/WikiTest.mid",
+      },
+    ];
+
+  const params = new URLSearchParams();
+  params.append("action", "query");
+  params.append("titles", `File:${pageName}`);
+  params.append("prop", "videoinfo");
+  params.append("viprop", "derivatives|mediatype");
+  params.append("format", "json");
+  const response = await fetch(`/w/api.php?${params}`);
+  const json = await response.json();
+  const pageInfo = json.query.pages["-1"];
+  if (!pageInfo.videoinfo) return null;
+
+  const videoInfo = pageInfo.videoinfo[0];
+  if (videoInfo.mediatype !== "AUDIO") return null;
+
+  return videoInfo.derivatives;
+}
+
+/**
  * Capitalize the first letter of the given string.
  * @param {string} s A string.
  * @returns {string} The input string with its first letter capitalized.
@@ -144,5 +184,6 @@ export default {
   getNextId,
   getImageFileUrl,
   getVideoFileUrls,
+  getAudioFileUrls,
   capitalize,
 };
