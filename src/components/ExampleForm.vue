@@ -165,7 +165,7 @@ export default defineComponent({
   <cdx-field class="cne-example-form cne-box" is-fieldset>
     <template #label>
       Exemple {{ $props.index + 1 }}
-      <span class="cne-example-btns">
+      <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Exemples">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
@@ -329,11 +329,6 @@ export default defineComponent({
 <style>
 .cne-example-form {
   margin-bottom: 1em;
-}
-
-.cne-example-btns {
-  display: inline-flex;
-  gap: 0.5em;
 }
 </style>
 <!-- </nowiki> -->

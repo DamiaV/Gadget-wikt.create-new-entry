@@ -242,7 +242,7 @@ export default defineComponent({
   <cdx-field class="cne-definition-form cne-box" is-fieldset>
     <template #label>
       Définition {{ $props.index + 1 }}
-      <span class="cne-definition-btns">
+      <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Définitions">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
@@ -394,11 +394,6 @@ export default defineComponent({
 <style>
 .cne-definition-form {
   margin-bottom: 1em;
-}
-
-.cne-definition-btns {
-  display: inline-flex;
-  gap: 0.5em;
 }
 
 .cne-examples {

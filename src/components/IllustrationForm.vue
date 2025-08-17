@@ -274,7 +274,7 @@ export default defineComponent({
     <template #label>
       Illustration
 
-      <span class="cne-illustration-btns">
+      <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Illustrations">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
@@ -497,11 +497,6 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-illustration-btns {
-  display: inline-flex;
-  gap: 0.5em;
-}
-
 .cne-preview-box {
   float: right;
   display: flex;

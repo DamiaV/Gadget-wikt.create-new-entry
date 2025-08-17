@@ -162,7 +162,7 @@ export default defineComponent({
   <cdx-field class="cne-word-type-form cne-box" is-fieldset>
     <template #label>
       Type de mot
-      <span class="cne-word-type-btns">
+      <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Catégories grammaticales">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>
@@ -205,11 +205,6 @@ export default defineComponent({
 <style>
 .cne-word-type-form {
   margin-bottom: 1em;
-}
-
-.cne-word-type-btns {
-  display: inline-flex;
-  gap: 0.5em;
 }
 
 .cne-word-type-selects {

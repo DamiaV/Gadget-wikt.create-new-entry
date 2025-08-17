@@ -265,6 +265,11 @@ export default defineComponent({
   padding: 0.5em;
 }
 
+.cne .cne-fieldset-btns {
+  display: inline-flex;
+  gap: 0.5em;
+}
+
 .cne h1,
 .cne .cne-start-btn {
   text-align: center;

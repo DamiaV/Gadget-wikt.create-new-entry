@@ -303,7 +303,7 @@ export default defineComponent({
       >
         <template #label>
           Prononciation
-          <span class="cne-pronunciation-btns">
+          <span class="cne-fieldset-btns">
             <wiki-link page-title="Aide:Prononciation écrite">
               <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
             </wiki-link>
@@ -347,11 +347,6 @@ export default defineComponent({
 
 .cne-entry-tabs .cdx-tabs__content {
   margin-top: 1em;
-}
-
-.cne-pronunciation-btns {
-  display: inline-flex;
-  gap: 0.5em;
 }
 </style>
 <!-- </nowiki> -->
