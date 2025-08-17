@@ -22,6 +22,7 @@ import {
 import utils from "../utils.js";
 import WikiLink from "./WikiLink.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
+import CollapsedPreview from "./CollapsedPreview.vue";
 
 export default defineComponent({
   components: {
@@ -33,6 +34,7 @@ export default defineComponent({
     CdxDialog,
     InputWithToolbar,
     WikiLink,
+    CollapsedPreview,
   },
 
   props: {
@@ -307,7 +309,7 @@ export default defineComponent({
         ></cdx-text-input>
       </cdx-field>
     </div>
-    <cdx-icon v-else :icon="cdxIconEllipsis" title="Contenu caché"></cdx-icon>
+    <collapsed-preview v-else :text="text"></collapsed-preview>
   </cdx-field>
 
   <cdx-dialog

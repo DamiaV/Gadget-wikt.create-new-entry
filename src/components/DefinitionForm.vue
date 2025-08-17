@@ -18,6 +18,7 @@ import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 import ExampleForm from "./ExampleForm.vue";
 import IllustrationForm from "./IllustrationForm.vue";
+import CollapsedPreview from "./CollapsedPreview.vue";
 
 export default defineComponent({
   components: {
@@ -29,6 +30,7 @@ export default defineComponent({
     WikiLink,
     ExampleForm,
     IllustrationForm,
+    CollapsedPreview,
   },
 
   props: {
@@ -368,11 +370,7 @@ export default defineComponent({
         @delete="onDeleteIllustration"
       ></illustration-form>
     </div>
-    <cdx-icon
-      v-show="!showFields"
-      :icon="cdxIconEllipsis"
-      title="Contenu caché"
-    ></cdx-icon>
+    <collapsed-preview v-show="!showFields" :text="text"></collapsed-preview>
   </cdx-field>
 
   <cdx-dialog

@@ -22,6 +22,7 @@ import {
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
+import CollapsedPreview from "./CollapsedPreview.vue";
 
 export default defineComponent({
   components: {
@@ -33,6 +34,7 @@ export default defineComponent({
     CdxDialog,
     WikiLink,
     InputWithToolbar,
+    CollapsedPreview,
   },
 
   props: {
@@ -473,11 +475,22 @@ export default defineComponent({
         </template>
       </cdx-field>
     </div>
-    <cdx-icon
+    <collapsed-preview
       v-show="!showFields"
-      :icon="cdxIconEllipsis"
-      title="Contenu caché"
-    ></cdx-icon>
+      :text="
+        (type === 'image' && 'Image\u00a0: ' + fileName) ||
+        (type === 'video' && 'Vidéo\u00a0: ' + fileName) ||
+        (type === 'audio' && 'Fichier audio\u00a0: ' + fileName) ||
+        (type === 'text' && 'Texte\u00a0: ' + text) ||
+        (type === 'color' && 'Couleur\u00a0: ' + color)
+      "
+    >
+      <div
+        v-show="type === 'color'"
+        class="cne-color-preview"
+        :style="{ backgroundColor: color }"
+      ></div>
+    </collapsed-preview>
   </cdx-field>
 
   <cdx-dialog
