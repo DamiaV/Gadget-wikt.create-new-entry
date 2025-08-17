@@ -2,9 +2,10 @@
 <script>
 import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
-import T from "../types.js";
-import WikiLink from "./WikiLink.vue";
 import { cdxIconHelpNotice } from "@wikimedia/codex-icons";
+import T from "../types.js";
+import utils from "../utils.js";
+import WikiLink from "./WikiLink.vue";
 
 /**
  * @typedef {{
@@ -59,7 +60,7 @@ export default defineComponent({
          * @type {import("@wikimedia/codex").MenuItemData[][]}
          */
         const props_ = [];
-        for (const properties of item.properties) {
+        for (const properties of Object.values(item.properties)) {
           /**
            * @type {import("@wikimedia/codex").MenuItemData[]}
            */
@@ -133,6 +134,8 @@ export default defineComponent({
       wordPropertiesStatuses,
       // Icons
       cdxIconHelpNotice,
+      // Other
+      utils,
       // Callbacks
       onWordTypeSelection,
       onWordPropertySelection,
@@ -165,11 +168,13 @@ export default defineComponent({
 
       <template v-if="wordType && $props.language.getGrammarItem(wordType)">
         <cdx-field
-          v-for="(_, i) in $props.language.getGrammarItem(wordType).properties"
-          :key="i"
+          v-for="(key, i) in Object.keys(
+            $props.language.getGrammarItem(wordType).properties
+          )"
+          :key="key"
           :status="wordPropertiesStatuses[i]"
         >
-          <template #label>TODO label</template>
+          <template #label>{{ utils.capitalize(key) }}</template>
           <cdx-select
             :selected="wordProperties[i]"
             :menu-items="wordTypePropertiesData[wordType][i]"

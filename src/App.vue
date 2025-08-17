@@ -124,8 +124,9 @@ export default defineComponent({
         if (!grammarItem) return true;
 
         const selectedProps = entry.wordProperties;
-        const expectedPropsCount =
-          language.value.getGrammarItem(wordType).properties.length;
+        const expectedPropsCount = Object.entries(
+          language.value.getGrammarItem(wordType).properties
+        ).length;
 
         return (
           // Not enough properties

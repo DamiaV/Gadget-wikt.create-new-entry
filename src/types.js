@@ -220,7 +220,7 @@ class GrammaticalClass {
 /**
  * @typedef {{
  *  readonly grammaticalClass: GrammaticalClass,
- *  readonly properties: GrammaticalProperty[][],
+ *  readonly properties: Record<string, GrammaticalProperty[]>,
  *  readonly getProperty: (index: number, label: string) => GrammaticalProperty | null,
  *  readonly getInflectionsTemplate: (word: string, labels: string[], pronunciation: string) => string,
  * }} GrammaticalItem
@@ -231,7 +231,7 @@ class GrammaticalClass {
 class GrammaticalItem {
   /**
    * @param {GrammaticalClass} grammaticalClass The grammatical class.
-   * @param {GrammaticalProperty[][]?} properties Associated grammatical properties.
+   * @param {Record<string, GrammaticalProperty[]>?} properties Associated grammatical properties.
    * @param {InflectionsGenerator?} generateInflections Optional function that generates inflections template.
    */
   constructor(grammaticalClass, properties, generateInflections) {
@@ -241,10 +241,10 @@ class GrammaticalItem {
      */
     this._grammaticalClass = grammaticalClass;
     /**
-     * @type {GrammaticalProperty[][]}
+     * @type {Record<string, GrammaticalProperty[]>}
      * @private
      */
-    this._properties = properties || [];
+    this._properties = properties || {};
     /**
      * @type {InflectionsGenerator}
      * @private
@@ -260,7 +260,7 @@ class GrammaticalItem {
   }
 
   /**
-   * @return {GrammaticalProperty[][]} The available grammatical properties.
+   * @return {Record<string, GrammaticalProperty[]>} The available grammatical properties.
    */
   get properties() {
     return this._properties;

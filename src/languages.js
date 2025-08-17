@@ -148,6 +148,9 @@ const GRAMMATICAL_CLASSES = {
  * @returns The list of loaded languages.
  */
 function loadLanguages() {
+  /**
+   * @type {import("./types.js").Language[]}
+   */
   const languages = [];
 
   /*
@@ -223,231 +226,306 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [
-            [GENDERS.FEMININE_MASCULINE_DIFF, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.FEMININE_MASCULINE_DIFF,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getFrenchModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, [], getFrenchModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getFrenchModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, [
-          [GENDERS.FEMININE, GENDERS.MASCULINE, GENDERS.FEMININE_MASCULINE],
-        ]),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, [
-          [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+          genre: [
+            GENDERS.FEMININE,
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+          groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
+        }),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME, []),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, [], getFrenchModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME, {}),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, {}, getFrenchModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, []),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {}),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getFrenchModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
@@ -552,150 +630,170 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [
-            [
+          {
+            comparatif: [
               COMPARATIVES.COMPARABLE_MORE_MOST,
               COMPARATIVES.COMPARABLE_ER_EST,
               COMPARATIVES.UNCOMPARABLE,
             ],
-          ],
+          },
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, [], getEnglishModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getEnglishModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [
+          {
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PROPER_NOUN,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL]],
+          {
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
-          [[VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB]],
+          { type: [VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB] },
           getEnglishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.LAST_NAME,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL]],
+          {
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.FIRST_NAME,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL]],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, [], getEnglishModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, {}, getEnglishModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [],
+          {},
           getEnglishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
@@ -764,231 +862,310 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [
-            [GENDERS.FEMININE_MASCULINE_DIFF, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.FEMININE_MASCULINE_DIFF,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, [], getItalianModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getItalianModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, [
-          [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-        ]),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, [
-          [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+          groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
+        }),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, [
-          [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getItalianModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
@@ -1068,7 +1245,7 @@ function loadLanguages() {
           "ɡ",
           "ɣ",
           "x",
-          "\u03c7",
+          "χ",
           "l",
           "ʎ",
           "ɾ",
@@ -1080,232 +1257,311 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [
-            [GENDERS.FEMININE_MASCULINE_DIFF, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.FEMININE_MASCULINE_DIFF,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, [], getSpanishModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getSpanishModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, [
-          [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-        ]),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, [
-          [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
-          [VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+          groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
+          régularité: [VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB],
+        }),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, [
-          [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getSpanishModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
@@ -1374,233 +1630,308 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [
-            [GENDERS.FEMININE_MASCULINE_DIFF, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.FEMININE_MASCULINE_DIFF,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADVERB,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, []),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, [
-          [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {}),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+          groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
+        }),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [NUMBERS.DIFF_SINGULAR_PLURAL, NUMBERS.SAME_SINGULAR_PLURAL],
-          ],
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, [
-          [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-        ]),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+          ],
+        }),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
               NUMBERS.PLURAL_ONLY,
             ],
-          ],
+          },
           getPortugueseModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
@@ -1613,7 +1944,16 @@ function loadLanguages() {
    */
 
   const getEsperantoModel = (_, grammarClass, properties, pron) => {
-    if (properties[0] === NUMBERS.DIFF_SINGULAR_PLURAL.label)
+    if (
+      [
+        GRAMMATICAL_CLASSES.NOUN.label,
+        GRAMMATICAL_CLASSES.ADJECTIVE.label,
+        GRAMMATICAL_CLASSES.FIRST_NAME.label,
+        GRAMMATICAL_CLASSES.LAST_NAME.label,
+        GRAMMATICAL_CLASSES.PROPER_NOUN.label,
+        GRAMMATICAL_CLASSES.CONJUNCTION.label,
+      ].includes(properties[0])
+    )
       return `{{eo-flexions|${pron}}}`;
     if (grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.VERB.label)
       return "{{eo-verbe}}";
@@ -1657,59 +1997,55 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL]],
+          {},
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADVERB,
-          [[NUMBERS.INVARIABLE]],
+          { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
-          GRAMMATICAL_CLASSES.NOUN,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL]],
-          getEsperantoModel
-        ),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.NOUN, {}, getEsperantoModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PROPER_NOUN,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL]],
+          {},
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
-          [[VERBS.VERB]],
+          { type: [VERBS.VERB] },
           getEsperantoModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL]],
+          {},
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [[NUMBERS.INVARIABLE]],
+          { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [[NUMBERS.INVARIABLE]],
+          { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.FIRST_NAME,
-          [[NUMBERS.DIFF_SINGULAR_PLURAL]],
+          {},
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [[NUMBERS.INVARIABLE]],
+          { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
-          [[NUMBERS.INVARIABLE]],
+          { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
       ],
@@ -1783,7 +2119,7 @@ function loadLanguages() {
           "v̝",
           "s",
           "z",
-          "\u03c7",
+          "χ",
           "x",
           "ɣ",
           "h",
@@ -1805,129 +2141,133 @@ function loadLanguages() {
       [
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
-          [],
+          {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, [], getBretonModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getBretonModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
-          [
-            [GENDERS.MASCULINE, GENDERS.FEMININE, GENDERS.FEMININE_MASCULINE],
-            [
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+            ],
+            nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.COLLECTIVE_SINGULATIVE,
               NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL,
               NUMBERS.SINGULATIVE_DUAL_PLURAL,
             ],
-          ],
+          },
           getBretonModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
-          [[VERBS.VERB]],
+          { type: [VERBS.VERB] },
           getBretonModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, [], getBretonModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, {}, getBretonModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
-          [],
+          {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, [], getBretonModel),
+        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, {}, getBretonModel),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
-          [],
+          {},
           getBretonModel
         ),
         new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
@@ -1990,7 +2330,7 @@ function getDefaultLanguage(code) {
       topClasses.push(k);
     }
   }
-  return new T.Language(code, null, null, name, [], items, null, false);
+  return new T.Language(code, null, null, name, {}, items, null, false);
 }
 
 export default {

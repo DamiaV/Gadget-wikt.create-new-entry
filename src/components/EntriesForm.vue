@@ -155,7 +155,7 @@ export default defineComponent({
             )
           : `Entrée ${entry.id}`
       "
-      ><!-- TODO show word type label instead of code -->
+    >
       <entry-form
         :index="i"
         :language="$props.language"
