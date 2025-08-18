@@ -15,10 +15,6 @@
  */
 
 /**
- * @typedef {{entries: Entry[]}} FormEntriesUpdateEvent
- */
-
-/**
  * @typedef {{
  *  index: number,
  *  entry: Entry,
@@ -142,6 +138,74 @@
  *  empty: boolean,
  * }} ColorIllustration
  */
+
+/**
+ * Create an empty Entry object.
+ * @param {number?} id An optional ID. If null, the value 1 will be used.
+ * @returns {Entry} An empty Entry object.
+ */
+function createEmptyEntry(id) {
+  return {
+    id: id || 1,
+    wordType: "",
+    wordProperties: [],
+    definitions: [createEmptyDefinition()],
+    pronunciations: [],
+    empty: true,
+  };
+}
+
+/**
+ * Create an empty Definition object.
+ * @param {number?} id An optional ID. If null, the value 1 will be used.
+ * @returns {Definition} An empty Definition object.
+ */
+function createEmptyDefinition(id) {
+  return {
+    id: id || 1,
+    text: "",
+    examples: [],
+    empty: true,
+  };
+}
+
+/**
+ * Create an empty Example object.
+ * @param {number?} id An optional ID. If null, the value 1 will be used.
+ * @returns {Example} An empty Example object.
+ */
+function createEmptyExample(id) {
+  return {
+    id: id || 1,
+    text: "",
+    empty: true,
+  };
+}
+
+/**
+ * Create an empty Illustration object.
+ * @returns {Illustration} An empty Illustration object with type "image".
+ */
+function createEmptyIllustration() {
+  return {
+    type: "image",
+    fileName: "",
+    empty: true,
+  };
+}
+
+/**
+ * Create an empty Pronunciation object.
+ * @param {number?} id An optional ID. If null, the value 1 will be used.
+ * @returns {Pronunciation} An empty Pronunciation object.
+ */
+function createEmptyPronunciation(id) {
+  return {
+    id: id || 1,
+    pronunciation: "",
+    empty: true,
+  };
+}
 
 /**
  * @typedef {{
@@ -568,5 +632,11 @@ export default {
   Language,
   Wiki,
   ArticleSection,
+  wikis,
+  createEmptyEntry,
+  createEmptyDefinition,
+  createEmptyExample,
+  createEmptyIllustration,
+  createEmptyPronunciation,
 };
 // </nowiki>

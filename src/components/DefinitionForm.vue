@@ -14,6 +14,7 @@ import {
   cdxIconInfoFilled,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
+import T from "../types.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 import ExampleForm from "./ExampleForm.vue";
@@ -137,11 +138,8 @@ export default defineComponent({
      * Add a new empty example at the end of the array.
      */
     function onAddExample() {
-      examples.value.push({
-        id: utils.getNextId(examples.value),
-        text: "",
-        empty: true,
-      });
+      const id = utils.getNextId(examples.value);
+      examples.value.push(T.createEmptyExample(id));
       fireUpdateEvent();
     }
 
@@ -185,7 +183,7 @@ export default defineComponent({
      * Add a new empty image illustration.
      */
     function onAddIllustration() {
-      illustration.value = { type: "image", fileName: "", empty: true };
+      illustration.value = T.createEmptyIllustration();
       fireUpdateEvent();
     }
 

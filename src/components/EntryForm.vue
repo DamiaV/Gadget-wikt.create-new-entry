@@ -135,12 +135,8 @@ export default defineComponent({
      * Add a new empty definition at the end of the array.
      */
     function onAddDefinition() {
-      definitions.value.push({
-        id: utils.getNextId(definitions.value),
-        text: "",
-        examples: [],
-        empty: true,
-      });
+      const id = utils.getNextId(definitions.value);
+      definitions.value.push(T.createEmptyDefinition(id));
       fireUpdateEvent();
     }
 
@@ -194,11 +190,8 @@ export default defineComponent({
      * Add a new empty pronunciation at the end of the array.
      */
     function onAddPronunciation() {
-      pronunciations.value.push({
-        id: utils.getNextId(pronunciations.value),
-        pronunciation: "",
-        empty: true,
-      });
+      const id = utils.getNextId(pronunciations.value);
+      pronunciations.value.push(T.createEmptyPronunciation(id));
       fireUpdateEvent();
     }
 

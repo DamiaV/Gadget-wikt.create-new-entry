@@ -1,16 +1,26 @@
 <!-- <nowiki> -->
 <script>
 import { computed, defineComponent, ref, useTemplateRef } from "vue";
-import { CdxButton, CdxCheckbox, CdxIcon, CdxMessage } from "@wikimedia/codex";
 import {
+  CdxButton,
+  CdxCheckbox,
+  CdxIcon,
+  CdxMessage,
+  CdxTab,
+  CdxTabs,
+} from "@wikimedia/codex";
+import {
+  cdxIconAdd,
   cdxIconCollapse,
   cdxIconDownload,
   cdxIconExpand,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
-import EntriesForm from "./components/EntriesForm.vue";
-import LanguageSelector from "./components/LanguageSelector.vue";
 import L from "./languages.js";
+import T from "./types.js";
+import utils from "./utils.js";
+import LanguageSelector from "./components/LanguageSelector.vue";
+import EntryForm from "./components/EntryForm.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -19,9 +29,11 @@ export default defineComponent({
     CdxButton,
     CdxIcon,
     CdxCheckbox,
+    CdxTabs,
+    CdxTab,
     CdxMessage,
     LanguageSelector,
-    EntriesForm,
+    EntryForm,
   },
 
   inject: ["config"],
@@ -52,6 +64,8 @@ export default defineComponent({
 
     const isStub = ref(false);
 
+    const activeTab = ref("tab-1");
+
     const disableSubmitBtn = computed(() =>
       L.containsLanguage(props.existingLanguageSections, language.value.code)
     );
@@ -67,36 +81,16 @@ export default defineComponent({
     const initialFormData = {
       language: language.value,
       stub: isStub.value,
-      entries: [
-        // Create an empty initial entry
-        {
-          id: 1,
-          wordType: "",
-          wordProperties: [],
-          definitions: [
-            {
-              id: 1,
-              text: "",
-              examples: [],
-            },
-          ],
-          pronunciations: [],
-          empty: true,
-        },
-      ],
+      entries: [T.createEmptyEntry()],
     };
 
     const showForm = ref(false);
     const showFormFields = ref(false);
     const formData = ref(initialFormData);
 
-    /**
-     * Update the entries.
-     * @param {import("./types.js").FormEntriesUpdateEvent} event
+    /*
+     * Language
      */
-    function onEntriesUpdate(event) {
-      formData.value.entries = event.entries;
-    }
 
     /**
      * Update the selected language.
@@ -109,6 +103,10 @@ export default defineComponent({
       C.setCookie(newLocal, language.code, 30);
       formData.value.language = language;
     }
+
+    /*
+     * Stub
+     */
 
     /**
      * Update the stub article status.
@@ -155,6 +153,67 @@ export default defineComponent({
       );
     }
 
+    /*
+     * Entries
+     */
+
+    /**
+     * Add a new empty entry at the end of the array.
+     */
+    function onAddEntry() {
+      const id = utils.getNextId(formData.value.entries);
+      formData.value.entries.push(T.createEmptyEntry(id));
+      activeTab.value = `tab-${id}`;
+    }
+
+    /**
+     * Delete the entry at the given index.
+     * @param {number} entryIndex The index of the entry to delete.
+     */
+    function onDeleteEntry(entryIndex) {
+      const entriesNb = formData.value.entries.length;
+      if (entryIndex < 0 || entryIndex >= entriesNb) return;
+
+      const nearestEntry =
+        entryIndex === entriesNb - 1
+          ? formData.value.entries[entriesNb - 2]
+          : formData.value.entries[entryIndex + 1];
+      formData.value.entries.splice(entryIndex, 1);
+      activeTab.value = `tab-${nearestEntry.id}`;
+    }
+
+    /**
+     * Update an entry.
+     * @param {import("../types.js").FormEntryUpdateEvent} event
+     */
+    function onEntryUpdate(event) {
+      formData.value.entries[event.index] = event.entry;
+    }
+
+    /**
+     * Move the given entry one position to the left.
+     * @param {number} entryIndex The index of the entry to move.
+     */
+    function onMoveEntryLeft(entryIndex) {
+      if (entryIndex === 0) return;
+      const entry = formData.value.entries.splice(entryIndex, 1)[0];
+      formData.value.entries.splice(entryIndex - 1, 0, entry);
+    }
+
+    /**
+     * Move the given entry one position to the right.
+     * @param {number} entryIndex The index of the entry to move.
+     */
+    function onMoveEntryRight(entryIndex) {
+      if (entryIndex === formData.value.entries.length - 1) return;
+      const entry = formData.value.entries.splice(entryIndex, 1)[0];
+      formData.value.entries.splice(entryIndex + 1, 0, entry);
+    }
+
+    /*
+     * Submit
+     */
+
     function onSubmit() {
       if (isFormInvalid()) {
         console.log("cannot insert");
@@ -169,18 +228,26 @@ export default defineComponent({
       language,
       languages,
       isStub,
+      activeTab,
       // Visual
       showForm,
       showFormFields,
       disableSubmitBtn,
+      // Other
+      utils,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconDownload,
+      cdxIconAdd,
       // Callbacks
-      onEntriesUpdate,
       onLanguageSelection,
       onStubUpdate,
+      onAddEntry,
+      onEntryUpdate,
+      onDeleteEntry,
+      onMoveEntryLeft,
+      onMoveEntryRight,
       onSubmit,
     };
   },
@@ -255,11 +322,56 @@ export default defineComponent({
             Cochez cette case pour insérer un bandeau d’ébauche.
           </template>
         </cdx-checkbox>
-        <entries-form
-          v-model="formData.entries"
-          :language="formData.language"
-          @update:model-value="onEntriesUpdate"
-        ></entries-form>
+        <cdx-button
+          type="button"
+          class="add-entry-btn"
+          action="progressive"
+          @click="onAddEntry"
+        >
+          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+          Ajouter une entrée
+        </cdx-button>
+
+        <cdx-tabs v-model:active="activeTab">
+          <cdx-tab
+            v-for="(entry, i) in formData.entries"
+            :key="entry.id"
+            :name="`tab-${entry.id}`"
+            :label="
+              entry.wordType && language.getGrammarItem(entry.wordType)
+                ? utils.capitalize(
+                    language.getGrammarItem(entry.wordType).grammaticalClass
+                      .label
+                  )
+                : `Entrée ${entry.id}`
+            "
+          >
+            <entry-form
+              :index="i"
+              :language="language"
+              :model-value="entry"
+              :enable-delete-btn="formData.entries.length > 1"
+              :can-move-before="i > 0"
+              :can-move-after="i < formData.entries.length - 1"
+              @update:model-value="onEntryUpdate"
+              @delete="onDeleteEntry"
+              @move:before="onMoveEntryLeft"
+              @move:after="onMoveEntryRight"
+            ></entry-form>
+          </cdx-tab>
+          <cdx-tab name="etymology" label="Étymologie"
+            >🚧 En construction 🏗️</cdx-tab
+          >
+          <cdx-tab name="wiki-links" label="Liens wikis"
+            >🚧 En construction 🏗️</cdx-tab
+          >
+          <cdx-tab name="references" label="Références"
+            >🚧 En construction 🏗️</cdx-tab
+          >
+          <cdx-tab name="categories" label="Catégories"
+            >🚧 En construction 🏗️</cdx-tab
+          >
+        </cdx-tabs>
 
         <hr />
         <div class="bottom-btns">
