@@ -390,7 +390,7 @@ export default defineComponent({
         </li>
         <li>
           <strong>espace insécable</strong> et
-          <strong>espace insécable</strong> fine en <strong>espace</strong>
+          <strong>espace insécable fine</strong> en <strong>espace</strong>
         </li>
       </ul>
       <pronunciation-form
