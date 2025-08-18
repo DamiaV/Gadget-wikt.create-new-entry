@@ -95,6 +95,58 @@ export default defineComponent({
     }
 
     /**
+     * @type {[string, string][]}
+     */
+    const autoSwaps = [
+      ["g", "ɡ"],
+      ["'", "ˈ"],
+      [":", "ː"],
+      ["!", "ǃ"],
+      ["|", "ǀ"],
+    ];
+
+    const invalidCharacters = "()[]{}";
+
+    /**
+     * @type {[string, string, string, string][]}
+     */
+    const suspiciousCharacters = [
+      ["’", "ʼ", "apostrophe courbe", "consonne éjective"],
+      [",", "ˌ", "virgule", "accent tonique secondaire"],
+      ["?", "ʔ", "point d’interrogation", "coup de glotte"],
+    ];
+
+    /**
+     * Replace characters in the given text.
+     * @param {string} text The text to transform.
+     * @returns {string} The transformed input.
+     */
+    function pronunciationTransformer(text) {
+      for (const [c1, c2] of autoSwaps) text = text.replaceAll(c1, c2);
+      return text;
+    }
+
+    /**
+     * Check that the given pronunciation does not contain any suspicious characters.
+     * @param {string} text The text to check.
+     * @returns {string | null} An error message if the argument contains any suspicious characters, false otherwise.
+     */
+    function pronunciationValidator(text) {
+      for (const char of invalidCharacters)
+        if (text.includes(char))
+          return `Caractère invalide détecté\u00a0: «\u00a0${char}\u00a0»`;
+
+      for (const [char, repl, name1, name2] of suspiciousCharacters)
+        if (text.includes(char))
+          return (
+            `Caractère invalide détecté\u00a0: «\u00a0${char}\u00a0» (${name1}). ` +
+            `Peut-être vouliez-vous plutôt écrire «\u00a0${repl}\u00a0» (${name2})\u00a0?`
+          );
+
+      return null;
+    }
+
+    /**
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
@@ -123,6 +175,8 @@ export default defineComponent({
       fireUpdateEvent,
       onDelete,
       deletePronunciation,
+      pronunciationValidator,
+      pronunciationTransformer,
     };
   },
 });
@@ -198,6 +252,8 @@ export default defineComponent({
         clearable
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"
+        :validator="pronunciationValidator"
+        :transformer="pronunciationTransformer"
         @change="fireUpdateEvent"
       ></input-with-toolbar>
     </div>

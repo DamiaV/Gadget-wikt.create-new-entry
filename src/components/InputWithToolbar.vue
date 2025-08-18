@@ -19,6 +19,14 @@ export default defineComponent({
     clearable: { type: Boolean, default: false },
     showFormatButtons: { type: Boolean, default: true },
     /**
+     * @type {import("vue").PropType<(text: string) => string | null>}
+     */
+    validator: { type: Function, default: null },
+    /**
+     * @type {import("vue").PropType<(text: string) => string>}
+     */
+    transformer: { type: Function, default: null },
+    /**
      * @type {import("vue").PropType<string[][]>}
      */
     specialCharacters: { type: Array, default: () => [W.specialCharacters] },
@@ -32,6 +40,7 @@ export default defineComponent({
     const status = ref("default");
     const messages = ref({
       error: "",
+      warning: "",
     });
     const textInputType = props.textArea ? CdxTextArea : CdxTextInput;
 
@@ -44,8 +53,16 @@ export default defineComponent({
      * Called when the input’s text is updated.
      */
     function onInput() {
-      status.value = "default";
       messages.value.error = "";
+      if (props.transformer) value.value = props.transformer(value.value);
+      let message;
+      if (props.validator && (message = props.validator(value.value))) {
+        status.value = "warning";
+        messages.value.warning = message;
+      } else {
+        status.value = "default";
+        messages.value.warning = "";
+      }
       ctx.emit("update:model-value", value.value);
     }
 

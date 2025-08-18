@@ -367,6 +367,16 @@ export default defineComponent({
 
     <cdx-tab name="pronunciation" label="Prononciation">
       <p>Les prononciations suivantes seront affichées après le mot.</p>
+      <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
+      <ul>
+        <li>
+          g (lettre latine G minuscule) en ɡ (consonne occlusive vélaire voisée)
+        </li>
+        <li>' (apostrophe droite) en ˈ (accent tonique)</li>
+        <li>: (deux-points) en ː (allongement)</li>
+        <li>! (point d’exclamation) en ǃ (clic post-alvéolaire)</li>
+        <li>| (barre verticale) en ǀ (clic dental)</li>
+      </ul>
       <pronunciation-form
         v-for="(pronunciation, i) in pronunciations"
         :key="pronunciation.id"
