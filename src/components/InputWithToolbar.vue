@@ -96,6 +96,8 @@ export default defineComponent({
       const afterSelection = text.substring(selectionEnd);
 
       value.value = tranformer(beforeSelection, selection, afterSelection);
+      ctx.emit("update:model-value", value.value);
+      ctx.emit("change", value.value);
       textInput.value.focus();
     }
 
