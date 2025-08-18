@@ -78,7 +78,7 @@ Actions performed on `.js` and `.vue` files:
 * Transform all `import … from "…";` into `const … = require("…");`.
 * Transform all `export default …;` into `module.exports = …;`.
 * Replace all imports of `@wikimedia/codex-icons` by `icons.json` and the appropriate amount of `../` or `./`.
-* Remove all`wiki_deps/` prefixes on imports of core modules (`wikt.core.*.js`).
+* Remove all `wiki_deps/` prefixes on imports of core modules (`wikt.core.*.js`).
 
 ### Download wiki dependencies (`updatewikideps`)
 
@@ -92,7 +92,7 @@ The same actions are performed on the downloaded `.js` files as the `pull` comma
 
 If you want to change your Pywikibot credentials, edit `user-config.py` and `user-password.py` with your new username and bot token.
 
-**Reminder: you need to use an account that has the interface administrator status if you want to push changes to the wiki.**
+⚠️ **Reminder**: you need to use an account that has the interface administrator status if you want to push changes to the wiki.
 
 You can create a bot password by going to [Special:BotPasswords](https://fr.wiktionary.org/wiki/Special:BotPasswords) while logged into the account you want to use.
 
