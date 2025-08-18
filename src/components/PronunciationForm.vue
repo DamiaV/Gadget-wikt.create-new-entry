@@ -15,6 +15,7 @@ import T from "../types.js";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
+import CollapsedPreview from "./CollapsedPreview.vue";
 
 export default defineComponent({
   components: {
@@ -23,6 +24,7 @@ export default defineComponent({
     CdxButton,
     CdxDialog,
     InputWithToolbar,
+    CollapsedPreview,
     WikiLink,
   },
 
@@ -260,6 +262,10 @@ export default defineComponent({
         @change="fireUpdateEvent"
       ></input-with-toolbar>
     </div>
+    <collapsed-preview
+      v-show="!showFields"
+      :text="pronunciation"
+    ></collapsed-preview>
   </cdx-field>
 
   <cdx-dialog
