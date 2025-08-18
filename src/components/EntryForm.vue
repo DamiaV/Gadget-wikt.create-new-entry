@@ -368,7 +368,7 @@ export default defineComponent({
     <cdx-tab name="pronunciation" label="Prononciation">
       <p>Les prononciations suivantes seront affichées après le mot.</p>
       <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
-      <ul>
+      <ul style="margin-bottom: 1em">
         <li>
           g (lettre latine G minuscule) en ɡ (consonne occlusive vélaire voisée)
         </li>
