@@ -59,6 +59,7 @@ export default defineComponent({
             empty: true,
           },
         ],
+        pronunciations: [],
       });
       activeTab.value = `tab-${id}`;
       fireUpdateEvent();

@@ -39,6 +39,13 @@
  * }} ExampleUpdateEvent
  */
 
+/**
+ * @typedef {{
+ *  index: number,
+ *  pronunciation: Pronunciation,
+ * }} PronunciationUpdateEvent
+ */
+
 /*
  * Data types
  */
@@ -57,7 +64,7 @@
  *  wordType: string,
  *  wordProperties: string[],
  *  definitions: Definition[],
- *  pronunciation?: string,
+ *  pronunciations: Pronunciation[],
  *  empty: boolean,
  * }} Entry
  */
@@ -85,6 +92,14 @@
  *  disableTranslation?: boolean,
  *  empty: boolean,
  * }} Example
+ */
+
+/**
+ * @typedef {{
+ *  id: number,
+ *  pronunciation: string,
+ *  empty: boolean,
+ * }} Pronunciation
  */
 
 /**

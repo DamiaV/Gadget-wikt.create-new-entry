@@ -69,6 +69,8 @@ export default defineComponent({
               examples: [],
             },
           ],
+          pronunciations: [],
+          empty: true,
         },
       ],
     };

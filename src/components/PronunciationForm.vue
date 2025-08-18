@@ -1,0 +1,227 @@
+<!-- <nowiki> -->
+<script>
+import { defineComponent, inject, ref } from "vue";
+import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
+import {
+  cdxIconArrowDown,
+  cdxIconArrowUp,
+  cdxIconClose,
+  cdxIconCollapse,
+  cdxIconExpand,
+  cdxIconHelpNotice,
+  cdxIconInfoFilled,
+} from "@wikimedia/codex-icons";
+import T from "../types.js";
+import utils from "../utils.js";
+import InputWithToolbar from "./InputWithToolbar.vue";
+import WikiLink from "./WikiLink.vue";
+
+export default defineComponent({
+  components: {
+    CdxIcon,
+    CdxField,
+    CdxButton,
+    CdxDialog,
+    InputWithToolbar,
+    WikiLink,
+  },
+
+  props: {
+    language: { type: T.Language, required: true },
+    index: { type: Number, required: true },
+    enableDeleteBtn: { type: Boolean, default: false },
+    canMoveBefore: { type: Boolean, default: true },
+    canMoveAfter: { type: Boolean, default: true },
+    /**
+     * @type {import("vue").PropType<import("../types.js").Pronunciation>}
+     */
+    modelValue: { type: Object, required: true },
+  },
+
+  emits: ["update:model-value", "delete", "move:before", "move:after"],
+
+  setup(props, ctx) {
+    const pronunciation = ref(props.modelValue.pronunciation);
+
+    const showFields = ref(true);
+
+    function isEmpty() {
+      return !pronunciation.value;
+    }
+
+    function fireUpdateEvent() {
+      /**
+       * @type {import("../types.js").PronunciationUpdateEvent}
+       */
+      const firedEvent = {
+        index: props.index,
+        pronunciation: {
+          id: props.modelValue.id,
+          pronunciation: pronunciation.value,
+          empty: isEmpty(),
+        },
+      };
+      ctx.emit("update:model-value", firedEvent);
+    }
+
+    /**
+     * Deletion dialog
+     */
+
+    const openDeletionDialog = ref(false);
+
+    /**
+     * @type {import("@wikimedia/codex").PrimaryModalAction}
+     */
+    const dialogPrimaryAction = {
+      label: "Supprimer",
+      actionType: "destructive",
+    };
+    /**
+     * @type {import("@wikimedia/codex").ModalAction}
+     */
+    const dialogDefaultAction = {
+      label: "Annuler",
+    };
+
+    function onDelete() {
+      if (isEmpty()) deletePronunciation();
+      else openDeletionDialog.value = true;
+    }
+
+    function deletePronunciation() {
+      openDeletionDialog.value = false;
+      ctx.emit("delete", props.index);
+    }
+
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+
+    return {
+      // Data
+      pronunciation,
+      // Visual
+      showFields,
+      // Deletion dialog
+      openDeletionDialog,
+      dialogPrimaryAction,
+      dialogDefaultAction,
+      // Other
+      utils,
+      config,
+      // Icons
+      cdxIconHelpNotice,
+      cdxIconInfoFilled,
+      cdxIconCollapse,
+      cdxIconExpand,
+      cdxIconClose,
+      cdxIconArrowUp,
+      cdxIconArrowDown,
+      // Callbacks
+      fireUpdateEvent,
+      onDelete,
+      deletePronunciation,
+    };
+  },
+});
+</script>
+
+<template>
+  <cdx-field class="cne-pronunciation-form cne-box" is-fieldset>
+    <template #label>
+      Prononciation {{ $props.index + 1 }}
+      <span class="cne-fieldset-btns">
+        <wiki-link page-title="Aide:Prononciation écrite">
+          <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+        </wiki-link>
+        <wiki-link page-title="Convention:Prononciation écrite">
+          <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+        </wiki-link>
+
+        <cdx-button
+          type="button"
+          size="small"
+          :aria-label="showFields ? 'Enrouler' : 'Dérouler'"
+          :title="showFields ? 'Enrouler' : 'Dérouler'"
+          @click="showFields = !showFields"
+        >
+          <cdx-icon
+            :icon="showFields ? cdxIconCollapse : cdxIconExpand"
+          ></cdx-icon>
+        </cdx-button>
+
+        <cdx-button
+          v-show="$props.canMoveBefore || $props.canMoveAfter"
+          type="button"
+          size="small"
+          aria-label="Monter"
+          title="Monter"
+          :disabled="!$props.canMoveBefore"
+          @click="$emit('move:before', $props.index)"
+        >
+          <cdx-icon :icon="cdxIconArrowUp"></cdx-icon>
+        </cdx-button>
+
+        <cdx-button
+          v-show="$props.canMoveBefore || $props.canMoveAfter"
+          type="button"
+          size="small"
+          aria-label="Descendre"
+          title="Descendre"
+          :disabled="!$props.canMoveAfter"
+          @click="$emit('move:after', $props.index)"
+        >
+          <cdx-icon :icon="cdxIconArrowDown"></cdx-icon>
+        </cdx-button>
+
+        <cdx-button
+          v-show="$props.enableDeleteBtn"
+          type="button"
+          size="small"
+          action="destructive"
+          aria-label="Supprimer"
+          title="Supprimer"
+          :disabled="!$props.enableDeleteBtn"
+          @click="onDelete"
+        >
+          <cdx-icon :icon="cdxIconClose"></cdx-icon>
+        </cdx-button>
+      </span>
+    </template>
+
+    <div v-show="showFields">
+      <input-with-toolbar
+        v-model.trim="pronunciation"
+        required
+        clearable
+        :show-format-buttons="false"
+        :special-characters="$props.language.ipaSymbols"
+        @change="fireUpdateEvent"
+      ></input-with-toolbar>
+    </div>
+  </cdx-field>
+
+  <cdx-dialog
+    v-model:open="openDeletionDialog"
+    title="Confirmation de suppression"
+    use-close-button
+    :primary-action="dialogPrimaryAction"
+    :default-action="dialogDefaultAction"
+    @primary="deletePronunciation"
+    @default="openDeletionDialog = false"
+  >
+    Êtes-vous
+    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
+    vouloir supprimer cette prononciation&nbsp;?
+    <template #footer-text>Cette action est irréversible.</template>
+  </cdx-dialog>
+</template>
+
+<style>
+.cne-pronunciation-form {
+  margin-bottom: 1em;
+}
+</style>
+<!-- </nowiki> -->

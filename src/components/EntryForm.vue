@@ -17,11 +17,10 @@ import {
   cdxIconArrowNext,
 } from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
-import InputWithToolbar from "./InputWithToolbar.vue";
 import T from "../types.js";
 import utils from "../utils.js";
-import WikiLink from "./WikiLink.vue";
 import WordPropertiesSelector from "./WordPropertiesSelector.vue";
+import PronunciationForm from "./PronunciationForm.vue";
 
 export default defineComponent({
   components: {
@@ -32,8 +31,7 @@ export default defineComponent({
     CdxDialog,
     WordPropertiesSelector,
     DefinitionForm,
-    InputWithToolbar,
-    WikiLink,
+    PronunciationForm,
   },
 
   props: {
@@ -59,11 +57,12 @@ export default defineComponent({
       properties: props.modelValue.wordProperties,
     });
     const definitions = ref(props.modelValue.definitions);
-    const pronunciation = ref(props.modelValue.pronunciation || "");
+    const pronunciations = ref(props.modelValue.pronunciations || []);
 
     function isEmpty() {
       return (
-        definitions.value.every((def) => def.empty) && !pronunciation.value
+        definitions.value.every((def) => def.empty) &&
+        pronunciations.value.every((p) => p.empty)
       );
     }
 
@@ -78,7 +77,7 @@ export default defineComponent({
           wordType: wordTypeProperties.value.wordType,
           wordProperties: wordTypeProperties.value.properties,
           definitions: definitions.value,
-          pronunciation: pronunciation.value,
+          pronunciations: pronunciations.value,
           empty: isEmpty(),
         },
       };
@@ -187,6 +186,73 @@ export default defineComponent({
       fireUpdateEvent();
     }
 
+    /*
+     * Pronunciations
+     */
+
+    /**
+     * Add a new empty pronunciation at the end of the array.
+     */
+    function onAddPronunciation() {
+      pronunciations.value.push({
+        id: utils.getNextId(pronunciations.value),
+        pronunciation: "",
+        empty: true,
+      });
+      fireUpdateEvent();
+    }
+
+    /**
+     * Delete the pronunciation at the given index.
+     * @param {number} pronunciationIndex The index of the pronunciation to delete.
+     */
+    function onDeletePronunciation(pronunciationIndex) {
+      if (
+        pronunciationIndex < 0 ||
+        pronunciationIndex >= pronunciations.value.length
+      )
+        return;
+      pronunciations.value.splice(pronunciationIndex, 1);
+      fireUpdateEvent();
+    }
+
+    /**
+     * Update a pronunciation.
+     * @param {import("../types.js").PronunciationUpdateEvent} event The event.
+     */
+    function onPronunciationUpdate(event) {
+      pronunciations.value[event.index] = event.pronunciation;
+      fireUpdateEvent();
+    }
+
+    /**
+     * Move the given pronunciation one position upwards.
+     * @param {number} pronunciationIndex The index of the pronunciation to move.
+     */
+    function onMovePronunciationUp(pronunciationIndex) {
+      if (pronunciationIndex === 0) return;
+      const pronunciation = pronunciations.value.splice(
+        pronunciationIndex,
+        1
+      )[0];
+      pronunciations.value.splice(pronunciationIndex - 1, 0, pronunciation);
+      fireUpdateEvent();
+    }
+
+    /**
+     * Move the given pronunciation one position downwards.
+     * @param {number} pronunciationIndex The index of the pronunciation to move.
+     */
+    function onMovePronunciationDown(pronunciationIndex) {
+      if (pronunciationIndex === pronunciations.value.length - 1) return;
+      const pronunciation = pronunciations.value.splice(
+        pronunciationIndex,
+        1
+      )[0];
+      pronunciations.value.splice(pronunciationIndex + 1, 0, pronunciation);
+      fireUpdateEvent();
+    }
+
     /**
      * @type {import("../types.js").AppConfig}
      */
@@ -196,7 +262,7 @@ export default defineComponent({
       // Data
       wordTypeProperties,
       definitions,
-      pronunciation,
+      pronunciations,
       // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -221,6 +287,11 @@ export default defineComponent({
       onDeleteDefinition,
       onMoveDefinitionUp,
       onMoveDefinitionDown,
+      onPronunciationUpdate,
+      onAddPronunciation,
+      onDeletePronunciation,
+      onMovePronunciationUp,
+      onMovePronunciationDown,
     };
   },
 });
@@ -271,54 +342,52 @@ export default defineComponent({
 
   <cdx-tabs class="cne-entry-tabs" framed>
     <cdx-tab name="definitions" label="Définitions & exemples">
-      <div class="cne-definitions">
-        <definition-form
-          v-for="(definition, i) in definitions"
-          :key="definition.id"
-          :index="i"
-          :enable-delete-btn="definitions.length > 1"
-          :can-move-before="i > 0"
-          :can-move-after="i < definitions.length - 1"
-          :model-value="definition"
-          @update:model-value="onDefinitionUpdate"
-          @delete="onDeleteDefinition"
-          @move:before="onMoveDefinitionUp"
-          @move:after="onMoveDefinitionDown"
-        ></definition-form>
-      </div>
+      <definition-form
+        v-for="(definition, i) in definitions"
+        :key="definition.id"
+        :index="i"
+        :enable-delete-btn="definitions.length > 1"
+        :can-move-before="i > 0"
+        :can-move-after="i < definitions.length - 1"
+        :model-value="definition"
+        @update:model-value="onDefinitionUpdate"
+        @delete="onDeleteDefinition"
+        @move:before="onMoveDefinitionUp"
+        @move:after="onMoveDefinitionDown"
+      ></definition-form>
       <cdx-button type="button" action="progressive" @click="onAddDefinition">
         <cdx-icon :icon="cdxIconAdd"></cdx-icon>
         Ajouter une définition
       </cdx-button>
     </cdx-tab>
+
     <cdx-tab name="other-sections" label="Synonymes, dérivés, etc.">
       🚧 En construction 🏗️
     </cdx-tab>
+
     <cdx-tab name="pronunciation" label="Prononciation">
-      <input-with-toolbar
-        v-model.trim="pronunciation"
-        :show-format-buttons="false"
-        :special-characters="$props.language.ipaSymbols"
-        @change="fireUpdateEvent"
+      <pronunciation-form
+        v-for="(pronunciation, i) in pronunciations"
+        :key="pronunciation.id"
+        :index="i"
+        :language="$props.language"
+        enable-delete-btn
+        :can-move-before="i > 0"
+        :can-move-after="i < pronunciations.length - 1"
+        :model-value="pronunciation"
+        @update:model-value="onPronunciationUpdate"
+        @delete="onDeletePronunciation"
+        @move:before="onMovePronunciationUp"
+        @move:after="onMovePronunciationDown"
+      ></pronunciation-form>
+      <cdx-button
+        type="button"
+        action="progressive"
+        @click="onAddPronunciation"
       >
-        <template #label>
-          Prononciation
-          <span class="cne-fieldset-btns">
-            <wiki-link page-title="Aide:Prononciation écrite">
-              <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-            </wiki-link>
-            <wiki-link page-title="Convention:Définitions">
-              <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-            </wiki-link>
-          </span>
-        </template>
-        <template #help-text>
-          Si vous ne maitrisez pas l’<wiki-link
-            page-title="alphabet phonétique international"
-          ></wiki-link
-          >, ne remplissez pas ce champ.
-        </template>
-      </input-with-toolbar>
+        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+        Ajouter une prononciation
+      </cdx-button>
     </cdx-tab>
   </cdx-tabs>
 
