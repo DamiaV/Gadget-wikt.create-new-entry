@@ -370,12 +370,28 @@ export default defineComponent({
       <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
       <ul style="margin-bottom: 1em">
         <li>
-          g (lettre latine G minuscule) en ɡ (consonne occlusive vélaire voisée)
+          <strong>g</strong> (lettre latine G minuscule) en
+          <strong>ɡ</strong> (consonne occlusive vélaire voisée)
         </li>
-        <li>' (apostrophe droite) en ˈ (accent tonique)</li>
-        <li>: (deux-points) en ː (allongement)</li>
-        <li>! (point d’exclamation) en ǃ (clic post-alvéolaire)</li>
-        <li>| (barre verticale) en ǀ (clic dental)</li>
+        <li>
+          <strong>'</strong> (apostrophe droite) en <strong>ˈ</strong> (accent
+          tonique)
+        </li>
+        <li>
+          <strong>:</strong> (deux-points) en <strong>ː</strong> (allongement)
+        </li>
+        <li>
+          <strong>!</strong> (point d’exclamation) en <strong>ǃ</strong> (clic
+          post-alvéolaire)
+        </li>
+        <li>
+          <strong>|</strong> (barre verticale) en <strong>ǀ</strong> (clic
+          dental)
+        </li>
+        <li>
+          <strong>espace insécable</strong> et
+          <strong>espace insécable</strong> fine en <strong>espace</strong>
+        </li>
       </ul>
       <pronunciation-form
         v-for="(pronunciation, i) in pronunciations"

@@ -103,6 +103,8 @@ export default defineComponent({
       [":", "ː"],
       ["!", "ǃ"],
       ["|", "ǀ"],
+      ["\u00a0", " "],
+      ["\u202f", " "],
     ];
 
     const invalidCharacters = "()[]{}";
@@ -114,6 +116,7 @@ export default defineComponent({
       ["’", "ʼ", "apostrophe courbe", "consonne éjective"],
       [",", "ˌ", "virgule", "accent tonique secondaire"],
       ["?", "ʔ", "point d’interrogation", "coup de glotte"],
+      [";", "ː", "point-virgule", "allongement"],
     ];
 
     /**
