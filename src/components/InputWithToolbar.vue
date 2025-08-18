@@ -53,7 +53,6 @@ export default defineComponent({
      * Called when the input’s text is updated.
      */
     function onInput() {
-      messages.value.error = "";
       if (props.transformer) value.value = props.transformer(value.value);
       let message;
       if (props.validator && (message = props.validator(value.value))) {
@@ -61,7 +60,6 @@ export default defineComponent({
         messages.value.warning = message;
       } else {
         status.value = "default";
-        messages.value.warning = "";
       }
       ctx.emit("update:model-value", value.value);
     }
