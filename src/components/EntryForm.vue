@@ -366,6 +366,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab name="pronunciation" label="Prononciation">
+      <p>Les prononciations suivantes seront affichées après le mot.</p>
       <pronunciation-form
         v-for="(pronunciation, i) in pronunciations"
         :key="pronunciation.id"
