@@ -103,3 +103,9 @@ This file contains the configuration for `sync.py`. Its structure is as follows:
 * `gadgetDependencies`: The list of runtime npm dependencies. These are used to set the `dependencies=` option of the gadget’s definition in [MediaWiki:Gadgets-definition](https://fr.wiktionary.org/wiki/MediaWiki:Gadgets-definition).
 * `wikiDependencies`: The list of runtime wiki dependencies, in alphabetical order (tho it does not really matter). These are necessary to run the gadget locally, and are downloaded when running the `updatewikideps` command.
 * `ignoredFiles`: A list of files from the `src/` directory to ignore when running the `push` command.
+
+# Author(s)
+
+* Damia Vergnet ([Danÿa](https://fr.wiktionary.org/wiki/Utilisatrice:Danÿa) on the wiki)
+
+🏳️‍⚧️ :3
