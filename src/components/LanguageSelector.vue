@@ -19,6 +19,10 @@ export default defineComponent({
      * @type {import("vue").PropType<import("../types.js").Language[]>}
      */
     languages: { type: Array, required: true },
+    /**
+     * @type {import("vue").PropType<string[]>}
+     */
+    existingLanguageSections: { type: Array, default: () => [] },
     modelValue: { type: T.Language, required: true },
   },
 
@@ -78,6 +82,15 @@ export default defineComponent({
       visibleItemLimit: 10,
     };
 
+    const status = computed(() =>
+      L.containsLanguage(props.existingLanguageSections, langCode.value)
+        ? "error"
+        : "default"
+    );
+    const messages = ref({
+      error: "Une section dans cette langue existe déjà.",
+    });
+
     /**
      * Called when the menu selection changes.
      * @param {string} code The selected language code.
@@ -127,6 +140,9 @@ export default defineComponent({
       menuSelection,
       menuItems,
       menuConfig,
+      // Visual
+      status,
+      messages,
       // Icons
       cdxIconSearch,
       // Callbacks
@@ -141,7 +157,7 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-language-selector cne-box" is-fieldset>
     <template #label>Langue</template>
-    <cdx-field>
+    <cdx-field :status="status" :messages="messages">
       <template #description>La langue de l’entrée.</template>
       <template #help-text>
         Si une langue n’est pas disponible dans le menu déroulant à gauche, vous

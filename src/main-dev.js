@@ -9,6 +9,8 @@ const config = {
   userGender: "unknown",
 };
 
-const app = createApp(App);
+const app = createApp(App, {
+  existingLanguageSections: [],
+});
 app.provide("config", config);
 app.mount("#gadget-create-new-entry");

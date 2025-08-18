@@ -17,7 +17,9 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
     ),
   };
 
-  const app = createMwApp(App);
+  const app = createMwApp(App, {
+    existingLanguageSections: [], // TODO extract lang codes from edit form
+  });
   app.provide("config", config);
   app.mount("#gadget-create-new-entry");
 })();

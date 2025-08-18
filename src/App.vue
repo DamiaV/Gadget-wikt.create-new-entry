@@ -1,6 +1,6 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, ref, useTemplateRef } from "vue";
+import { computed, defineComponent, ref, useTemplateRef } from "vue";
 import { CdxButton, CdxCheckbox, CdxIcon, CdxMessage } from "@wikimedia/codex";
 import {
   cdxIconCollapse,
@@ -26,7 +26,14 @@ export default defineComponent({
 
   inject: ["config"],
 
-  setup() {
+  props: {
+    /**
+     * @type {import("vue").PropType<string[]>}
+     */
+    existingLanguageSections: { type: Array, default: () => [] },
+  },
+
+  setup(props) {
     const languages = ref(L.loadLanguages());
     const previousLangCode = C.getCookie(COOKIE_NAME);
     let startLanguage;
@@ -44,6 +51,10 @@ export default defineComponent({
     const language = ref(startLanguage);
 
     const isStub = ref(false);
+
+    const disableSubmitBtn = computed(() =>
+      L.containsLanguage(props.existingLanguageSections, language.value.code)
+    );
 
     /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
@@ -161,6 +172,7 @@ export default defineComponent({
       // Visual
       showForm,
       showFormFields,
+      disableSubmitBtn,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
@@ -234,6 +246,7 @@ export default defineComponent({
         <language-selector
           v-model="language"
           :languages="languages"
+          :existing-language-sections="$props.existingLanguageSections"
           @update:model-value="onLanguageSelection"
         ></language-selector>
         <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
@@ -250,7 +263,12 @@ export default defineComponent({
 
         <hr />
         <div class="bottom-btns">
-          <cdx-button type="submit" action="progressive" weight="primary">
+          <cdx-button
+            type="submit"
+            action="progressive"
+            weight="primary"
+            :disabled="disableSubmitBtn"
+          >
             <cdx-icon :icon="cdxIconDownload"></cdx-icon>
             Insérer le code
           </cdx-button>

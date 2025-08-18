@@ -2333,8 +2333,34 @@ function getDefaultLanguage(code) {
   return new T.Language(code, null, null, name, {}, items, null, false);
 }
 
+/**
+ * Check whether the given language code is present in the given list of codes.
+ * This function takes aliases into account.
+ * @param {string[]} codes List of language codes.
+ * @param {string} code A language code.
+ * @returns {boolean} True if the code or any of its aliases is in the list, false otherwise.
+ */
+function containsLanguage(codes, code) {
+  const lang = L.getLanguage(code, true);
+  if (!lang) return false;
+
+  for (const c of codes) {
+    const otherLang = L.getLanguage(c, true);
+    if (!otherLang) continue;
+    if (
+      code === c ||
+      lang.aliasOf === c ||
+      code === otherLang.aliasOf ||
+      (lang.aliasOf && otherLang.aliasOf && lang.aliasOf === otherLang.aliasOf)
+    )
+      return true;
+  }
+  return false;
+}
+
 export default {
   loadLanguages,
   getDefaultLanguage,
+  containsLanguage,
 };
 // </nowiki>
