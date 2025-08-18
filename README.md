@@ -2,6 +2,12 @@
 
 The gadget to create new entries on [fr.wiktionary.org](https://fr.wiktionary.org). The gadget’s sources on the wiki can be found [here](https://fr.wiktionary.org/wiki/Spécial:Index/MediaWiki:Gadget-wikt.create-new-entry).
 
+As this is a MediaWiki gadget, there are some [limitations](https://www.mediawiki.org/wiki/Vue.js#Use_single-file_components) regarding Vue.js. Here are the most important ones:
+* No self-closing component tags.
+* Component tag names must be in kebab-case.
+* Partial Composition API support (no `<script setup>`).
+* No `<script lang="…">`, `<style scoped>`, `<style module>`, or `<style lang="…">`.
+
 # Setting up the workspace
 
 To setup the workspace, you need to run the following command in the root directory:
