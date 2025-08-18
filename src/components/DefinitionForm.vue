@@ -1,6 +1,6 @@
 <!-- <nowiki> -->
 <script>
-import { defineComponent, inject, ref } from "vue";
+import { computed, defineComponent, inject, ref } from "vue";
 import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -78,6 +78,17 @@ export default defineComponent({
       };
       ctx.emit("update:model-value", firedEvent);
     }
+
+    const collapsedPreviewText = computed(() => {
+      const examplesText =
+        examples.value.length === 0
+          ? "aucun exemple"
+          : `${examples.value.length} exemple${examples.value.length > 1 ? "s" : ""}`;
+      const illustrationText = illustration.value
+        ? "illustration"
+        : "pas d’illustration";
+      return `${text.value} (${examplesText}, ${illustrationText})`;
+    });
 
     /**
      * Deletion dialog
@@ -208,6 +219,7 @@ export default defineComponent({
       // Visuals
       showFields,
       showExamples,
+      collapsedPreviewText,
       // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -407,7 +419,10 @@ export default defineComponent({
         @delete="onDeleteIllustration"
       ></illustration-form>
     </div>
-    <collapsed-preview v-show="!showFields" :text="text"></collapsed-preview>
+    <collapsed-preview
+      v-show="!showFields"
+      :text="collapsedPreviewText"
+    ></collapsed-preview>
   </cdx-field>
 
   <cdx-dialog
