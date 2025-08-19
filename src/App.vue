@@ -434,7 +434,7 @@ export default defineComponent({
                 <span class="cne-fieldset-btns">
                   <a
                     :href="`https://${wiki.urlDomain.replace('{}', language.wikimediaCode)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
-                    :title="`Rechercher sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
+                    :title="`Rechercher «\u00a0${config.word}\u00a0» sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
                     target="_blank"
                   >
                     <cdx-icon :icon="cdxIconSearch"></cdx-icon>

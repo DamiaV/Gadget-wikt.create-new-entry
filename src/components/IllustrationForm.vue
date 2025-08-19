@@ -394,7 +394,7 @@ export default defineComponent({
           <a
             :href="`https://commons.wikimedia.org/wiki/Special:MediaSearch?search=${encodeURIComponent(config.word)}&type=${type}`"
             target="_blank"
-            title="Chercher sur Commons (S’ouvre dans un nouvel onglet)"
+            :title="`Chercher «\u00a0${config.word}\u00a0» sur Commons (S’ouvre dans un nouvel onglet)`"
             ><cdx-icon :icon="cdxIconSearch"></cdx-icon
           ></a>
         </template>
