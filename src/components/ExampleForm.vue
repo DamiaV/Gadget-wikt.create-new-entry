@@ -233,7 +233,8 @@ export default defineComponent({
           L’orthographe et la typographie originales doivent être conservées,
           fautes d’orthographe incluses (pas besoin de mettre
           «&nbsp;sic&nbsp;»). Les mots en <em>italique</em> dans le texte
-          original doivent l’être aussi dans l’exemple.
+          original doivent l’être aussi dans l’exemple. Il ne doit pas y avoir
+          de liens dans le texte.
         </template>
       </input-with-toolbar>
 

@@ -43,8 +43,6 @@ export default defineComponent({
     EntryForm,
   },
 
-  inject: ["config"],
-
   props: {
     /**
      * @type {import("vue").PropType<string[]>}
@@ -482,6 +480,16 @@ export default defineComponent({
         </cdx-tabs>
 
         <hr />
+        <a
+          id=":3"
+          href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
+          target="_blank"
+          title=":3"
+        >
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
+          />
+        </a>
         <div class="bottom-btns">
           <cdx-button
             type="submit"
@@ -552,6 +560,18 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   margin: 0.5em 0;
+}
+
+#\:3 {
+  float: right;
+}
+#\:3 img {
+  width: 10px;
+  height: 10px;
+}
+#\:3:hover {
+  text-decoration: none;
+  filter: none;
 }
 </style>
 <!-- </nowiki> -->
