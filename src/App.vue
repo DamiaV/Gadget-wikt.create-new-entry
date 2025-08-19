@@ -1,19 +1,23 @@
 <!-- <nowiki> -->
 <script>
-import { computed, defineComponent, ref, useTemplateRef } from "vue";
+import { computed, defineComponent, inject, ref, useTemplateRef } from "vue";
 import {
   CdxButton,
   CdxCheckbox,
+  CdxField,
   CdxIcon,
   CdxMessage,
   CdxTab,
   CdxTabs,
+  CdxTextInput,
+  CdxToggleSwitch,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
   cdxIconCollapse,
   cdxIconDownload,
   cdxIconExpand,
+  cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import L from "./languages.js";
@@ -31,6 +35,9 @@ export default defineComponent({
     CdxCheckbox,
     CdxTabs,
     CdxTab,
+    CdxField,
+    CdxTextInput,
+    CdxToggleSwitch,
     CdxMessage,
     LanguageSelector,
     EntryForm,
@@ -82,7 +89,14 @@ export default defineComponent({
       language: language.value,
       stub: isStub.value,
       entries: [T.createEmptyEntry()],
+      wikiLinks: {},
     };
+
+    for (const key of Object.keys(T.wikis)) {
+      initialFormData.wikiLinks[key] = {
+        enabled: false,
+      };
+    }
 
     const showForm = ref(false);
     const showFormFields = ref(false);
@@ -211,6 +225,29 @@ export default defineComponent({
     }
 
     /*
+     * Wiki links
+     */
+
+    /**
+     * Update the wiki link with the given ID.
+     * @param {string} wikiId The ID of the wiki link to update.
+     * @param {string} propertyName The name of the property to update.
+     * @param {string} text The value to assign to the property.
+     */
+    function onWikiLinkUpdate(wikiId, propertyName, text) {
+      formData.value.wikiLinks[wikiId][propertyName] = text.trim();
+    }
+
+    /**
+     * Enable/disable the wiki link with the given ID.
+     * @param {string} wikiId The ID of the wiki link to update.
+     * @param {string} enabled Whether to enable the link.
+     */
+    function onWikiLinkToggle(wikiId, enabled) {
+      formData.value.wikiLinks[wikiId].enabled = enabled;
+    }
+
+    /*
      * Submit
      */
 
@@ -221,6 +258,11 @@ export default defineComponent({
       }
       console.log(formData.value);
     }
+
+    /**
+     * @type {import("./types.js").AppConfig}
+     */
+    const config = inject("config");
 
     return {
       // Data
@@ -235,11 +277,14 @@ export default defineComponent({
       disableSubmitBtn,
       // Other
       utils,
+      config,
+      wikis: T.wikis,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconDownload,
       cdxIconAdd,
+      cdxIconSearch,
       // Callbacks
       onLanguageSelection,
       onStubUpdate,
@@ -248,6 +293,8 @@ export default defineComponent({
       onDeleteEntry,
       onMoveEntryLeft,
       onMoveEntryRight,
+      onWikiLinkUpdate,
+      onWikiLinkToggle,
       onSubmit,
     };
   },
@@ -324,7 +371,7 @@ export default defineComponent({
         </cdx-checkbox>
         <cdx-button
           type="button"
-          class="add-entry-btn"
+          class="cne-add-entry-btn"
           action="progressive"
           @click="onAddEntry"
         >
@@ -345,6 +392,7 @@ export default defineComponent({
                   )
                 : `Entrée ${entry.id}`
             "
+            class="cne-main-tab"
           >
             <entry-form
               :index="i"
@@ -359,16 +407,76 @@ export default defineComponent({
               @move:after="onMoveEntryRight"
             ></entry-form>
           </cdx-tab>
-          <cdx-tab name="etymology" label="Étymologie"
+          <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab"
             >🚧 En construction 🏗️</cdx-tab
           >
-          <cdx-tab name="wiki-links" label="Liens wikis"
+          <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
+            <cdx-field
+              v-for="(wiki, key) in wikis"
+              :key="key"
+              :disabled="
+                wiki.showOnlyForLangs &&
+                !wiki.showOnlyForLangs.includes(language.wikimediaCode)
+              "
+            >
+              <template #label>
+                <cdx-icon
+                  v-if="wiki.icon && !wiki.icon.startsWith('https://')"
+                  :icon="wiki.icon"
+                ></cdx-icon>
+                <img
+                  v-else-if="wiki.icon && wiki.icon.startsWith('https://')"
+                  :src="wiki.icon"
+                  :alt="wiki.label"
+                  class="cne-custom-icon cdx-icon cdx-icon--medium"
+                />
+                {{ wiki.label }}
+                <span class="cne-fieldset-btns">
+                  <a
+                    :href="`https://${wiki.urlDomain.replace('{}', language.wikimediaCode)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
+                    :title="`Rechercher sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
+                    target="_blank"
+                  >
+                    <cdx-icon :icon="cdxIconSearch"></cdx-icon>
+                  </a>
+                </span>
+              </template>
+              <div class="cne-wiki-link-fields">
+                <cdx-toggle-switch
+                  :model-value="formData.wikiLinks[key].enabled"
+                  :aria-label="
+                    formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
+                  "
+                  :title="
+                    formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
+                  "
+                  @update:model-value="onWikiLinkToggle(key, $event)"
+                ></cdx-toggle-switch>
+                <cdx-text-input
+                  :model-value="formData.wikiLinks[key].pageTitle"
+                  :disabled="!formData.wikiLinks[key].enabled"
+                  :placeholder="
+                    wiki.placeholder ||
+                    'Titre de la page cible si différent du mot'
+                  "
+                  @update:model-value="
+                    onWikiLinkUpdate(key, 'pageTitle', $event)
+                  "
+                ></cdx-text-input>
+                <cdx-text-input
+                  v-if="!wiki.noText"
+                  :model-value="formData.wikiLinks[key].text"
+                  :disabled="!formData.wikiLinks[key].enabled"
+                  placeholder="Texte à afficher si différent du titre"
+                  @update:model-value="onWikiLinkUpdate(key, 'text', $event)"
+                ></cdx-text-input>
+              </div>
+            </cdx-field>
+          </cdx-tab>
+          <cdx-tab name="references" label="Références" class="cne-main-tab"
             >🚧 En construction 🏗️</cdx-tab
           >
-          <cdx-tab name="references" label="Références"
-            >🚧 En construction 🏗️</cdx-tab
-          >
-          <cdx-tab name="categories" label="Catégories"
+          <cdx-tab name="categories" label="Catégories" class="cne-main-tab"
             >🚧 En construction 🏗️</cdx-tab
           >
         </cdx-tabs>
@@ -391,32 +499,56 @@ export default defineComponent({
 </template>
 
 <style>
-.cne .cne-box {
+.cne-box {
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
   padding: 0.5em;
 }
 
-.cne .cne-fieldset-btns {
+.cne-fieldset-btns {
   display: inline-flex;
   gap: 0.5em;
 }
 
+.cne a .cdx-icon svg {
+  fill: var(--color-progressive);
+}
+
 .cne h1,
-.cne .cne-start-btn {
+.cne-start-btn {
   text-align: center;
 }
 
-.cne .cne-form-toolbar {
+.cne-form-toolbar {
   float: left;
   margin-top: 1em;
 }
 
-.cne .cne-language-selector {
+.cne-language-selector {
   margin-bottom: 1em;
 }
 
-.cne .bottom-btns {
+.cne-add-entry-btn {
+  margin: 0.5em 0;
+}
+
+.cne-main-tab {
+  margin-top: 1em;
+}
+
+.cne-wiki-link-fields {
+  display: flex;
+  gap: 0.5em;
+}
+.cne-wiki-link-fields .cdx-text-input {
+  flex-grow: 1;
+}
+
+.cne-custom-icon {
+  filter: grayscale(100%);
+}
+
+.bottom-btns {
   display: flex;
   justify-content: center;
   margin: 0.5em 0;

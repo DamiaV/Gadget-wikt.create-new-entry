@@ -3,6 +3,19 @@
  */
 // <nowiki>
 
+import {
+  cdxIconLogoWikibooks,
+  cdxIconLogoWikidata,
+  cdxIconLogoWikimediaCommons,
+  cdxIconLogoWikinews,
+  cdxIconLogoWikipedia,
+  cdxIconLogoWikiquote,
+  cdxIconLogoWikisource,
+  cdxIconLogoWikispecies,
+  cdxIconLogoWikiversity,
+  cdxIconLogoWikivoyage,
+} from "@wikimedia/codex-icons";
+
 /**
  * @typedef {{
  *  word: string,
@@ -51,6 +64,13 @@
  *  language: Language,
  *  stub: boolean,
  *  entries: Entry[],
+ *  wikiLinks?: {
+ *    [wikiName: string]: {
+ *      pageTitle?: string,
+ *      text?: string,
+ *      enabled: boolean,
+ *    }
+ *  },
  * }} FormData
  */
 
@@ -531,49 +551,119 @@ class Language {
  *  readonly templateName: string,
  *  readonly urlDomain: string,
  *  readonly urlBase: string,
- *  readonly showOnlyForLangs: string[],
+ *  readonly placeholder?: string,
+ *  readonly showOnlyForLangs?: string[],
+ *  readonly icon?: string,
+ *  readonly noText?: boolean,
  * }} Wiki
  */
+
 /**
- * A simple class that defines useful properties of sister wikis.
+ * List of sister projects and associated templates and domain names.
+ * @type {Record<string, Wiki>}
  */
-class Wiki {
-  /**
-   * Create a new Wiki object.
-   * @param {string} label Wiki’s French name.
-   * @param {string} templateName Wiki’s link template.
-   * @param {string} urlDomain Wiki’s URL pattern.
-   * @param {string?} urlBase Wiki’s search URL.
-   * @param {string[]?} showOnlyForLangs A list of language code for which to enable this wiki.
-   */
-  constructor(label, templateName, urlDomain, urlBase, showOnlyForLangs) {
-    /**
-     * @type {string}
-     * @private
-     */
-    this.name = label;
-    /**
-     * @type {string}
-     * @private
-     */
-    this.templateName = templateName;
-    /**
-     * @type {string}
-     * @private
-     */
-    this.urlDomain = urlDomain;
-    /**
-     * @type {string}
-     * @private
-     */
-    this.urlBase = urlBase || "w/index.php?search=";
-    /**
-     * @type {string[]}
-     * @private
-     */
-    this.showOnlyForLangs = showOnlyForLangs || [];
-  }
-}
+const wikis = {
+  wikidata: {
+    label: "Wikidata",
+    templateName: "liste projets",
+    urlDomain: "wikidata.org",
+    urlBase: "wiki",
+    placeholder: "QID pour le modèle {{liste projets}}",
+    icon: cdxIconLogoWikidata,
+    noText: true,
+  },
+  wikipedia: {
+    label: "Wikipédia",
+    templateName: "WP",
+    urlDomain: "{}.wikipedia.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikipedia,
+  },
+  wikisource: {
+    label: "Wikisource",
+    templateName: "WS",
+    urlDomain: "{}.wikisource.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikisource,
+  },
+  wikiquote: {
+    label: "Wikiquote",
+    templateName: "WQ",
+    urlDomain: "{}.wikiquote.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikiquote,
+  },
+  wikiversity: {
+    label: "Wikiversité",
+    templateName: "WV",
+    urlDomain: "{}.wikiversity.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikiversity,
+  },
+  wikibooks: {
+    label: "Wikilivres",
+    templateName: "WL",
+    urlDomain: "{}.wikibooks.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikibooks,
+  },
+  wikispecies: {
+    label: "Wikispecies",
+    templateName: "WSP",
+    urlDomain: "species.wikimedia.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikispecies,
+  },
+  wikivoyage: {
+    label: "Wikivoyage",
+    templateName: "VOY",
+    urlDomain: "{}.wikivoyage.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikivoyage,
+  },
+  wikinews: {
+    label: "Wikinews",
+    templateName: "WN",
+    urlDomain: "{}.wikinews.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikinews,
+  },
+  commons: {
+    label: "Wikimedia Commons",
+    templateName: "Commons",
+    urlDomain: "commons.wikimedia.org",
+    urlBase: "wiki",
+    icon: cdxIconLogoWikimediaCommons,
+  },
+  vikidia: {
+    label: "Vikidia",
+    templateName: "Vikidia",
+    urlDomain: "{}.vikidia.org",
+    urlBase: "wiki",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/4/44/Vikidia_V_vectorised.svg",
+    showOnlyForLangs: [
+      "fr",
+      "ca",
+      "de",
+      "el",
+      "en",
+      "es",
+      "eu",
+      "it",
+      "ru",
+      "scn",
+      "hy",
+    ],
+  },
+  dicoado: {
+    label: "Le Dico des Ados",
+    templateName: "Dicoado",
+    urlDomain: "{}.dicoado.org",
+    urlBase: "dico",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/0/06/Le_Dico_des_Adps_small_logo_2021_dark_background.svg",
+    showOnlyForLangs: ["fr"],
+  },
+};
 
 /**
  * @typedef {{
@@ -630,7 +720,6 @@ export default {
   GrammaticalClass,
   GrammaticalItem,
   Language,
-  Wiki,
   ArticleSection,
   wikis,
   createEmptyEntry,

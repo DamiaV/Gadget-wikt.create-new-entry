@@ -1,3 +1,7 @@
+:root {
+    --color-progressive: #88a3e8;
+}
+
 body {
     font-family: sans-serif;
 }

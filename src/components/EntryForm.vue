@@ -431,11 +431,7 @@ export default defineComponent({
 .cne-entry-action-btns {
   display: flex;
   gap: 0.5em;
-  margin: 0.5em 0;
-}
-
-.cne-entry-tabs .cdx-tabs__content {
-  margin-top: 1em;
+  margin-bottom: 0.5em;
 }
 </style>
 <!-- </nowiki> -->
