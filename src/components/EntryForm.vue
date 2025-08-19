@@ -433,5 +433,9 @@ export default defineComponent({
   gap: 0.5em;
   margin-bottom: 0.5em;
 }
+
+.cne-entry-tabs .cdx-tabs__content section {
+  margin-top: 1em;
+}
 </style>
 <!-- </nowiki> -->
