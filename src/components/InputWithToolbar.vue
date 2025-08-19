@@ -19,6 +19,10 @@ export default defineComponent({
     clearable: { type: Boolean, default: false },
     showFormatButtons: { type: Boolean, default: true },
     /**
+     * @type {import("vue").PropType<import("./EditTools.vue").CustomAction[]>}
+     */
+    customActions: { type: Array, default: () => [] },
+    /**
      * @type {import("vue").PropType<(text: string) => string | null>}
      */
     validator: { type: Function, default: null },
@@ -130,6 +134,17 @@ export default defineComponent({
       );
     }
 
+    /**
+     * Apply the given action to the selected text.
+     * @param {(selectedText: string) => string} action The action to perform.
+     */
+    function onCustomAction(action) {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}${action(selection)}${afterSelection}`
+      );
+    }
+
     return {
       // Data
       textInputType,
@@ -143,6 +158,7 @@ export default defineComponent({
       onInsertChar,
       onBold,
       onItalic,
+      onCustomAction,
     };
   },
 });
@@ -153,9 +169,11 @@ export default defineComponent({
     <edit-tools
       :show-format-buttons="$props.showFormatButtons"
       :characters="$props.specialCharacters"
+      :custom-actions="$props.customActions"
       @insert-char="onInsertChar"
       @style:bold="onBold"
       @style:italic="onItalic"
+      @custom-action="onCustomAction"
     ></edit-tools>
     <component
       :is="textInputType"

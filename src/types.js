@@ -64,7 +64,8 @@ import {
  *  language: Language,
  *  stub: boolean,
  *  entries: Entry[],
- *  wikiLinks?: {
+ *  etymology: string,
+ *  wikiLinks: {
  *    [wikiName: string]: {
  *      pageTitle?: string,
  *      text?: string,

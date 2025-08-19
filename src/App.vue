@@ -17,6 +17,8 @@ import {
   cdxIconCollapse,
   cdxIconDownload,
   cdxIconExpand,
+  cdxIconHelpNotice,
+  cdxIconInfoFilled,
   cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
@@ -25,6 +27,7 @@ import T from "./types.js";
 import utils from "./utils.js";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import EntryForm from "./components/EntryForm.vue";
+import EtymologyForm from "./components/EtymologyForm.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -41,6 +44,7 @@ export default defineComponent({
     CdxMessage,
     LanguageSelector,
     EntryForm,
+    EtymologyForm,
   },
 
   props: {
@@ -87,6 +91,7 @@ export default defineComponent({
       language: language.value,
       stub: isStub.value,
       entries: [T.createEmptyEntry()],
+      etymology: "",
       wikiLinks: {},
     };
 
@@ -283,6 +288,8 @@ export default defineComponent({
       cdxIconDownload,
       cdxIconAdd,
       cdxIconSearch,
+      cdxIconHelpNotice,
+      cdxIconInfoFilled,
       // Callbacks
       onLanguageSelection,
       onStubUpdate,
@@ -361,12 +368,14 @@ export default defineComponent({
           :existing-language-sections="$props.existingLanguageSections"
           @update:model-value="onLanguageSelection"
         ></language-selector>
+
         <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
           Ébauche
           <template #description>
             Cochez cette case pour insérer un bandeau d’ébauche.
           </template>
         </cdx-checkbox>
+
         <cdx-button
           type="button"
           class="cne-add-entry-btn"
@@ -405,9 +414,15 @@ export default defineComponent({
               @move:after="onMoveEntryRight"
             ></entry-form>
           </cdx-tab>
-          <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab"
-            >🚧 En construction 🏗️</cdx-tab
-          >
+
+          <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab">
+            <etymology-form
+              v-model="formData.etymology"
+              :language="language"
+              @update:model-value="formData.etymology = $event"
+            ></etymology-form>
+          </cdx-tab>
+
           <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
             <cdx-field
               v-for="(wiki, key) in wikis"
@@ -471,6 +486,7 @@ export default defineComponent({
               </div>
             </cdx-field>
           </cdx-tab>
+
           <cdx-tab name="references" label="Références" class="cne-main-tab"
             >🚧 En construction 🏗️</cdx-tab
           >

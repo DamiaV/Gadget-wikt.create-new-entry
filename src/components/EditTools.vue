@@ -5,6 +5,16 @@ import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconBold, cdxIconItalic } from "@wikimedia/codex-icons";
 import W from "../wikitext.js";
 
+/**
+ * @typedef {{
+ *  name: string,
+ *  title: string,
+ *  icon?: string,
+ *  iconOnly?: boolean,
+ *  action: (selectedText: string) => string,
+ * }} CustomAction
+ */
+
 export default defineComponent({
   components: {
     CdxButton,
@@ -14,15 +24,20 @@ export default defineComponent({
   props: {
     showFormatButtons: { type: Boolean, default: true },
     /**
+     * @type {import("vue").PropType<CustomAction[]>}
+     */
+    customActions: { type: Array, default: () => [] },
+    /**
      * @type {import("vue").PropType<string[][]>}
      */
     characters: { type: Array, default: () => [W.specialCharacters] },
   },
 
-  emits: ["style:bold", "style:italic", "insert-char"],
+  emits: ["style:bold", "style:italic", "insert-char", "custom-action"],
 
   setup() {
     return {
+      // Icons
       cdxIconBold,
       cdxIconItalic,
     };
@@ -53,6 +68,19 @@ export default defineComponent({
       >
         <cdx-icon :icon="cdxIconItalic"></cdx-icon>
       </cdx-button>
+      <cdx-button
+        v-for="customAction in $props.customActions"
+        :key="customAction.name"
+        :title="customAction.title || customAction.name"
+        :aria-label="customAction.title || customAction.name"
+        class="format-btn"
+        type="button"
+        size="small"
+        @click="$emit('custom-action', customAction.action)"
+      >
+        <cdx-icon v-if="customAction.icon" :icon="customAction.icon"></cdx-icon>
+        <span v-if="!customAction.iconOnly">{{ customAction.name }}</span>
+      </cdx-button>
     </template>
     <template v-for="(chars, i) in $props.characters" :key="i">
       <span v-if="i > 0" class="separator">—</span>
@@ -72,13 +100,9 @@ export default defineComponent({
 
 <style>
 .cne-edit-tools {
+  display: flex;
+  gap: 0.15em;
   margin-bottom: 0.25em;
-}
-
-.cne-edit-tools .format-btn,
-.cne-edit-tools .separator,
-.cne-edit-tools a {
-  margin-right: 0.25em;
 }
 </style>
 <!-- </nowiki> -->
