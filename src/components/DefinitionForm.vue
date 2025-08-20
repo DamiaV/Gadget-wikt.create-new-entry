@@ -339,7 +339,7 @@ export default defineComponent({
           </template>
         </input-with-toolbar>
 
-        <cdx-field class="cne-box" is-fieldset>
+        <cdx-field class="cne-examples cne-box" is-fieldset>
           <template #label>
             Exemples
             <span class="cne-fieldset-btns">
@@ -398,24 +398,24 @@ export default defineComponent({
             "
           ></collapsed-preview>
         </cdx-field>
-      </div>
 
-      <div v-if="!illustration">
-        <cdx-button
-          type="button"
-          action="progressive"
-          @click="onAddIllustration"
-        >
-          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-          Ajouter une illustration
-        </cdx-button>
+        <div v-if="!illustration">
+          <cdx-button
+            type="button"
+            action="progressive"
+            @click="onAddIllustration"
+          >
+            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+            Ajouter une illustration
+          </cdx-button>
+        </div>
+        <illustration-form
+          v-else
+          v-model="illustration"
+          @update:model-value="onIllustrationUpdate"
+          @delete="onDeleteIllustration"
+        ></illustration-form>
       </div>
-      <illustration-form
-        v-else
-        v-model="illustration"
-        @update:model-value="onIllustrationUpdate"
-        @delete="onDeleteIllustration"
-      ></illustration-form>
     </div>
     <collapsed-preview
       v-show="!showFields"
@@ -440,21 +440,13 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-definition-form {
+.cne-definition-form,
+.cne-examples {
   margin-bottom: 1em;
-}
-
-.cne-definition-grid {
-  display: flex;
-  gap: 1em;
 }
 
 .cne-definition-form-fields {
   flex-grow: 1;
-}
-
-.cne-illustration-form {
-  margin-top: 0;
 }
 </style>
 <!-- </nowiki> -->
