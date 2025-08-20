@@ -191,7 +191,7 @@ export default defineComponent({
         >
           <template #label>{{ utils.capitalize(key) }}</template>
           <cdx-select
-            :selected="wordProperties[i]"
+            :selected="wordProperties[i] || ''"
             :menu-items="wordTypePropertiesData[wordType][i]"
             default-label="Choisissez une option"
             @update:selected="onWordPropertySelection(i, $event)"
