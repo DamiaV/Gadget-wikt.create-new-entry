@@ -51,6 +51,8 @@ The project’s structure is as follows (only relevant files and directories are
 
 To test the gadget locally, run `npm run dev` then go to the address shown in the terminal.
 
+If you want to use features that make calls to the MediaWiki API (/w/api.php), you need to enable CORS in your browser.
+
 # Syncing with the wiki
 
 Files sync is performed through the `sync.py` tool. In order to know which files/pages should be updated, it refers to the local file structure in the `src` directory.

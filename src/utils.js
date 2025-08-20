@@ -1,4 +1,5 @@
 // <nowiki>
+
 /**
  * Select the text based the given gender.
  * @param {"unknown" | "female" | "male"} gender A gender.
@@ -34,17 +35,13 @@ function getNextId(objectsWithId) {
  * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
  */
 async function getImageFileUrl(pageName) {
-  // Return default image for local testing
-  if (location.hostname === "localhost")
-    return "https://upload.wikimedia.org/wikipedia/commons/2/28/Testbeeld_MK8.png";
-
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
   params.append("prop", "imageinfo");
   params.append("iiprop", "url|mediatype");
   params.append("format", "json");
-  const response = await fetch(`/w/api.php?${params}`);
+  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
   if (!pageInfo.imageinfo) return null;
@@ -76,34 +73,13 @@ async function getImageFileUrl(pageName) {
  * @returns {Promise<VideoFileSources | null>} The corresponding static URls or null if the file does not exist.
  */
 async function getVideoFileUrls(pageName) {
-  // Return default video for local testing
-  if (location.hostname === "localhost")
-    return {
-      thumbUrl:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Test.ogv/432px--Test.ogv.jpg",
-      sources: [
-        {
-          type: 'video/ogg; codecs="theora, vorbis"',
-          src: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Test.ogv",
-        },
-        {
-          type: 'video/webm; codecs="vp8, vorbis"',
-          src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.360p.webm",
-        },
-        {
-          type: 'video/webm; codecs="vp9, opus"',
-          src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6b/Test.ogv/Test.ogv.240p.vp9.webm",
-        },
-      ],
-    };
-
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
   params.append("prop", "videoinfo");
   params.append("viprop", "derivatives|size|mediatype");
   params.append("format", "json");
-  const response = await fetch(`/w/api.php?${params}`);
+  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
   if (!pageInfo.videoinfo) return null;
@@ -118,7 +94,9 @@ async function getVideoFileUrls(pageName) {
   params2.append("viprop", "url");
   params2.append("viurlwidth", videoInfo.width);
   params2.append("format", "json");
-  const response2 = await fetch(`/w/api.php?${params2}`);
+  const response2 = await fetch(
+    `https://fr.wiktionary.org/w/api.php?${params2}`
+  );
   const json2 = await response2.json();
   const pageInfo2 = json2.query.pages["-1"];
 
@@ -134,30 +112,13 @@ async function getVideoFileUrls(pageName) {
  * @returns {Promise<MediaFileSource[] | null>} The corresponding static URls or null if the file does not exist.
  */
 async function getAudioFileUrls(pageName) {
-  // Return default audio for local testing
-  if (location.hostname === "localhost")
-    return [
-      {
-        type: 'audio/ogg; codecs="vorbis"',
-        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/35/WikiTest.mid/WikiTest.mid.ogg",
-      },
-      {
-        type: "audio/mpeg",
-        src: "https://upload.wikimedia.org/wikipedia/commons/transcoded/3/35/WikiTest.mid/WikiTest.mid.mp3",
-      },
-      {
-        type: "audio/midi",
-        src: "https://upload.wikimedia.org/wikipedia/commons/3/35/WikiTest.mid",
-      },
-    ];
-
   const params = new URLSearchParams();
   params.append("action", "query");
   params.append("titles", `File:${pageName}`);
   params.append("prop", "videoinfo");
   params.append("viprop", "derivatives|mediatype");
   params.append("format", "json");
-  const response = await fetch(`/w/api.php?${params}`);
+  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
   const json = await response.json();
   const pageInfo = json.query.pages["-1"];
   if (!pageInfo.videoinfo) return null;
