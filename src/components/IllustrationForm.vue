@@ -203,17 +203,20 @@ export default defineComponent({
           case "image":
             utils
               .getImageFileUrl(fileName.value)
-              .then((url) => (imageUrl.value = url));
+              .then((url) => (imageUrl.value = url))
+              .catch((error) => console.warn(error));
             break;
           case "video":
             utils
               .getVideoFileUrls(fileName.value)
-              .then((sources) => (videoSources.value = sources || {}));
+              .then((sources) => (videoSources.value = sources || {}))
+              .catch((error) => console.warn(error));
             break;
           case "audio":
             utils
               .getAudioFileUrls(fileName.value)
-              .then((sources) => (audioSources.value = sources || []));
+              .then((sources) => (audioSources.value = sources || []))
+              .catch((error) => console.warn(error));
             break;
         }
       }
