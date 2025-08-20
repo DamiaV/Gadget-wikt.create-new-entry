@@ -324,7 +324,6 @@ export default defineComponent({
           text-area
           @change="fireUpdateEvent"
         >
-          <template #label>Texte</template>
           <template #description>
             Une courte définition, pas plus d’une ou deux phrases si possible.
           </template>
@@ -365,7 +364,7 @@ export default defineComponent({
             </span>
           </template>
 
-          <div v-show="showExamples" class="cne-examples">
+          <div v-show="showExamples">
             <example-form
               v-for="(example, i) in examples"
               :key="example.id"
