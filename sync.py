@@ -49,7 +49,7 @@ def generate_gadget_definition(
     icons = ", ".join(sorted(codex_icons, key=str.lower))
     sources = " | ".join(
         sorted(
-            (f"{prefix}/{file.src_path}" for file in files),
+            (f"{prefix}/{file.src_path}" for file in files if file.is_tracked),
             key=lambda p: " " if "main" in p else p.lower(),
         )
         + sorted(config.wiki_deps)
