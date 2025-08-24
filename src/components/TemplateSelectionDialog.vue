@@ -1,6 +1,13 @@
 <!-- <nowiki> -->
 <script>
-import { computed, defineComponent, inject, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  reactive,
+  ref,
+} from "vue";
 import {
   CdxButton,
   CdxCheckbox,
@@ -9,6 +16,8 @@ import {
   CdxIcon,
   CdxLookup,
   CdxSelect,
+  CdxTab,
+  CdxTabs,
   CdxTextArea,
   CdxTextInput,
 } from "@wikimedia/codex";
@@ -22,6 +31,7 @@ import templates from "../templates.js";
 import WikiLink from "./WikiLink.vue";
 import PageLookup from "./PageLookup.vue";
 import pages from "../pages.js";
+import TemplateList from "./TemplateList.vue";
 
 export default defineComponent({
   components: {
@@ -34,8 +44,11 @@ export default defineComponent({
     CdxTextArea,
     CdxCheckbox,
     CdxSelect,
+    CdxTabs,
+    CdxTab,
     WikiLink,
     PageLookup,
+    TemplateList,
   },
 
   props: {
@@ -146,6 +159,15 @@ export default defineComponent({
       return keys;
     });
 
+    /**
+     * @type {import("vue").Ref<import("../templates.js").TemplateData[]>}
+     */
+    const favoriteTemplates = ref([]);
+    /**
+     * @type {import("vue").Ref<import("../templates.js").TemplateData[]>}
+     */
+    const featuredTemplates = ref([]);
+
     const statuses = reactive({});
     const errorMessages = reactive({});
 
@@ -212,11 +234,17 @@ export default defineComponent({
      */
     function onLookupSelection(templateName) {
       if (!templateName) return;
+      selectTemplate(templateDatas[templateName]);
+    }
 
+    /**
+     * Select the given template data and show the template form.
+     * @param {import("../templates.js").TemplateData} templateData The template data.
+     */
+    function selectTemplate(templateData) {
       for (const key of Object.keys(selectedTemplate.params))
         delete selectedTemplate.params[key];
 
-      const templateData = templateDatas[templateName];
       selectedTemplateData.value = templateData;
 
       selectedTemplate.name = templateData.name;
@@ -227,6 +255,8 @@ export default defineComponent({
 
       for (const [paramName, paramDef] of Object.entries(templateData.params))
         if (paramDef.required) onToggleParam(paramName);
+      console.log(selectedTemplate);
+      console.log(sortedSelectedParams.value);
     }
 
     /**
@@ -282,6 +312,22 @@ export default defineComponent({
       selectedTemplateData.value = null;
       lookupSelection.value = "";
       lookupItems.value = [];
+      refreshFavoriteTemplates();
+    }
+
+    function refreshFavoriteTemplates() {
+      templates
+        .fetchFavoriteTemplates()
+        .then((favTemplates) => (favoriteTemplates.value = favTemplates))
+        .catch((error) => {
+          console.warn(error);
+        });
+      templates
+        .fetchFeaturedTemplates()
+        .then((featTemplates) => (featuredTemplates.value = featTemplates))
+        .catch((error) => {
+          console.warn(error);
+        });
     }
 
     /**
@@ -361,6 +407,10 @@ export default defineComponent({
         )
     );
 
+    onMounted(() => {
+      refreshFavoriteTemplates();
+    });
+
     /**
      * @type {import("@wikimedia/codex").PrimaryModalAction}
      */
@@ -386,6 +436,8 @@ export default defineComponent({
       lookupItems,
       lookupConfig,
       isTemplateValid,
+      favoriteTemplates,
+      featuredTemplates,
       // Visual
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -400,6 +452,7 @@ export default defineComponent({
       resetSelection,
       onInput,
       onLookupSelection,
+      selectTemplate,
       onToggleParam,
       onParamValueChange,
       getMenuItems,
@@ -430,21 +483,43 @@ export default defineComponent({
       resetSelection();
     "
   >
-    <cdx-field v-show="!selectedTemplateData">
-      <template #label>Rechercher un modèle</template>
-      <cdx-lookup
-        v-model:selected.trim="lookupSelection"
-        :menu-items="lookupItems"
-        :menu-config="lookupConfig"
-        :start-icon="cdxIconSearch"
-        clearable
-        placeholder="Saisissez le nom d’un modèle"
-        @input="onInput"
-        @update:selected="onLookupSelection"
-      >
-        <template #no-results>Aucun résultat.</template>
-      </cdx-lookup>
-    </cdx-field>
+    <div v-show="!selectedTemplateData">
+      <cdx-field>
+        <template #label>Rechercher un modèle</template>
+        <cdx-lookup
+          v-model:selected.trim="lookupSelection"
+          :menu-items="lookupItems"
+          :menu-config="lookupConfig"
+          :start-icon="cdxIconSearch"
+          clearable
+          placeholder="Saisissez le nom d’un modèle"
+          @input="onInput"
+          @update:selected="onLookupSelection"
+        >
+          <template #no-results>Aucun résultat.</template>
+        </cdx-lookup>
+      </cdx-field>
+
+      <cdx-tabs class="cne-templates-tabs">
+        <cdx-tab name="favorites" label="Favoris">
+          Vous avez {{ favoriteTemplates.length }}/50 modèle{{
+            favoriteTemplates.length > 1 ? "s" : ""
+          }}
+          en favoris.
+          <template-list
+            :templates="favoriteTemplates"
+            @select="selectTemplate"
+          ></template-list>
+        </cdx-tab>
+        <cdx-tab name="featured" label="En vedette">
+          Modèles importants sélectionnés par la communauté
+          <template-list
+            :templates="featuredTemplates"
+            @select="selectTemplate"
+          ></template-list>
+        </cdx-tab>
+      </cdx-tabs>
+    </div>
 
     <div v-if="selectedTemplateData" class="cne-template-form">
       <div class="cne-template-form-header">
@@ -677,6 +752,10 @@ export default defineComponent({
 .cne-template-dialog {
   max-width: 50em;
   height: 40em;
+}
+
+.cne-templates-tabs .cdx-tab {
+  padding: 0.5em;
 }
 
 .cne-template-form {

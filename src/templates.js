@@ -302,8 +302,8 @@ function parseTemplateFormat(formatString) {
 }
 
 /**
- * Search for templates matching the given search query or list of page IDs.
- * @param {string | number[]} query A query or list of page IDs.
+ * Search for templates matching the given search query or list of page titles or page IDs.
+ * @param {string | string[] | number[]} query A query or list of page titles or page IDs.
  * @param {string} langCode The language code for the labels.
  * @returns {Promise<TemplateData[]>} A list of matching template’s data.
  */
@@ -318,7 +318,9 @@ async function searchTemplates(query, langCode) {
     params.append("gsrnamespace", 10);
     params.append("gsrlimit", 50);
     params.append("gsrprop", "redirecttitle");
-  } else params.append("pageids", query.join("|"));
+  } else if (query.length && typeof query[0] === "number")
+    params.append("pageids", query.join("|"));
+  else params.append("titles", query.join("|"));
   params.append("lang", langCode);
   params.append("format", "json");
 
@@ -435,6 +437,36 @@ async function fetchFavoriteTemplates() {
   return await searchTemplates(templateIDs);
 }
 
+async function fetchFeaturedTemplates() {
+  const params = new URLSearchParams();
+  params.append("action", "query");
+  params.append("meta", "communityconfiguration");
+  params.append("ccrprovider", "TemplateData-FeaturedTemplates");
+  params.append("ccrassertversion", "1.0.0");
+  params.append("formatversion", 2);
+  params.append("format", "json");
+  // https://fr.wiktionary.org/w/api.php?action=query&format=json&meta=communityconfiguration&formatversion=2&ccrprovider=TemplateData-FeaturedTemplates&ccrassertversion=1.0.0
+
+  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
+  /**
+   * @type {{
+   *  communityconfiguration: {
+   *    data: {
+   *      FeaturedTemplates: {
+   *        0: {
+   *          titles: string[],
+   *        }
+   *      }
+   *    }
+   *  }
+   * }}
+   */
+  const json = await response.json();
+  return await searchTemplates(
+    json.communityconfiguration.data.FeaturedTemplates[0].titles
+  );
+}
+
 // </nowiki>
 
 export default {
@@ -442,4 +474,5 @@ export default {
   parseTemplateFormat,
   searchTemplates,
   fetchFavoriteTemplates,
+  fetchFeaturedTemplates,
 };
