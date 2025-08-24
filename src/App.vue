@@ -534,7 +534,7 @@ export default defineComponent({
   gap: 0.5em;
 }
 
-.cne a .cdx-icon svg {
+a .cdx-icon svg {
   fill: var(--color-progressive);
 }
 

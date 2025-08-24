@@ -8,6 +8,7 @@ from . import vcs
 
 SRC_DIR = pathlib.Path("src")
 WIKI_DEPS_DIR = SRC_DIR / "wiki_deps"
+TESTS_DIR = SRC_DIR / "tests"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -66,6 +67,7 @@ def extract_local_file_structure(config: Config) -> set[File]:
             and os.path.splitext(path.name)[1] in allowed_exts
             and path not in config.ignored_files
             and not str(path).startswith(str(WIKI_DEPS_DIR))
+            and not str(path).startswith(str(TESTS_DIR))
         ):
             relative_path = path.relative_to(SRC_DIR)
             files.add(

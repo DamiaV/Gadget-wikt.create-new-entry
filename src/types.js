@@ -18,8 +18,19 @@ import {
 
 /**
  * @typedef {{
+ *  id: number,
+ *  name: string,
+ *  canonicalName: string,
+ *  aliases: string[],
+ *  allowsSubpages: boolean,
+ * }} Namespace
+ */
+
+/**
+ * @typedef {{
  *  word: string,
  *  userGender: string,
+ *  namespaces: Namespace[],
  * }} AppConfig
  */
 

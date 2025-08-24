@@ -19,7 +19,7 @@ export default defineComponent({
     "
     :href="
       '/wiki/' +
-      encodeURIComponent($props.pageTitle) +
+      encodeURIComponent($props.pageTitle.replaceAll(' ', '_')) +
       ($props.anchor ? '#' + $props.anchor : '')
     "
     :target="$props.openInNewTab ? '_blank' : '_self'"

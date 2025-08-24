@@ -2,7 +2,11 @@
 <script>
 import { defineComponent } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
-import { cdxIconBold, cdxIconItalic } from "@wikimedia/codex-icons";
+import {
+  cdxIconBold,
+  cdxIconItalic,
+  cdxIconPuzzle,
+} from "@wikimedia/codex-icons";
 import W from "../wikitext.js";
 
 /**
@@ -23,6 +27,7 @@ export default defineComponent({
 
   props: {
     showFormatButtons: { type: Boolean, default: true },
+    showTemplateButton: { type: Boolean, default: true },
     /**
      * @type {import("vue").PropType<CustomAction[]>}
      */
@@ -33,13 +38,20 @@ export default defineComponent({
     characters: { type: Array, default: () => [W.specialCharacters] },
   },
 
-  emits: ["style:bold", "style:italic", "insert-char", "custom-action"],
+  emits: [
+    "style:bold",
+    "style:italic",
+    "insert-char",
+    "insert-template",
+    "custom-action",
+  ],
 
   setup() {
     return {
       // Icons
       cdxIconBold,
       cdxIconItalic,
+      cdxIconPuzzle,
     };
   },
 });
@@ -67,6 +79,17 @@ export default defineComponent({
         @click="$emit('style:italic')"
       >
         <cdx-icon :icon="cdxIconItalic"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        v-if="$props.showTemplateButton"
+        class="format-btn"
+        type="button"
+        aria-label="Insérer un modèle"
+        title="Insérer un modèle"
+        size="small"
+        @click="$emit('insert-template')"
+      >
+        <cdx-icon :icon="cdxIconPuzzle"></cdx-icon>
       </cdx-button>
       <cdx-button
         v-for="customAction in $props.customActions"

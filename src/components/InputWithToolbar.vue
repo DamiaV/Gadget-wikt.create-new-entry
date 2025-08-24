@@ -4,6 +4,8 @@ import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
 import EditTools from "./EditTools.vue";
 import W from "../wikitext.js";
+import templates from "../templates.js";
+import TemplateSelectionDialog from "./TemplateSelectionDialog.vue";
 
 export default defineComponent({
   components: {
@@ -11,6 +13,7 @@ export default defineComponent({
     CdxTextInput,
     CdxTextArea,
     EditTools,
+    TemplateSelectionDialog,
   },
 
   props: {
@@ -18,6 +21,7 @@ export default defineComponent({
     textArea: { type: Boolean, default: false },
     clearable: { type: Boolean, default: false },
     showFormatButtons: { type: Boolean, default: true },
+    showTemplateButton: { type: Boolean, default: true },
     /**
      * @type {import("vue").PropType<import("./EditTools.vue").CustomAction[]>}
      */
@@ -52,6 +56,8 @@ export default defineComponent({
      * @type {Readonly<import("vue").ShallowRef<import("@wikimedia/codex").CdxTextArea | import("@wikimedia/codex").CdxTextInput>>}
      */
     const textInput = useTemplateRef("textInput");
+
+    const openTemplateDialog = ref(false);
 
     /**
      * Called when the input’s text is updated.
@@ -145,11 +151,23 @@ export default defineComponent({
       );
     }
 
+    /**
+     * Insert the given template.
+     * @param {import("../templates.js").FilledTemplate} filledTemplate The filled template’s data.
+     */
+    function onInsertTemplate(filledTemplate) {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}${templates.templateToString(filledTemplate)}${selection}${afterSelection}`
+      );
+    }
+
     return {
       // Data
       textInputType,
       value,
       // Visual
+      openTemplateDialog,
       status,
       messages,
       // Callbacks
@@ -159,35 +177,45 @@ export default defineComponent({
       onBold,
       onItalic,
       onCustomAction,
+      onInsertTemplate,
     };
   },
 });
 </script>
 
 <template>
-  <cdx-field :status="status" :messages="messages">
-    <edit-tools
-      :show-format-buttons="$props.showFormatButtons"
-      :characters="$props.specialCharacters"
-      :custom-actions="$props.customActions"
-      @insert-char="onInsertChar"
-      @style:bold="onBold"
-      @style:italic="onItalic"
-      @custom-action="onCustomAction"
-    ></edit-tools>
-    <component
-      :is="textInputType"
-      ref="textInput"
-      v-model="value"
-      :required="$props.required"
-      :clearable="$props.clearable"
-      @update:model-value="onInput"
-      @change="$emit('change', value)"
-      @invalid="onInvalid"
-    ></component>
-    <template #label><slot name="label"></slot></template>
-    <template #description><slot name="description"></slot></template>
-    <template #help-text><slot name="help-text"></slot></template>
-  </cdx-field>
+  <div>
+    <cdx-field :status="status" :messages="messages">
+      <edit-tools
+        :show-format-buttons="$props.showFormatButtons"
+        :show-template-button="$props.showTemplateButton"
+        :characters="$props.specialCharacters"
+        :custom-actions="$props.customActions"
+        @insert-char="onInsertChar"
+        @style:bold="onBold"
+        @style:italic="onItalic"
+        @custom-action="onCustomAction"
+        @insert-template="openTemplateDialog = true"
+      ></edit-tools>
+      <component
+        :is="textInputType"
+        ref="textInput"
+        v-model="value"
+        :required="$props.required"
+        :clearable="$props.clearable"
+        @update:model-value="onInput"
+        @change="$emit('change', value)"
+        @invalid="onInvalid"
+      ></component>
+      <template #label><slot name="label"></slot></template>
+      <template #description><slot name="description"></slot></template>
+      <template #help-text><slot name="help-text"></slot></template>
+    </cdx-field>
+
+    <template-selection-dialog
+      v-model:open="openTemplateDialog"
+      @insert="onInsertTemplate"
+    ></template-selection-dialog>
+  </div>
 </template>
 <!-- </nowiki> -->

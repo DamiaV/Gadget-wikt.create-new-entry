@@ -394,12 +394,14 @@ export default defineComponent({
       >
         <template #label>
           Nom du fichier sur Commons
-          <a
-            :href="`https://commons.wikimedia.org/wiki/Special:MediaSearch?search=${encodeURIComponent(config.word)}&type=${type}`"
-            target="_blank"
-            :title="`Chercher «\u00a0${config.word}\u00a0» sur Commons (S’ouvre dans un nouvel onglet)`"
-            ><cdx-icon :icon="cdxIconSearch"></cdx-icon
-          ></a>
+          <span class="cne-fieldset-btns">
+            <a
+              :href="`https://commons.wikimedia.org/wiki/Special:MediaSearch?search=${encodeURIComponent(config.word)}&type=${type}`"
+              target="_blank"
+              :title="`Chercher «\u00a0${config.word}\u00a0» sur Commons (S’ouvre dans un nouvel onglet)`"
+            >
+              <cdx-icon :icon="cdxIconSearch"></cdx-icon> </a
+          ></span>
         </template>
         <cdx-text-input
           v-model.trim="rawFileName"
@@ -448,6 +450,7 @@ export default defineComponent({
         v-model="description"
         clearable
         required
+        :show-template-button="false"
         @change="fireUpdateEvent"
       >
         <template #label>Légende</template>
