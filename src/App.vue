@@ -27,7 +27,8 @@ import T from "./types.js";
 import utils from "./utils.js";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import EntryForm from "./components/EntryForm.vue";
-import EtymologyForm from "./components/EtymologyForm.vue";
+import InputWithToolbar from "./components/InputWithToolbar.vue";
+import WikiLink from "./components/WikiLink.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -44,7 +45,8 @@ export default defineComponent({
     CdxMessage,
     LanguageSelector,
     EntryForm,
-    EtymologyForm,
+    InputWithToolbar,
+    WikiLink,
   },
 
   props: {
@@ -416,11 +418,23 @@ export default defineComponent({
           </cdx-tab>
 
           <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab">
-            <etymology-form
-              v-model="formData.etymology"
-              :language="language"
-              @update:model-value="formData.etymology = $event"
-            ></etymology-form>
+            <cdx-field class="cne-box" is-fieldset>
+              <template #label>
+                <span class="cne-fieldset-btns">
+                  <wiki-link page-title="Aide:Étymologies">
+                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+                  </wiki-link>
+
+                  <wiki-link page-title="Convention:Étymologie">
+                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+                  </wiki-link>
+                </span>
+              </template>
+              <input-with-toolbar
+                v-model="formData.etymology"
+                text-area
+              ></input-with-toolbar>
+            </cdx-field>
           </cdx-tab>
 
           <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
