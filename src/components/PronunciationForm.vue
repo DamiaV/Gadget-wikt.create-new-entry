@@ -7,6 +7,7 @@ import {
   cdxIconArrowUp,
   cdxIconCollapse,
   cdxIconExpand,
+  cdxIconFeedback,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
   cdxIconTrash,
@@ -169,6 +170,7 @@ export default defineComponent({
       utils,
       config,
       // Icons
+      cdxIconFeedback,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconCollapse,
@@ -192,6 +194,12 @@ export default defineComponent({
     <template #label>
       Prononciation {{ $props.index + 1 }}
       <span class="cne-fieldset-btns">
+        <wiki-link
+          v-if="language.hasPronunciationAppendix"
+          :page-title="`Annexe:Prononciation/${language.name}`"
+        >
+          <cdx-icon :icon="cdxIconFeedback"></cdx-icon>
+        </wiki-link>
         <wiki-link page-title="Aide:Prononciation écrite">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
         </wiki-link>

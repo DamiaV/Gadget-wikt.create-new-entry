@@ -15,6 +15,7 @@ import {
   cdxIconLogoWikiversity,
   cdxIconLogoWikivoyage,
 } from "@wikimedia/codex-icons";
+import L from "./wiki_deps/wikt.core.languages.js";
 
 /**
  * @typedef {{
@@ -415,6 +416,7 @@ class GrammaticalItem {
  *  readonly ipaSymbols: string[][],
  *  readonly grammarItems: Record<string, GrammaticalItem>,
  *  readonly isSupported: boolean,
+ *  readonly hasPronunciationAppendix: boolean,
  *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem,
  *  readonly generatePronunciation: (word: string) => string,
  * }} Language
@@ -483,6 +485,12 @@ class Language {
      * @private
      */
     this._isSupported = isSupported;
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this._hasPronunciationAppendix =
+      L.getLanguage(code).hasPronunciationAppendix;
 
     for (const grammarItem of grammarItems || []) {
       this._grammarItems[grammarItem.grammaticalClass.sectionCode] =
@@ -537,6 +545,13 @@ class Language {
    */
   get isSupported() {
     return this._isSupported;
+  }
+
+  /**
+   * @return {boolean} True if this language has an "Annexe/Prononciation/<name>" page.
+   */
+  get hasPronunciationAppendix() {
+    return this._hasPronunciationAppendix;
   }
 
   /**
