@@ -78,14 +78,11 @@ export default defineComponent({
       if (startLanguage) languages.value.push(startLanguage);
       else startLanguage = languages.value[0];
     }
-    const language = ref(startLanguage);
-
-    const isStub = ref(false);
 
     const activeTab = ref("tab-1");
 
     const disableSubmitBtn = computed(() =>
-      L.containsLanguage(props.existingLanguageSections, language.value.code)
+      L.containsLanguage(props.existingLanguageSections, formData.language.code)
     );
 
     /**
@@ -97,8 +94,8 @@ export default defineComponent({
      * @type {import("./types.js").FormData}
      */
     const initialFormData = {
-      language: language.value,
-      stub: isStub.value,
+      language: startLanguage,
+      stub: false,
       entries: [T.createEmptyEntry()],
       etymology: "",
       wikiLinks: {},
@@ -132,20 +129,6 @@ export default defineComponent({
         languages.value.push(language);
       const newLocal = COOKIE_NAME;
       C.setCookie(newLocal, language.code, 30);
-      formData.language = language;
-    }
-
-    /*
-     * Stub
-     */
-
-    /**
-     * Update the stub article status.
-     * @param {boolean} checked Whether the stub checkbox is checked.
-     */
-    function onStubUpdate(checked) {
-      isStub.value = checked;
-      formData.stub = checked;
     }
 
     /**
@@ -162,12 +145,12 @@ export default defineComponent({
         const wordType = entry.wordType;
         if (!wordType) return true;
 
-        const grammarItem = language.value.getGrammarItem(wordType);
+        const grammarItem = formData.language.getGrammarItem(wordType);
         if (!grammarItem) return true;
 
         const selectedProps = entry.wordProperties;
         const expectedPropsCount = Object.entries(
-          language.value.getGrammarItem(wordType).properties
+          formData.language.getGrammarItem(wordType).properties
         ).length;
 
         return (
@@ -260,9 +243,7 @@ export default defineComponent({
     return {
       // Data
       formData,
-      language,
       languages,
-      isStub,
       activeTab,
       // Visual
       showForm,
@@ -281,7 +262,6 @@ export default defineComponent({
       cdxIconInfoFilled,
       // Callbacks
       onLanguageSelection,
-      onStubUpdate,
       onAddEntry,
       onEntryUpdate,
       onDeleteEntry,
@@ -324,7 +304,7 @@ export default defineComponent({
       </div>
 
       <h1>
-        Création d’une section en <em>{{ language.name }}</em>
+        Création d’une section en <em>{{ formData.language.name }}</em>
       </h1>
 
       <div v-show="showFormFields">
@@ -350,13 +330,13 @@ export default defineComponent({
         </cdx-message>
 
         <language-selector
-          v-model="language"
+          v-model="formData.language"
           :languages="languages"
           :existing-language-sections="$props.existingLanguageSections"
           @update:model-value="onLanguageSelection"
         ></language-selector>
 
-        <cdx-checkbox v-model="isStub" @update:model-value="onStubUpdate">
+        <cdx-checkbox v-model="formData.stub">
           Ébauche
           <template #description>
             Cochez cette case pour insérer un bandeau d’ébauche.
@@ -379,10 +359,10 @@ export default defineComponent({
             :key="entry.id"
             :name="`tab-${entry.id}`"
             :label="
-              entry.wordType && language.getGrammarItem(entry.wordType)
+              entry.wordType && formData.language.getGrammarItem(entry.wordType)
                 ? utils.capitalize(
-                    language.getGrammarItem(entry.wordType).grammaticalClass
-                      .label
+                    formData.language.getGrammarItem(entry.wordType)
+                      .grammaticalClass.label
                   )
                 : `Entrée ${entry.id}`
             "
@@ -390,7 +370,7 @@ export default defineComponent({
           >
             <entry-form
               :index="i"
-              :language="language"
+              :language="formData.language"
               :model-value="entry"
               :enable-delete-btn="formData.entries.length > 1"
               :can-move-before="i > 0"
@@ -425,7 +405,7 @@ export default defineComponent({
           <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
             <external-wiki-links
               v-model="formData.wikiLinks"
-              :language="language"
+              :language="formData.language"
             ></external-wiki-links>
           </cdx-tab>
 
@@ -503,8 +483,8 @@ export default defineComponent({
             </p>
             <p>
               Par exemple, il est inutile d’ajouter ici les catégories du type
-              «&nbsp;Noms communs en {{ language.name }}&nbsp;» car elles seront
-              ajoutées par le modèle
+              «&nbsp;Noms communs en {{ formData.language.name }}&nbsp;» car
+              elles seront ajoutées par le modèle
               <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
               automatiquement.
             </p>

@@ -115,19 +115,6 @@ export default defineComponent({
     }
 
     /*
-     * Word type properties
-     */
-
-    /**
-     * Update the word type properties.
-     * @param {import("./WordPropertiesSelector.vue").WordProperties} newWordTypeProperties The new word type properties.
-     */
-    function onWordTypePropertiesUpdate(newWordTypeProperties) {
-      wordTypeProperties.value = newWordTypeProperties;
-      fireUpdateEvent();
-    }
-
-    /*
      * Definitions
      */
 
@@ -274,7 +261,6 @@ export default defineComponent({
       fireUpdateEvent,
       onDelete,
       deleteEntry,
-      onWordTypePropertiesUpdate,
       onDefinitionUpdate,
       onAddDefinition,
       onDeleteDefinition,
@@ -330,7 +316,7 @@ export default defineComponent({
   <word-properties-selector
     v-model="wordTypeProperties"
     :language="$props.language"
-    @update:model-value="onWordTypePropertiesUpdate"
+    @update:model-value="fireUpdateEvent"
   ></word-properties-selector>
 
   <cdx-tabs class="cne-entry-tabs" framed>
