@@ -217,7 +217,7 @@ export default defineComponent({
       </span>
     </template>
 
-    <div v-if="showFields">
+    <div v-show="showFields">
       <input-with-toolbar
         v-model.trim="text"
         required
@@ -300,7 +300,7 @@ export default defineComponent({
         ></cdx-text-input>
       </cdx-field>
     </div>
-    <collapsed-preview v-else :text="text"></collapsed-preview>
+    <collapsed-preview v-show="!showFields" :text="text"></collapsed-preview>
   </cdx-field>
 
   <cdx-dialog
