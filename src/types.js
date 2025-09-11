@@ -79,6 +79,10 @@ import L from "./wiki_deps/wikt.core.languages.js";
  *  etymology: string,
  *  wikiLinks: { [wikiName: string]: ExternalWikiLink },
  *  categories: string[],
+ *  references: {
+ *    imports: string,
+ *    bibliography: string,
+ *  }
  * }} FormData
  */
 

@@ -1,6 +1,13 @@
 <!-- <nowiki> -->
 <script>
-import { computed, defineComponent, inject, ref, useTemplateRef } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  reactive,
+  ref,
+  useTemplateRef,
+} from "vue";
 import {
   CdxButton,
   CdxCheckbox,
@@ -96,6 +103,10 @@ export default defineComponent({
       etymology: "",
       wikiLinks: {},
       categories: [],
+      references: {
+        imports: "",
+        bibliography: "",
+      },
     };
 
     for (const key of Object.keys(T.wikis)) {
@@ -106,7 +117,7 @@ export default defineComponent({
 
     const showForm = ref(false);
     const showFormFields = ref(false);
-    const formData = ref(initialFormData);
+    const formData = reactive(initialFormData);
 
     /*
      * Language
@@ -121,7 +132,7 @@ export default defineComponent({
         languages.value.push(language);
       const newLocal = COOKIE_NAME;
       C.setCookie(newLocal, language.code, 30);
-      formData.value.language = language;
+      formData.language = language;
     }
 
     /*
@@ -134,7 +145,7 @@ export default defineComponent({
      */
     function onStubUpdate(checked) {
       isStub.value = checked;
-      formData.value.stub = checked;
+      formData.stub = checked;
     }
 
     /**
@@ -168,8 +179,7 @@ export default defineComponent({
       };
 
       return (
-        !form.value.checkValidity() ||
-        formData.value.entries.some(isEntryInvalid)
+        !form.value.checkValidity() || formData.entries.some(isEntryInvalid)
       );
     }
 
@@ -181,8 +191,8 @@ export default defineComponent({
      * Add a new empty entry at the end of the array.
      */
     function onAddEntry() {
-      const id = utils.getNextId(formData.value.entries);
-      formData.value.entries.push(T.createEmptyEntry(id));
+      const id = utils.getNextId(formData.entries);
+      formData.entries.push(T.createEmptyEntry(id));
       activeTab.value = `tab-${id}`;
     }
 
@@ -191,14 +201,14 @@ export default defineComponent({
      * @param {number} entryIndex The index of the entry to delete.
      */
     function onDeleteEntry(entryIndex) {
-      const entriesNb = formData.value.entries.length;
+      const entriesNb = formData.entries.length;
       if (entryIndex < 0 || entryIndex >= entriesNb) return;
 
       const nearestEntry =
         entryIndex === entriesNb - 1
-          ? formData.value.entries[entriesNb - 2]
-          : formData.value.entries[entryIndex + 1];
-      formData.value.entries.splice(entryIndex, 1);
+          ? formData.entries[entriesNb - 2]
+          : formData.entries[entryIndex + 1];
+      formData.entries.splice(entryIndex, 1);
       activeTab.value = `tab-${nearestEntry.id}`;
     }
 
@@ -207,7 +217,7 @@ export default defineComponent({
      * @param {import("../types.js").FormEntryUpdateEvent} event
      */
     function onEntryUpdate(event) {
-      formData.value.entries[event.index] = event.entry;
+      formData.entries[event.index] = event.entry;
     }
 
     /**
@@ -216,8 +226,8 @@ export default defineComponent({
      */
     function onMoveEntryLeft(entryIndex) {
       if (entryIndex === 0) return;
-      const entry = formData.value.entries.splice(entryIndex, 1)[0];
-      formData.value.entries.splice(entryIndex - 1, 0, entry);
+      const entry = formData.entries.splice(entryIndex, 1)[0];
+      formData.entries.splice(entryIndex - 1, 0, entry);
     }
 
     /**
@@ -225,9 +235,9 @@ export default defineComponent({
      * @param {number} entryIndex The index of the entry to move.
      */
     function onMoveEntryRight(entryIndex) {
-      if (entryIndex === formData.value.entries.length - 1) return;
-      const entry = formData.value.entries.splice(entryIndex, 1)[0];
-      formData.value.entries.splice(entryIndex + 1, 0, entry);
+      if (entryIndex === formData.entries.length - 1) return;
+      const entry = formData.entries.splice(entryIndex, 1)[0];
+      formData.entries.splice(entryIndex + 1, 0, entry);
     }
 
     /*
@@ -239,7 +249,7 @@ export default defineComponent({
         console.log("cannot insert");
         return;
       }
-      console.log(formData.value);
+      console.log(formData);
     }
 
     /**
@@ -419,8 +429,63 @@ export default defineComponent({
             ></external-wiki-links>
           </cdx-tab>
 
-          <cdx-tab name="references" label="Références" class="cne-main-tab">
-            🚧 En construction 🏗️
+          <cdx-tab
+            name="references"
+            label="Références & bibliographie"
+            class="cne-main-tab"
+          >
+            <p>
+              Les références présentes ailleurs dans le formulaire seront
+              automatiquement insérées. Sont concernées les balises
+              <code>&lt;ref>&lt;/ref></code> ainsi que le modèle
+              <wiki-link page-title="Modèle:R">R</wiki-link>.
+            </p>
+            <cdx-field>
+              <template #label>
+                Imports
+                <span class="cne-fieldset-btns">
+                  <wiki-link page-title="Aide:Références">
+                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+                  </wiki-link>
+                  <wiki-link page-title="Convention:Références">
+                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+                  </wiki-link>
+                </span>
+              </template>
+              <template #description>
+                Si des informations ont été importées d’autres dictionnaires
+                libres de droits ou copiées d’autres wikis, indiquez-le ici.
+              </template>
+              <input-with-toolbar
+                v-model="formData.references.imports"
+                text-area
+              ></input-with-toolbar>
+            </cdx-field>
+
+            <cdx-field>
+              <template #label>
+                Bibliographie
+                <span class="cne-fieldset-btns">
+                  <wiki-link page-title="Aide:Références">
+                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+                  </wiki-link>
+                  <wiki-link page-title="Convention:Références">
+                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+                  </wiki-link>
+                </span>
+              </template>
+              <template #description>
+                Liste de tous les ouvrages utilisés globalement pour la
+                rédaction de l’article&nbsp;: inspiration pour les définitions,
+                champ lexical associé, traduction, etc. Elle permet de
+                réorienter le lecteur vers les ouvrages majeurs décrivant le
+                sujet.
+              </template>
+              <input-with-toolbar
+                v-model="formData.references.bibliography"
+                text-area
+              ></input-with-toolbar>
+            </cdx-field>
           </cdx-tab>
 
           <cdx-tab
