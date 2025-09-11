@@ -358,7 +358,14 @@ export default defineComponent({
       🚧 En construction 🏗️
     </cdx-tab>
 
-    <cdx-tab name="pronunciation" label="Prononciation">
+    <cdx-tab
+      name="pronunciation"
+      :label="
+        pronunciations.length
+          ? `Prononciation${pronunciations.length > 1 ? 's' : ''} (${pronunciations.length})`
+          : 'Prononciation'
+      "
+    >
       <p>Les prononciations suivantes seront affichées après le mot.</p>
       <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
       <ul style="margin-bottom: 1em">
