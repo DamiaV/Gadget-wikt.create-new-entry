@@ -2330,7 +2330,7 @@ function getDefaultLanguage(code) {
       topClasses.push(k);
     }
   }
-  return new T.Language(code, null, null, name, {}, items, null, false);
+  return new T.Language(code, null, null, name, [], items, null, false);
 }
 
 /**
