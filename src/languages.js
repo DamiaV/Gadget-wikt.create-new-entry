@@ -2330,7 +2330,17 @@ function getDefaultLanguage(code) {
       topClasses.push(k);
     }
   }
-  return new T.Language(code, null, null, name, [], items, null, false);
+  const languageData = L.getLanguage(code);
+  return new T.Language(
+    code,
+    languageData.wikimediaCode || null,
+    null,
+    name,
+    [],
+    items,
+    null,
+    false
+  );
 }
 
 /**

@@ -9,8 +9,6 @@ import {
   CdxMessage,
   CdxTab,
   CdxTabs,
-  CdxTextInput,
-  CdxToggleSwitch,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -30,6 +28,7 @@ import EntryForm from "./components/EntryForm.vue";
 import InputWithToolbar from "./components/InputWithToolbar.vue";
 import WikiLink from "./components/WikiLink.vue";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
+import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -41,14 +40,13 @@ export default defineComponent({
     CdxTabs,
     CdxTab,
     CdxField,
-    CdxTextInput,
-    CdxToggleSwitch,
     CdxMessage,
     LanguageSelector,
     EntryForm,
     InputWithToolbar,
     WikiLink,
     CategoriesSelector,
+    ExternalWikiLinks,
   },
 
   props: {
@@ -233,29 +231,6 @@ export default defineComponent({
     }
 
     /*
-     * Wiki links
-     */
-
-    /**
-     * Update the wiki link with the given ID.
-     * @param {string} wikiId The ID of the wiki link to update.
-     * @param {string} propertyName The name of the property to update.
-     * @param {string} text The value to assign to the property.
-     */
-    function onWikiLinkUpdate(wikiId, propertyName, text) {
-      formData.value.wikiLinks[wikiId][propertyName] = text.trim();
-    }
-
-    /**
-     * Enable/disable the wiki link with the given ID.
-     * @param {string} wikiId The ID of the wiki link to update.
-     * @param {string} enabled Whether to enable the link.
-     */
-    function onWikiLinkToggle(wikiId, enabled) {
-      formData.value.wikiLinks[wikiId].enabled = enabled;
-    }
-
-    /*
      * Submit
      */
 
@@ -303,8 +278,6 @@ export default defineComponent({
       onDeleteEntry,
       onMoveEntryLeft,
       onMoveEntryRight,
-      onWikiLinkUpdate,
-      onWikiLinkToggle,
       onSubmit,
     };
   },
@@ -441,72 +414,10 @@ export default defineComponent({
           </cdx-tab>
 
           <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
-            <template v-for="(wiki, key) in wikis" :key="key">
-              <cdx-field
-                v-if="
-                  !wiki.showOnlyForLangs ||
-                  wiki.showOnlyForLangs.includes(language.wikimediaCode)
-                "
-              >
-                <template #label>
-                  <cdx-icon
-                    v-if="wiki.icon && !wiki.icon.startsWith('https://')"
-                    :icon="wiki.icon"
-                  ></cdx-icon>
-                  <img
-                    v-else-if="wiki.icon && wiki.icon.startsWith('https://')"
-                    :src="wiki.icon"
-                    :alt="wiki.label"
-                    class="cne-custom-icon cdx-icon cdx-icon--medium"
-                  />
-                  {{ wiki.label }}
-                  <span class="cne-fieldset-btns">
-                    <a
-                      :href="`https://${wiki.urlDomain.replace('{}', language.wikimediaCode)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
-                      :title="`Rechercher «\u00a0${config.word}\u00a0» sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
-                      target="_blank"
-                    >
-                      <cdx-icon :icon="cdxIconSearch"></cdx-icon>
-                    </a>
-                  </span>
-                </template>
-                <div class="cne-wiki-link-fields">
-                  <cdx-toggle-switch
-                    :model-value="formData.wikiLinks[key].enabled"
-                    :aria-label="
-                      formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
-                    "
-                    :title="
-                      formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
-                    "
-                    @update:model-value="onWikiLinkToggle(key, $event)"
-                  ></cdx-toggle-switch>
-                  <cdx-text-input
-                    :model-value="formData.wikiLinks[key].pageTitle"
-                    :disabled="!formData.wikiLinks[key].enabled"
-                    :placeholder="
-                      wiki.placeholder ||
-                      'Titre de la page cible si différent du mot'
-                    "
-                    :aria-label="
-                      wiki.placeholder ||
-                      'Titre de la page cible si différent du mot'
-                    "
-                    @update:model-value="
-                      onWikiLinkUpdate(key, 'pageTitle', $event)
-                    "
-                  ></cdx-text-input>
-                  <cdx-text-input
-                    v-if="!wiki.noText"
-                    :model-value="formData.wikiLinks[key].text"
-                    :disabled="!formData.wikiLinks[key].enabled"
-                    placeholder="Texte à afficher à la place du titre"
-                    aria-label="Texte à afficher à la place du titre"
-                    @update:model-value="onWikiLinkUpdate(key, 'text', $event)"
-                  ></cdx-text-input>
-                </div>
-              </cdx-field>
-            </template>
+            <external-wiki-links
+              v-model="formData.wikiLinks"
+              :language="language"
+            ></external-wiki-links>
           </cdx-tab>
 
           <cdx-tab name="references" label="Références" class="cne-main-tab">

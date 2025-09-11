@@ -77,15 +77,17 @@ import L from "./wiki_deps/wikt.core.languages.js";
  *  stub: boolean,
  *  entries: Entry[],
  *  etymology: string,
- *  wikiLinks: {
- *    [wikiName: string]: {
- *      pageTitle?: string,
- *      text?: string,
- *      enabled: boolean,
- *    }
- *  },
+ *  wikiLinks: { [wikiName: string]: ExternalWikiLink },
  *  categories: string[],
  * }} FormData
+ */
+
+/**
+ * @typedef {{
+ *   pageTitle?: string,
+ *   text?: string,
+ *   enabled: boolean,
+ * }} ExternalWikiLink
  */
 
 /**
