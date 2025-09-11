@@ -83,6 +83,7 @@ import {
  *      enabled: boolean,
  *    }
  *  },
+ *  categories: string[],
  * }} FormData
  */
 

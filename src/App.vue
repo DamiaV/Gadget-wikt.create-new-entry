@@ -29,6 +29,7 @@ import LanguageSelector from "./components/LanguageSelector.vue";
 import EntryForm from "./components/EntryForm.vue";
 import InputWithToolbar from "./components/InputWithToolbar.vue";
 import WikiLink from "./components/WikiLink.vue";
+import CategoriesSelector from "./components/CategoriesSelector.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -47,6 +48,7 @@ export default defineComponent({
     EntryForm,
     InputWithToolbar,
     WikiLink,
+    CategoriesSelector,
   },
 
   props: {
@@ -95,6 +97,7 @@ export default defineComponent({
       entries: [T.createEmptyEntry()],
       etymology: "",
       wikiLinks: {},
+      categories: [],
     };
 
     for (const key of Object.keys(T.wikis)) {
@@ -501,12 +504,35 @@ export default defineComponent({
             </cdx-field>
           </cdx-tab>
 
-          <cdx-tab name="references" label="Références" class="cne-main-tab"
-            >🚧 En construction 🏗️</cdx-tab
+          <cdx-tab name="references" label="Références" class="cne-main-tab">
+            🚧 En construction 🏗️
+          </cdx-tab>
+
+          <cdx-tab
+            name="categories"
+            :label="
+              formData.categories.length
+                ? `Catégories (${formData.categories.length})`
+                : 'Catégories'
+            "
+            class="cne-main-tab"
           >
-          <cdx-tab name="categories" label="Catégories" class="cne-main-tab"
-            >🚧 En construction 🏗️</cdx-tab
-          >
+            <p>
+              Vous pouvez ajouter ci-dessous des catégories pertinentes qui ne
+              sont pas ajoutées par les modèles déjà présents.
+            </p>
+            <p>
+              Par exemple, il est inutile d’ajouter ici les catégories du type
+              «&nbsp;Noms communs en {{ language.name }}&nbsp;» car elles seront
+              ajoutées par le modèle
+              <wiki-link page-title="Modèle:S">&lbrace;{S}&rbrace;</wiki-link>
+              qui sera inséré automatiquement.
+            </p>
+            <categories-selector
+              v-model="formData.categories"
+              @update:model-value="console.log(formData)"
+            ></categories-selector>
+          </cdx-tab>
         </cdx-tabs>
 
         <hr />

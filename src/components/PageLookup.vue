@@ -19,6 +19,8 @@ export default defineComponent({
     pageType: { type: String, default: "une page" },
     allowSubpages: { type: Boolean, default: false },
     stripNamespace: { type: Boolean, default: false },
+    reportOnlySelection: { type: Boolean, default: false },
+    eraseOnSelection: { type: Boolean, default: false },
     modelValue: { type: String, required: true },
   },
 
@@ -60,7 +62,7 @@ export default defineComponent({
             value = pages.stripNamespace(value, config.namespaces);
           searchPages(value);
         } else lookupItems.value = [];
-        ctx.emit("update:model-value", value);
+        if (!props.reportOnlySelection) ctx.emit("update:model-value", value);
       }, 300);
     }
 
@@ -106,6 +108,15 @@ export default defineComponent({
         });
     }
 
+    /**
+     * Propagate the selected value to the parent component.
+     * @param {string | null} selectedValue The selected value.
+     */
+    function onSelect(selectedValue) {
+      if (props.eraseOnSelection) selection.value = ""; // FIXME does nothing
+      ctx.emit("update:model-value", selectedValue || "");
+    }
+
     return {
       // Data
       selection,
@@ -116,6 +127,7 @@ export default defineComponent({
       cdxIconSearch,
       // Callbacks
       onInput,
+      onSelect,
     };
   },
 });
@@ -132,7 +144,7 @@ export default defineComponent({
       :placeholder="`Saisissez le nom d’${$props.pageType}`"
       clearable
       @input="onInput"
-      @update:selected="$emit('update:model-value', $event)"
+      @update:selected="onSelect"
     >
       <template #no-results>Aucun résultat.</template>
     </cdx-lookup>
