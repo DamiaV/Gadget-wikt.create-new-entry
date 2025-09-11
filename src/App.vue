@@ -525,8 +525,8 @@ export default defineComponent({
               Par exemple, il est inutile d’ajouter ici les catégories du type
               «&nbsp;Noms communs en {{ language.name }}&nbsp;» car elles seront
               ajoutées par le modèle
-              <wiki-link page-title="Modèle:S">&lbrace;{S}&rbrace;</wiki-link>
-              qui sera inséré automatiquement.
+              <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
+              automatiquement.
             </p>
             <categories-selector
               v-model="formData.categories"
