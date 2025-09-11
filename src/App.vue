@@ -441,67 +441,72 @@ export default defineComponent({
           </cdx-tab>
 
           <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
-            <cdx-field
-              v-for="(wiki, key) in wikis"
-              :key="key"
-              :disabled="
-                wiki.showOnlyForLangs &&
-                !wiki.showOnlyForLangs.includes(language.wikimediaCode)
-              "
-            >
-              <template #label>
-                <cdx-icon
-                  v-if="wiki.icon && !wiki.icon.startsWith('https://')"
-                  :icon="wiki.icon"
-                ></cdx-icon>
-                <img
-                  v-else-if="wiki.icon && wiki.icon.startsWith('https://')"
-                  :src="wiki.icon"
-                  :alt="wiki.label"
-                  class="cne-custom-icon cdx-icon cdx-icon--medium"
-                />
-                {{ wiki.label }}
-                <span class="cne-fieldset-btns">
-                  <a
-                    :href="`https://${wiki.urlDomain.replace('{}', language.wikimediaCode)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
-                    :title="`Rechercher «\u00a0${config.word}\u00a0» sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
-                    target="_blank"
-                  >
-                    <cdx-icon :icon="cdxIconSearch"></cdx-icon>
-                  </a>
-                </span>
-              </template>
-              <div class="cne-wiki-link-fields">
-                <cdx-toggle-switch
-                  :model-value="formData.wikiLinks[key].enabled"
-                  :aria-label="
-                    formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
-                  "
-                  :title="
-                    formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
-                  "
-                  @update:model-value="onWikiLinkToggle(key, $event)"
-                ></cdx-toggle-switch>
-                <cdx-text-input
-                  :model-value="formData.wikiLinks[key].pageTitle"
-                  :disabled="!formData.wikiLinks[key].enabled"
-                  :placeholder="
-                    wiki.placeholder ||
-                    'Titre de la page cible si différent du mot'
-                  "
-                  @update:model-value="
-                    onWikiLinkUpdate(key, 'pageTitle', $event)
-                  "
-                ></cdx-text-input>
-                <cdx-text-input
-                  v-if="!wiki.noText"
-                  :model-value="formData.wikiLinks[key].text"
-                  :disabled="!formData.wikiLinks[key].enabled"
-                  placeholder="Texte à afficher si différent du titre"
-                  @update:model-value="onWikiLinkUpdate(key, 'text', $event)"
-                ></cdx-text-input>
-              </div>
-            </cdx-field>
+            <template v-for="(wiki, key) in wikis" :key="key">
+              <cdx-field
+                v-if="
+                  !wiki.showOnlyForLangs ||
+                  wiki.showOnlyForLangs.includes(language.wikimediaCode)
+                "
+              >
+                <template #label>
+                  <cdx-icon
+                    v-if="wiki.icon && !wiki.icon.startsWith('https://')"
+                    :icon="wiki.icon"
+                  ></cdx-icon>
+                  <img
+                    v-else-if="wiki.icon && wiki.icon.startsWith('https://')"
+                    :src="wiki.icon"
+                    :alt="wiki.label"
+                    class="cne-custom-icon cdx-icon cdx-icon--medium"
+                  />
+                  {{ wiki.label }}
+                  <span class="cne-fieldset-btns">
+                    <a
+                      :href="`https://${wiki.urlDomain.replace('{}', language.wikimediaCode)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
+                      :title="`Rechercher «\u00a0${config.word}\u00a0» sur ${wiki.label} (S’ouvre dans un nouvel onglet)`"
+                      target="_blank"
+                    >
+                      <cdx-icon :icon="cdxIconSearch"></cdx-icon>
+                    </a>
+                  </span>
+                </template>
+                <div class="cne-wiki-link-fields">
+                  <cdx-toggle-switch
+                    :model-value="formData.wikiLinks[key].enabled"
+                    :aria-label="
+                      formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
+                    "
+                    :title="
+                      formData.wikiLinks[key].enabled ? 'Désactiver' : 'Activer'
+                    "
+                    @update:model-value="onWikiLinkToggle(key, $event)"
+                  ></cdx-toggle-switch>
+                  <cdx-text-input
+                    :model-value="formData.wikiLinks[key].pageTitle"
+                    :disabled="!formData.wikiLinks[key].enabled"
+                    :placeholder="
+                      wiki.placeholder ||
+                      'Titre de la page cible si différent du mot'
+                    "
+                    :aria-label="
+                      wiki.placeholder ||
+                      'Titre de la page cible si différent du mot'
+                    "
+                    @update:model-value="
+                      onWikiLinkUpdate(key, 'pageTitle', $event)
+                    "
+                  ></cdx-text-input>
+                  <cdx-text-input
+                    v-if="!wiki.noText"
+                    :model-value="formData.wikiLinks[key].text"
+                    :disabled="!formData.wikiLinks[key].enabled"
+                    placeholder="Texte à afficher à la place du titre"
+                    aria-label="Texte à afficher à la place du titre"
+                    @update:model-value="onWikiLinkUpdate(key, 'text', $event)"
+                  ></cdx-text-input>
+                </div>
+              </cdx-field>
+            </template>
           </cdx-tab>
 
           <cdx-tab name="references" label="Références" class="cne-main-tab">
