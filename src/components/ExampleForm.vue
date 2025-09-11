@@ -12,12 +12,12 @@ import {
 import {
   cdxIconArrowDown,
   cdxIconArrowUp,
-  cdxIconClose,
   cdxIconCollapse,
   cdxIconEllipsis,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -148,7 +148,7 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconArrowDown,
       cdxIconArrowUp,
-      cdxIconClose,
+      cdxIconTrash,
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
@@ -212,7 +212,7 @@ export default defineComponent({
           :disabled="!$props.enableDeleteBtn"
           @click="onDelete"
         >
-          <cdx-icon :icon="cdxIconClose"></cdx-icon>
+          <cdx-icon :icon="cdxIconTrash"></cdx-icon>
         </cdx-button>
       </span>
     </template>

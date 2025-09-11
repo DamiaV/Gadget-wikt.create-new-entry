@@ -5,11 +5,11 @@ import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
 import {
   cdxIconArrowDown,
   cdxIconArrowUp,
-  cdxIconClose,
   cdxIconCollapse,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import T from "../types.js";
 import utils from "../utils.js";
@@ -173,7 +173,7 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconCollapse,
       cdxIconExpand,
-      cdxIconClose,
+      cdxIconTrash,
       cdxIconArrowUp,
       cdxIconArrowDown,
       // Callbacks
@@ -245,7 +245,7 @@ export default defineComponent({
           :disabled="!$props.enableDeleteBtn"
           @click="onDelete"
         >
-          <cdx-icon :icon="cdxIconClose"></cdx-icon>
+          <cdx-icon :icon="cdxIconTrash"></cdx-icon>
         </cdx-button>
       </span>
     </template>

@@ -4,7 +4,7 @@ import { defineComponent, ref } from "vue";
 import PageLookup from "./PageLookup.vue";
 import WikiLink from "./WikiLink.vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
-import { cdxIconClose } from "@wikimedia/codex-icons";
+import { cdxIconTrash } from "@wikimedia/codex-icons";
 
 export default defineComponent({
   components: {
@@ -52,7 +52,7 @@ export default defineComponent({
       categories,
       selectedCategory,
       // Icons
-      cdxIconClose,
+      cdxIconTrash,
       // Callbacks
       insertCategory,
       removeCategory,
@@ -86,7 +86,7 @@ export default defineComponent({
             type="button"
             @click="removeCategory(i)"
           >
-            <cdx-icon :icon="cdxIconClose"></cdx-icon>
+            <cdx-icon :icon="cdxIconTrash"></cdx-icon>
           </cdx-button>
           <wiki-link :page-title="`Catégorie:${category}`">{{
             category

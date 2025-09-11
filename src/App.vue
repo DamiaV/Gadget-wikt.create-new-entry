@@ -530,7 +530,6 @@ export default defineComponent({
             </p>
             <categories-selector
               v-model="formData.categories"
-              @update:model-value="console.log(formData)"
             ></categories-selector>
           </cdx-tab>
         </cdx-tabs>

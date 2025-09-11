@@ -10,7 +10,6 @@ import {
   CdxTextInput,
 } from "@wikimedia/codex";
 import {
-  cdxIconClose,
   cdxIconCollapse,
   cdxIconEllipsis,
   cdxIconExpand,
@@ -18,6 +17,7 @@ import {
   cdxIconInfoFilled,
   cdxIconReload,
   cdxIconSearch,
+  cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -255,7 +255,7 @@ export default defineComponent({
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
-      cdxIconClose,
+      cdxIconTrash,
       cdxIconSearch,
       cdxIconReload,
       cdxIconCollapse,
@@ -308,7 +308,7 @@ export default defineComponent({
           title="Supprimer"
           @click="onDelete"
         >
-          <cdx-icon :icon="cdxIconClose"></cdx-icon>
+          <cdx-icon :icon="cdxIconTrash"></cdx-icon>
         </cdx-button>
       </span>
     </template>

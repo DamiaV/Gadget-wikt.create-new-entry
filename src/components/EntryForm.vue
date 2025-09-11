@@ -9,12 +9,12 @@ import {
   CdxTabs,
 } from "@wikimedia/codex";
 import {
-  cdxIconClose,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
   cdxIconAdd,
   cdxIconArrowPrevious,
   cdxIconArrowNext,
+  cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import DefinitionForm from "./DefinitionForm.vue";
 import T from "../types.js";
@@ -264,7 +264,7 @@ export default defineComponent({
       utils,
       config,
       // Icons
-      cdxIconClose,
+      cdxIconTrash,
       cdxIconArrowPrevious,
       cdxIconArrowNext,
       cdxIconHelpNotice,
@@ -300,7 +300,7 @@ export default defineComponent({
       :disabled="!$props.enableDeleteBtn"
       @click="onDelete"
     >
-      <cdx-icon :icon="cdxIconClose"></cdx-icon>
+      <cdx-icon :icon="cdxIconTrash"></cdx-icon>
       Supprimer l’entrée
     </cdx-button>
 
