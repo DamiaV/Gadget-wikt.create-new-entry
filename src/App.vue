@@ -261,7 +261,6 @@ export default defineComponent({
       // Other
       utils,
       config,
-      wikis: T.wikis,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
