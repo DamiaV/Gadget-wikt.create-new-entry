@@ -4,6 +4,8 @@
 
 body {
     font-family: sans-serif;
+    width: 70%;
+    margin: 0 auto;
 }
 
 a {
