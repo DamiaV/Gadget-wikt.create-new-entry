@@ -344,7 +344,9 @@ export default defineComponent({
         <cdx-checkbox v-model="formData.stub">
           Ébauche
           <template #description>
-            Cochez cette case pour insérer un bandeau d’ébauche.
+            Cochez cette case pour insérer un
+            <wiki-link page-title="Modèle:ébauche">bandeau d’ébauche</wiki-link
+            >.
           </template>
         </cdx-checkbox>
 
