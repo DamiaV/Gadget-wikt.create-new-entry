@@ -315,8 +315,11 @@ export default defineComponent({
           </p>
           <p>
             Le code sera directement inséré au bon endroit dans la zone
-            d’édition. Vérifiez bien que le code généré est correct avant de
-            publier votre modification.
+            d’édition.
+            <strong>
+              Vérifiez bien que le code généré est correct avant de publier
+              votre modification.
+            </strong>
           </p>
           <p>
             Vous pouvez créer plusieurs sections de types de mots en même temps
@@ -324,9 +327,11 @@ export default defineComponent({
           </p>
         </cdx-message>
         <cdx-message type="warning">
+          <strong>
           Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
-          code&nbsp;» avant de publier la page, sinon les informations que vous
-          avez entrées seront perdues.
+            code&nbsp;» avant de publier la page, sinon les informations que
+            vous avez entrées seront perdues.
+          </strong>
         </cdx-message>
 
         <language-selector
