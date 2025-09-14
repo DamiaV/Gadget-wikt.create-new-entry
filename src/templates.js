@@ -445,7 +445,6 @@ async function fetchFeaturedTemplates() {
   params.append("ccrassertversion", "1.0.0");
   params.append("formatversion", 2);
   params.append("format", "json");
-  // https://fr.wiktionary.org/w/api.php?action=query&format=json&meta=communityconfiguration&formatversion=2&ccrprovider=TemplateData-FeaturedTemplates&ccrassertversion=1.0.0
 
   const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
   /**

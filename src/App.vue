@@ -36,6 +36,7 @@ import InputWithToolbar from "./components/InputWithToolbar.vue";
 import WikiLink from "./components/WikiLink.vue";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
 import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
+import ReferencesFrom from "./components/ReferencesFrom.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -54,6 +55,7 @@ export default defineComponent({
     WikiLink,
     CategoriesSelector,
     ExternalWikiLinks,
+    ReferencesFrom,
   },
 
   props: {
@@ -100,10 +102,7 @@ export default defineComponent({
       etymology: "",
       wikiLinks: {},
       categories: [],
-      references: {
-        imports: "",
-        bibliography: "",
-      },
+      references: T.createEmptyReferences(),
     };
 
     for (const key of Object.keys(T.wikis)) {
@@ -328,7 +327,7 @@ export default defineComponent({
         </cdx-message>
         <cdx-message type="warning">
           <strong>
-          Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
+            Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
             code&nbsp;» avant de publier la page, sinon les informations que
             vous avez entrées seront perdues.
           </strong>
@@ -418,61 +417,10 @@ export default defineComponent({
 
           <cdx-tab
             name="references"
-            label="Références & bibliographie"
+            label="Bibliographie & imports"
             class="cne-main-tab"
           >
-            <p>
-              Les références présentes ailleurs dans le formulaire seront
-              automatiquement insérées. Sont concernées les balises
-              <code>&lt;ref>&lt;/ref></code> ainsi que le modèle
-              <wiki-link page-title="Modèle:R">R</wiki-link>.
-            </p>
-            <cdx-field>
-              <template #label>
-                Imports
-                <span class="cne-fieldset-btns">
-                  <wiki-link page-title="Aide:Références">
-                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-                  </wiki-link>
-                  <wiki-link page-title="Convention:Références">
-                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-                  </wiki-link>
-                </span>
-              </template>
-              <template #description>
-                Si des informations ont été importées d’autres dictionnaires
-                libres de droits ou copiées d’autres wikis, indiquez-le ici.
-              </template>
-              <input-with-toolbar
-                v-model="formData.references.imports"
-                text-area
-              ></input-with-toolbar>
-            </cdx-field>
-
-            <cdx-field>
-              <template #label>
-                Bibliographie
-                <span class="cne-fieldset-btns">
-                  <wiki-link page-title="Aide:Références">
-                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-                  </wiki-link>
-                  <wiki-link page-title="Convention:Références">
-                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-                  </wiki-link>
-                </span>
-              </template>
-              <template #description>
-                Liste de tous les ouvrages utilisés globalement pour la
-                rédaction de l’article&nbsp;: inspiration pour les définitions,
-                champ lexical associé, traduction, etc. Elle permet de
-                réorienter le lecteur vers les ouvrages majeurs décrivant le
-                sujet.
-              </template>
-              <input-with-toolbar
-                v-model="formData.references.bibliography"
-                text-area
-              ></input-with-toolbar>
-            </cdx-field>
+            <references-from v-model="formData.references"></references-from>
           </cdx-tab>
 
           <cdx-tab
@@ -501,7 +449,9 @@ export default defineComponent({
           </cdx-tab>
         </cdx-tabs>
 
-        <hr />
+        <hr class="cne-horizontal-separator" />
+
+        <!-- Seeeecret :3 -->
         <a
           id=":3"
           href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
@@ -512,6 +462,7 @@ export default defineComponent({
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
           />
         </a>
+
         <div class="bottom-btns">
           <cdx-button
             type="submit"
@@ -538,6 +489,10 @@ export default defineComponent({
 .cne-fieldset-btns {
   display: inline-flex;
   gap: 0.5em;
+}
+
+hr.cne-horizontal-separator {
+  margin: 2em 0;
 }
 
 a .cdx-icon svg {
@@ -574,14 +529,10 @@ a .cdx-icon svg {
   flex-grow: 1;
 }
 
-.cne-custom-icon {
-  filter: grayscale(100%);
-}
-
 .bottom-btns {
   display: flex;
   justify-content: center;
-  margin: 0.5em 0;
+  margin: 1em 0;
 }
 
 #\:3 {

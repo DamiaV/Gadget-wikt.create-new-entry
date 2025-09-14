@@ -77,23 +77,15 @@ export default defineComponent({
     <template v-for="(wiki, key) in wikis" :key="key">
       <cdx-field
         v-if="
-          !wiki.showOnlyForLangs ||
-          wiki.showOnlyForLangs.includes(
-            $props.language.wikimediaCode || $props.language.code
-          )
+          key !== 'wiktionary' &&
+          (!wiki.showOnlyForLangs ||
+            wiki.showOnlyForLangs.includes(
+              $props.language.wikimediaCode || $props.language.code
+            ))
         "
       >
         <template #label>
-          <cdx-icon
-            v-if="wiki.icon && !wiki.icon.startsWith('https://')"
-            :icon="wiki.icon"
-          ></cdx-icon>
-          <img
-            v-else-if="wiki.icon && wiki.icon.startsWith('https://')"
-            :src="wiki.icon"
-            :alt="wiki.label"
-            class="cne-custom-icon cdx-icon cdx-icon--medium"
-          />
+          <cdx-icon :icon="wiki.icon"></cdx-icon>
           {{ wiki.label }}
           <span class="cne-fieldset-btns">
             <a

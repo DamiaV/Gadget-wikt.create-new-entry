@@ -14,8 +14,10 @@ import {
   cdxIconLogoWikispecies,
   cdxIconLogoWikiversity,
   cdxIconLogoWikivoyage,
+  cdxIconLogoWiktionary,
 } from "@wikimedia/codex-icons";
 import L from "./wiki_deps/wikt.core.languages.js";
+import wikisData from "./wikis.json";
 
 /**
  * @typedef {{
@@ -79,19 +81,36 @@ import L from "./wiki_deps/wikt.core.languages.js";
  *  etymology: string,
  *  wikiLinks: { [wikiName: string]: ExternalWikiLink },
  *  categories: string[],
- *  references: {
- *    imports: string,
- *    bibliography: string,
- *  }
+ *  references: References,
  * }} FormData
  */
 
 /**
  * @typedef {{
- *   pageTitle?: string,
- *   text?: string,
- *   enabled: boolean,
+ *  pageTitle?: string,
+ *  text?: string,
+ *  enabled: boolean,
  * }} ExternalWikiLink
+ */
+
+/**
+ * @typedef {{
+ *  wikiImports: {
+ *    [wikiName: string]: WikiImport[]
+ *  },
+ *  imports: string,
+ *  bibliography: string,
+ * }} References
+ */
+
+/**
+ * @typedef {{
+ *  langCode: string,
+ *  langName: string,
+ *  title?: string,
+ *  oldId?: number,
+ * }} WikiImport
+ * Language name is cached to avoid requesting it during every refresh.
  */
 
 /**
@@ -244,6 +263,18 @@ function createEmptyPronunciation(id) {
     id: id || 1,
     pronunciation: "",
     empty: true,
+  };
+}
+
+/**
+ * Create an empty References object.
+ * @returns {References} An empty References object.
+ */
+function createEmptyReferences() {
+  return {
+    wikiImports: {},
+    imports: "",
+    bibliography: "",
   };
 }
 
@@ -583,121 +614,60 @@ class Language {
  * @typedef {{
  *  readonly label: string,
  *  readonly templateName: string,
+ *  readonly importTemplateName: string,
  *  readonly urlDomain: string,
  *  readonly urlBase: string,
  *  readonly placeholder?: string,
  *  readonly showOnlyForLangs?: string[],
- *  readonly icon?: string,
+ *  readonly icon: string,
  *  readonly noText?: boolean,
  * }} Wiki
  */
 
+const icons = {
+  wikidata: cdxIconLogoWikidata,
+  wiktionary: cdxIconLogoWiktionary,
+  wikipedia: cdxIconLogoWikipedia,
+  wikisource: cdxIconLogoWikisource,
+  wikiquote: cdxIconLogoWikiquote,
+  wikiversity: cdxIconLogoWikiversity,
+  wikibooks: cdxIconLogoWikibooks,
+  wikispecies: cdxIconLogoWikispecies,
+  wikivoyage: cdxIconLogoWikivoyage,
+  wikinews: cdxIconLogoWikinews,
+  commons: cdxIconLogoWikimediaCommons,
+  vikidia:
+    "<path d='M 10.283979,7.6600867 C 10.660863,6.1514142 11.02793,4.639937 11.422255,3.1357348 a 10.962569,10.962569 0 0 1 0.47908,-1.3262786 c 0.143829,-0.3539197 0.440164,-0.5134377 0.814331,-0.5137006 2.086004,-0.00193 4.17201,-0.00439 6.258014,0.00439 0.539908,0.00227 1.040812,0.2191183 1.026,0.7563961 -0.01674,0.604766 -0.273459,1.2575628 -0.457257,1.8283218 -1.018197,3.1622215 -2.081535,6.3098975 -3.130671,9.4621315 q -0.674885,2.026933 -1.353713,4.052197 c -0.410279,1.231619 -0.498625,1.296215 -1.785462,1.297179 -1.700358,0.0014 -3.4007152,0 -5.1010726,0.0097 -0.4881078,0.0027 -0.8405373,-0.187131 -1.0610578,-0.62642 Q 4.4556984,12.790346 1.7982331,7.5023217 1.0462197,6.0051311 0.29341724,4.5082033 C 0.24643829,4.414596 0.2008617,4.3198493 0.16054397,4.2231744 -0.25411527,3.2280273 0.14827334,2.41431 1.2080164,2.2501468 2.9202059,1.9851014 4.6405463,1.7708038 6.3598354,1.5533509 6.9446179,1.4792889 7.4130926,1.7857039 7.6931256,2.3772353 8.3960566,3.8631194 9.091275,5.3525095 9.7919274,6.8394454 9.9215577,7.114395 10.061706,7.3843483 10.197033,7.6565808 Z M 18.7323,2.3763587 c -0.127701,0 -0.222887,0 -0.318161,0 q -2.392769,-0.00185 -4.785102,-0.00306 c -0.748506,5.26e-4 -0.653936,-0.088435 -0.842289,0.6522709 q -1.000844,3.935882 -2.003354,7.8713314 c -0.03086,0.120252 -0.129017,0.223325 -0.195804,0.334374 -0.08616,-0.08853 -0.20492,-0.161972 -0.253651,-0.267673 Q 8.5544353,7.1065066 6.7905341,3.2423138 C 6.6578361,2.9519385 6.4544942,2.8509688 6.1394901,2.8940035 5.1255865,3.0326616 4.109141,3.153089 3.0946241,3.2877151 2.4500659,3.3732588 1.8071732,3.4717744 1.1378111,3.5681863 1.1978496,3.6948366 1.2399204,3.7891451 1.2868115,3.8811748 q 1.7871276,3.5344636 3.5760086,7.0677872 c 0.6582308,1.294727 1.3403895,2.577268 1.9929235,3.874713 0.4159741,0.827038 0.8026737,1.668978 1.1914769,2.509428 0.1196385,0.258471 0.3007178,0.356374 0.5784721,0.355409 1.5250644,-0.0053 3.0501254,-0.0077 4.5746634,0.0048 0.356109,0.003 0.539468,-0.134013 0.641315,-0.475048 0.377409,-1.262736 0.762531,-2.523453 1.169301,-3.776897 0.317195,-0.976916 0.68023,-1.938846 1.006804,-2.912782 0.596615,-1.7792391 1.179821,-3.5634747 1.771439,-5.3446424 0.308081,-0.9272203 0.621946,-1.8521619 0.943085,-2.8076927 z'/>",
+  dicoado:
+    "<path d='m 9.9998055,14.860326 a 2.6728257,2.6728257 0 1 1 2.6730205,-2.67302 2.6759942,2.6759942 0 0 1 -2.6730205,2.67302 z'/><path d='M 17.765678,12.186552 V 1.2414048e-5 A 3.3939499,3.3939499 0 0 0 14.371728,3.3939624 v 2.42195 h -3.1e-4 v 6.4180496 a 4.3755786,4.3755786 0 1 1 -1.69791,-3.4585696 v -3.83512 a 7.7671676,7.7671676 0 1 0 5.09366,7.2936896 c 0,-0.0159 -0.001,-0.0315 -0.001,-0.0474 z'/>",
+};
 /**
  * List of sister projects and associated templates and domain names.
  * @type {Record<string, Wiki>}
  */
-const wikis = {
-  wikidata: {
-    label: "Wikidata",
-    templateName: "liste projets",
-    urlDomain: "wikidata.org",
-    urlBase: "wiki",
-    placeholder: "QID pour le modèle {{liste projets}}",
-    icon: cdxIconLogoWikidata,
-    noText: true,
-  },
-  wikipedia: {
-    label: "Wikipédia",
-    templateName: "WP",
-    urlDomain: "{}.wikipedia.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikipedia,
-  },
-  wikisource: {
-    label: "Wikisource",
-    templateName: "WS",
-    urlDomain: "{}.wikisource.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikisource,
-  },
-  wikiquote: {
-    label: "Wikiquote",
-    templateName: "WQ",
-    urlDomain: "{}.wikiquote.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikiquote,
-  },
-  wikiversity: {
-    label: "Wikiversité",
-    templateName: "WV",
-    urlDomain: "{}.wikiversity.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikiversity,
-  },
-  wikibooks: {
-    label: "Wikilivres",
-    templateName: "WL",
-    urlDomain: "{}.wikibooks.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikibooks,
-  },
-  wikispecies: {
-    label: "Wikispecies",
-    templateName: "WSP",
-    urlDomain: "species.wikimedia.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikispecies,
-  },
-  wikivoyage: {
-    label: "Wikivoyage",
-    templateName: "VOY",
-    urlDomain: "{}.wikivoyage.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikivoyage,
-  },
-  wikinews: {
-    label: "Wikinews",
-    templateName: "WN",
-    urlDomain: "{}.wikinews.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikinews,
-  },
-  commons: {
-    label: "Wikimedia Commons",
-    templateName: "Commons",
-    urlDomain: "commons.wikimedia.org",
-    urlBase: "wiki",
-    icon: cdxIconLogoWikimediaCommons,
-  },
-  vikidia: {
-    label: "Vikidia",
-    templateName: "Vikidia",
-    urlDomain: "{}.vikidia.org",
-    urlBase: "wiki",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/4/44/Vikidia_V_vectorised.svg",
-    showOnlyForLangs: [
-      "fr",
-      "ca",
-      "de",
-      "el",
-      "en",
-      "es",
-      "eu",
-      "it",
-      "ru",
-      "scn",
-      "hy",
-    ],
-  },
-  dicoado: {
-    label: "Le Dico des Ados",
-    templateName: "Dicoado",
-    urlDomain: "{}.dicoado.org",
-    urlBase: "dico",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/0/06/Le_Dico_des_Adps_small_logo_2021_dark_background.svg",
-    showOnlyForLangs: ["fr"],
-  },
-};
+const wikis = {};
+for (const [wikiName, wikiData] of Object.entries(wikisData))
+  wikis[wikiName] = Object.assign({ icon: icons[wikiName] }, wikiData);
+
+/**
+ * Generate the URL for a page on the given wiki.
+ * @param {Wiki} wiki The wiki.
+ * @param {string} langCode The wiki’s language code.
+ * @param {string} pageTitle The title of a page on the wiki.
+ * @param {Record<string, any>?} urlParams Additional URL get parameters.
+ * @param {string?} anchor Optional anchor to append.
+ * @returns {string} The corresponding URl.
+ */
+function getWikiUrl(wiki, langCode, pageTitle, urlParams, anchor) {
+  const hostName = wiki.urlDomain.replace("{}", langCode);
+  const escapedTitle = encodeURIComponent(pageTitle.replaceAll(" ", "_"))
+    .replaceAll("%2F", "/")
+    .replaceAll("%3A", ":"); // We want to keep all / and :
+  let url = `https://${hostName}/${wiki.urlBase}/${escapedTitle}`;
+  if (urlParams) url += "?" + new URLSearchParams(urlParams);
+  if (anchor) url += "#" + encodeURIComponent(anchor);
+  return url;
+}
 
 /**
  * @typedef {{
@@ -756,10 +726,12 @@ export default {
   Language,
   ArticleSection,
   wikis,
+  getWikiUrl,
   createEmptyEntry,
   createEmptyDefinition,
   createEmptyExample,
   createEmptyIllustration,
   createEmptyPronunciation,
+  createEmptyReferences,
 };
 // </nowiki>
