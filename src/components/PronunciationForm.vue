@@ -1,7 +1,13 @@
 <!-- <nowiki> -->
 <script>
 import { defineComponent, inject, ref } from "vue";
-import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
+import {
+  CdxButton,
+  CdxCheckbox,
+  CdxDialog,
+  CdxField,
+  CdxIcon,
+} from "@wikimedia/codex";
 import {
   cdxIconArrowDown,
   cdxIconArrowUp,
@@ -24,6 +30,7 @@ export default defineComponent({
     CdxField,
     CdxButton,
     CdxDialog,
+    CdxCheckbox,
     InputWithToolbar,
     CollapsedPreview,
     WikiLink,
@@ -45,6 +52,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     const pronunciation = ref(props.modelValue.pronunciation);
+    const isReconstructed = ref(props.modelValue.isReconstructed);
 
     const showFields = ref(true);
 
@@ -61,6 +69,7 @@ export default defineComponent({
         pronunciation: {
           id: props.modelValue.id,
           pronunciation: pronunciation.value,
+          isReconstructed: isReconstructed.value,
           empty: isEmpty(),
         },
       };
@@ -160,6 +169,7 @@ export default defineComponent({
     return {
       // Data
       pronunciation,
+      isReconstructed,
       // Visual
       showFields,
       // Deletion dialog
@@ -269,6 +279,16 @@ export default defineComponent({
         :transformer="pronunciationTransformer"
         @change="fireUpdateEvent"
       ></input-with-toolbar>
+      <cdx-checkbox
+        v-model="isReconstructed"
+        @update:model-value="fireUpdateEvent"
+      >
+        Prononciation reconstruite
+        <template #description>
+          Cochez dans le cas d’une langue morte (ancien français, moyen anglais,
+          chinois archaïque, etc.).
+        </template>
+      </cdx-checkbox>
     </div>
     <collapsed-preview
       v-show="!showFields"

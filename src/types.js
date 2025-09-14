@@ -153,6 +153,7 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  id: number,
  *  pronunciation: string,
+ *  isReconstructed: boolean,
  *  empty: boolean,
  * }} Pronunciation
  */
@@ -262,6 +263,7 @@ function createEmptyPronunciation(id) {
   return {
     id: id || 1,
     pronunciation: "",
+    isReconstructed: false,
     empty: true,
   };
 }
