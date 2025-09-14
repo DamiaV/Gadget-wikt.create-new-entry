@@ -4,6 +4,7 @@ require/module.exports syntax to ESM import from/export default syntax. in all .
 """
 
 import argparse
+import json
 import os
 import pathlib
 import re
@@ -12,7 +13,9 @@ import sys
 import typing
 
 import pywikibot as pwb
+import pywikibot.config as pwb_config
 import pywikibot.exceptions as pwb_ex
+import requests
 
 from build_scripts import workspace as w
 
@@ -135,6 +138,8 @@ def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
 def update_wiki_deps(verbose: bool = False) -> int:
     """
     Pull all wiki dependencies defined in `config.json`.
+
+    :param verbose: If True, show more detailed logs.
     """
     print("Updating wiki dependencies…")
     config = w.load_config()
@@ -161,6 +166,83 @@ def update_wiki_deps(verbose: bool = False) -> int:
 
     error_code = run_eslint()
     return error_code
+
+
+WIKI_GROUPS = {
+    "wikipedia",
+    "wiktionary",
+    "wikisource",
+    "wikiversity",
+    "wikibooks",
+    "wikivoyage",
+    "wikinews",
+}
+
+
+def update_wikis_list(verbose: bool = False) -> int:
+    """
+    Update the local list of all WikiMedia wikis.
+
+    :param verbose: If True, show more detailed logs.
+    """
+    print("Updating local WikiMedia wikis list…")
+    if verbose:
+        print("Downloading list of wikis…")
+    response = requests.get(
+        "https://gitlab.wikimedia.org/repos/movement-insights/canonical-data/-/raw/main/wiki/wikis.tsv"
+    )
+    tsv = response.text
+
+    if verbose:
+        print("Extracting wiki languages…")
+    with (w.WIKI_DEPS_DIR / "wikt.core.languages.json").open() as f:
+        langs_data = json.load(f)
+
+    wikis = {}
+    for line in tsv.splitlines()[1:]:
+        _, _, database_group, lang_code, _, _, _, status, visibility, editability, _ = (
+            line.split("\t")
+        )
+        if (
+            database_group not in WIKI_GROUPS
+            or status != "open"
+            or visibility != "public"
+            or editability != "public"
+        ):
+            continue
+        if database_group not in wikis:
+            wikis[database_group] = []
+        if alias := langs_data["redirects"].get(lang_code):
+            lang_code = alias
+        if lang_code not in langs_data["codes"]:
+            print(f"Unknown language code for {database_group}:", lang_code)
+            continue
+        if langs_data["codes"][lang_code].get("isGroup"):
+            print(f"Code '{lang_code}' is a group, skipping.")
+            continue
+        if langs_data["codes"][lang_code].get("isSpecial"):
+            print(f"Code '{lang_code}' is special, skipping.")
+            continue
+        if database_group == "wiktionary" and lang_code == "fr":
+            if verbose:
+                print(f"Skipping frwikt.")
+            continue
+        wikis[database_group].append(lang_code)
+
+    if verbose:
+        print("Updating src/wikis.json…")
+    with (w.SRC_DIR / "wikis.json").open("r+") as f:
+        json_data = json.load(f)
+        for wiki_name, wiki_data in json_data.items():
+            if wiki_name not in wikis:
+                continue
+            wiki_data["showOnlyForLangs"] = wikis[wiki_name]
+        f.seek(0)
+        f.truncate()
+        json.dump(json_data, f, indent=2, ensure_ascii=False)
+
+    print("Done.")
+    return 0
 
 
 def pull(verbose: bool = False, overwrite: bool = False) -> int:
@@ -300,16 +382,17 @@ def push(verbose: bool = False, force: bool = False, message: str = None) -> int
     return exit_code
 
 
-ACTIONS: dict[str, typing.Callable[[None], int]] = {
+ACTIONS: dict[str, typing.Callable[[...], int]] = {
     "pull": pull,
     "push": push,
     "updatewikideps": update_wiki_deps,
+    "updatewikislist": update_wikis_list,
 }
 
 
 def main() -> None:
     """Main entry point."""
-    pwb.config.put_throttle = 0
+    pwb_config.put_throttle = 0
 
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help="Commands", dest="command")
@@ -341,6 +424,13 @@ def main() -> None:
         "-m", "--message", metavar="MESSAGE", action="store", help="The edit message."
     )
     push_parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Show more detailed logs."
+    )
+
+    wikis_list_parser = subparsers.add_parser(
+        "updatewikislist", help="Update the list of existing WikiMedia wikis."
+    )
+    wikis_list_parser.add_argument(
         "-v", "--verbose", action="store_true", help="Show more detailed logs."
     )
 
