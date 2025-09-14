@@ -613,6 +613,7 @@ class Language {
 /**
  * @typedef {{
  *  readonly label: string,
+ *  readonly interwikiCode: string,
  *  readonly templateName: string,
  *  readonly importTemplateName: string,
  *  readonly urlDomain: string,

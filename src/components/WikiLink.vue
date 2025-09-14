@@ -36,6 +36,12 @@ export default defineComponent({
 <template>
   <a
     :title="
+      ($props.wiki.interwikiCode !== 'wikt'
+        ? `${$props.wiki.interwikiCode}:`
+        : '') +
+      ($props.wikiLanguage !== 'fr'
+        ? `${(language && language.wikimediaCode) || $props.wikiLanguage}:`
+        : '') +
       $props.pageTitle +
       ($props.openInNewTab ? ' (S’ouvre dans un nouvel onglet)' : '')
     "

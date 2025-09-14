@@ -86,7 +86,9 @@ export default defineComponent({
       >
         <template #label>
           <cdx-icon :icon="wiki.icon"></cdx-icon>
-          {{ wiki.label }}
+          {{
+            wiki.label + (wiki.showOnlyForLangs ? ` en ${language.name}` : "")
+          }}
           <span class="cne-fieldset-btns">
             <a
               :href="`https://${wiki.urlDomain.replace('{}', $props.language.wikimediaCode || $props.language.code)}/${wiki.urlBase}/Special:Search/${encodeURIComponent(config.word)}`"
