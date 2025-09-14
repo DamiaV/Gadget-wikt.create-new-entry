@@ -391,6 +391,7 @@ export default defineComponent({
           <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab">
             <cdx-field class="cne-box" is-fieldset>
               <template #label>
+                Étymologie des entrées
                 <span class="cne-fieldset-btns">
                   <wiki-link page-title="Aide:Étymologies">
                     <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
