@@ -104,6 +104,7 @@ export default defineComponent({
         <cdx-icon v-if="customAction.icon" :icon="customAction.icon"></cdx-icon>
         <span v-if="!customAction.iconOnly">{{ customAction.name }}</span>
       </cdx-button>
+      &nbsp;
     </template>
     <template v-for="(chars, i) in $props.characters" :key="i">
       <span v-if="i > 0" class="separator">—</span>

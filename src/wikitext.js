@@ -1,6 +1,5 @@
 // <nowiki>
 const specialCharacters = [
-  "’",
   "à",
   "À",
   "â",
@@ -36,6 +35,7 @@ const specialCharacters = [
   "Ÿ",
   "«\u00a0",
   "\u00a0»",
+  "’",
 ];
 
 /**
