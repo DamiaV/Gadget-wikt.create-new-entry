@@ -17,6 +17,7 @@ import {
   cdxIconHelp,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconSpeechBubble,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import T from "../types.js";
@@ -190,6 +191,7 @@ export default defineComponent({
       cdxIconTrash,
       cdxIconArrowUp,
       cdxIconArrowDown,
+      cdxIconSpeechBubble,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -204,7 +206,7 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-pronunciation-form cne-box" is-fieldset>
     <template #label>
-      <cdx-icon :icon="cdxIconFeedback"></cdx-icon>
+      <cdx-icon :icon="cdxIconSpeechBubble"></cdx-icon>
       Prononciation {{ $props.index + 1 }}
       <span class="cne-fieldset-btns">
         <wiki-link
