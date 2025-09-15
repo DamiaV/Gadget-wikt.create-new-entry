@@ -452,12 +452,12 @@ export default defineComponent({
 
         <hr class="cne-horizontal-separator" />
 
-        <!-- Seeeecret :3 -->
+        <!-- Secwet :3 -->
         <a
           id=":3"
           href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
           target="_blank"
-          title=":3"
+          title="Boo :3"
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
@@ -485,6 +485,9 @@ export default defineComponent({
   border: 1px solid var(--border-color-base, #a2a9b1);
   border-radius: 3px;
   padding: 0.5em;
+}
+.cdx-field.cne-box {
+  background-color: var(--background-color-neutral-subtle, #f8f9fa);
 }
 
 .cne-fieldset-btns {
@@ -538,14 +541,27 @@ a .cdx-icon svg {
 
 #\:3 {
   float: right;
+  filter: opacity(50%);
+}
+#\:3:hover {
+  text-decoration: none;
+  filter: opacity(100%);
 }
 #\:3 img {
   width: 10px;
   height: 10px;
 }
-#\:3:hover {
-  text-decoration: none;
-  filter: none;
+
+@media screen {
+  html.skin-theme-clientpref-night #\:3 {
+    filter: opacity(10%);
+  }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  html.skin-theme-clientpref-os #\:3 {
+    filter: opacity(10%);
+  }
 }
 </style>
 <!-- </nowiki> -->

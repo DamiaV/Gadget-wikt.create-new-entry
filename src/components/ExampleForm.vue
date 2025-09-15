@@ -321,7 +321,8 @@ export default defineComponent({
 
 <style>
 .cne-example-form {
-  margin-bottom: 1em;
+  margin-bottom: 4em;
+  background-color: var(--background-color-neutral, #eaecf0) !important;
 }
 </style>
 <!-- </nowiki> -->

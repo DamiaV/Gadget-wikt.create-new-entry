@@ -439,13 +439,17 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-definition-form,
-.cne-examples {
-  margin-bottom: 1em;
+.cne-definition-form {
+  margin-bottom: 4em;
 }
 
 .cne-definition-form-fields {
   flex-grow: 1;
+}
+
+.cne-examples {
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 </style>
 <!-- </nowiki> -->
