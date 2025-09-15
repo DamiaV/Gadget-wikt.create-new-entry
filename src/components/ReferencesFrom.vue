@@ -14,6 +14,7 @@ import {
   cdxIconEdit,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconReferences,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import L from "../wiki_deps/wikt.core.languages.js";
@@ -242,6 +243,7 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconEdit,
       cdxIconTrash,
+      cdxIconReferences,
       // Callbacks
       fireEvent,
       onAddWikiImport,
@@ -257,6 +259,7 @@ export default defineComponent({
   <div class="cne-references">
     <cdx-field>
       <template #label>
+        <cdx-icon :icon="cdxIconReferences"></cdx-icon>
         Bibliographie
         <span class="cne-fieldset-btns">
           <wiki-link page-title="Aide:Références">

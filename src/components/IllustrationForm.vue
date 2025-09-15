@@ -14,6 +14,7 @@ import {
   cdxIconEllipsis,
   cdxIconExpand,
   cdxIconHelpNotice,
+  cdxIconImageLayoutFrame,
   cdxIconInfoFilled,
   cdxIconReload,
   cdxIconSearch,
@@ -261,6 +262,7 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
+      cdxIconImageLayoutFrame,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -277,8 +279,8 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-illustration-form cne-box" is-fieldset>
     <template #label>
+      <cdx-icon :icon="cdxIconImageLayoutFrame"></cdx-icon>
       Illustration
-
       <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Illustrations">
           <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>

@@ -2,7 +2,7 @@
 <script>
 import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
-import { cdxIconHelpNotice } from "@wikimedia/codex-icons";
+import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
 import T from "../types.js";
 import utils from "../utils.js";
 import WikiLink from "./WikiLink.vue";
@@ -148,6 +148,7 @@ export default defineComponent({
       wordPropertiesStatuses,
       // Icons
       cdxIconHelpNotice,
+      cdxIconSettings,
       // Other
       utils,
       // Callbacks
@@ -161,6 +162,7 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-word-type-form cne-box" is-fieldset>
     <template #label>
+      <cdx-icon :icon="cdxIconSettings"></cdx-icon>
       Type de mot
       <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Catégories grammaticales">

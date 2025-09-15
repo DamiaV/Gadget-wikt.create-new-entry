@@ -6,11 +6,13 @@ import {
   cdxIconAdd,
   cdxIconArrowDown,
   cdxIconArrowUp,
+  cdxIconArticle,
   cdxIconCollapse,
   cdxIconEllipsis,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
@@ -235,6 +237,8 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
+      cdxIconQuotes,
+      cdxIconArticle,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -255,6 +259,7 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-definition-form cne-box" is-fieldset>
     <template #label>
+      <cdx-icon :icon="cdxIconArticle"></cdx-icon>
       Définition {{ $props.index + 1 }}
       <span class="cne-fieldset-btns">
         <wiki-link page-title="Aide:Définitions">
@@ -340,6 +345,7 @@ export default defineComponent({
 
         <cdx-field class="cne-examples cne-box" is-fieldset>
           <template #label>
+            <cdx-icon :icon="cdxIconQuotes"></cdx-icon>
             Exemples
             <span class="cne-fieldset-btns">
               <wiki-link page-title="Aide:Exemples">

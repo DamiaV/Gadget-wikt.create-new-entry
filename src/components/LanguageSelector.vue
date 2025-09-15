@@ -1,8 +1,8 @@
 <!-- <nowiki> -->
 <script>
 import { computed, defineComponent, ref } from "vue";
-import { CdxField, CdxLookup, CdxSelect } from "@wikimedia/codex";
-import { cdxIconSearch } from "@wikimedia/codex-icons";
+import { CdxField, CdxIcon, CdxLookup, CdxSelect } from "@wikimedia/codex";
+import { cdxIconLanguage, cdxIconSearch } from "@wikimedia/codex-icons";
 import LL from "../wiki_deps/wikt.core.languages.js";
 import T from "../types.js";
 import L from "../languages.js";
@@ -10,6 +10,7 @@ import L from "../languages.js";
 export default defineComponent({
   components: {
     CdxField,
+    CdxIcon,
     CdxSelect,
     CdxLookup,
   },
@@ -144,6 +145,7 @@ export default defineComponent({
       status,
       messages,
       // Icons
+      cdxIconLanguage,
       cdxIconSearch,
       // Callbacks
       onLanguageSelection,
@@ -156,7 +158,10 @@ export default defineComponent({
 
 <template>
   <cdx-field class="cne-language-selector cne-box" is-fieldset>
-    <template #label>Langue</template>
+    <template #label>
+      <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
+      Langue
+    </template>
     <cdx-field :status="status" :messages="messages">
       <template #description>La langue de l’entrée.</template>
       <template #help-text>

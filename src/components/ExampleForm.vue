@@ -17,6 +17,7 @@ import {
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
@@ -152,6 +153,7 @@ export default defineComponent({
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconEllipsis,
+      cdxIconQuotes,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -164,6 +166,7 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-example-form cne-box" is-fieldset>
     <template #label>
+      <cdx-icon :icon="cdxIconQuotes"></cdx-icon>
       Exemple {{ $props.index + 1 }}
       <span class="cne-fieldset-btns">
         <cdx-button
