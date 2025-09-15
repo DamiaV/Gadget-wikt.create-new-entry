@@ -543,6 +543,17 @@ a .cdx-icon svg {
   margin: 1em 0;
 }
 
+@media screen {
+  /* Override small icons when inside a link */
+  .cne
+    a:where(:not([role="button"]))
+    .cdx-icon:not(.cdx-thumbnail__placeholder__icon--vue):last-child {
+    width: initial;
+    height: initial;
+    padding-left: 0;
+  }
+}
+
 #\:3 {
   float: right;
   filter: opacity(30%);
