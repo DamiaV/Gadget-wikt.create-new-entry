@@ -37,7 +37,7 @@ import InputWithToolbar from "./components/InputWithToolbar.vue";
 import WikiLink from "./components/WikiLink.vue";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
 import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
-import ReferencesFrom from "./components/ReferencesFrom.vue";
+import ReferencesForm from "./components/ReferencesForm.vue";
 
 const COOKIE_NAME = "cne_lang";
 
@@ -56,7 +56,7 @@ export default defineComponent({
     WikiLink,
     CategoriesSelector,
     ExternalWikiLinks,
-    ReferencesFrom,
+    ReferencesForm,
   },
 
   props: {
@@ -424,7 +424,7 @@ export default defineComponent({
             label="Bibliographie & imports"
             class="cne-main-tab"
           >
-            <references-from v-model="formData.references"></references-from>
+            <references-form v-model="formData.references"></references-form>
           </cdx-tab>
 
           <cdx-tab
@@ -545,26 +545,24 @@ a .cdx-icon svg {
 
 #\:3 {
   float: right;
-  filter: opacity(50%);
+  filter: opacity(30%);
 }
 #\:3:hover {
   text-decoration: none;
-  filter: opacity(100%);
+  filter: opacity(100%) !important;
 }
 #\:3 img {
   width: 10px;
   height: 10px;
 }
-
 @media screen {
   html.skin-theme-clientpref-night #\:3 {
-    filter: opacity(10%);
+    filter: opacity(5%);
   }
 }
-
 @media screen and (prefers-color-scheme: dark) {
   html.skin-theme-clientpref-os #\:3 {
-    filter: opacity(10%);
+    filter: opacity(5%);
   }
 }
 </style>
