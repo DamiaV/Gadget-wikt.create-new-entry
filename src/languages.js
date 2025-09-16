@@ -62,15 +62,15 @@ const COMPARATIVES = {
  */
 const VERBS = {
   GROUP1: new T.GrammaticalProperty(
-    "1<sup>er</sup> groupe",
+    "Premier groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=1}}"
   ),
   GROUP2: new T.GrammaticalProperty(
-    "2<sup>ème</sup> groupe",
+    "Deuxième groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=2}}"
   ),
   GROUP3: new T.GrammaticalProperty(
-    "3<sup>ème</sup> groupe",
+    "Troisième groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=3}}"
   ),
   REGULAR_VERB: new T.GrammaticalProperty("régulier", "{{type|{0}}}"),
