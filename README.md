@@ -35,10 +35,11 @@ JS/Vue files are linted and formatted with ESLint and Prettier. Python files are
 The project’s structure is as follows (only relevant files and directories are listed):
 * `build_scripts`: Packages for `sync.py`.
 * `public`: Contains public assets for local testing. You shouldn’t need to modify its contents.
-    * `codex.style.css`: Codex CSS styles. It is copied from `node_modules/@wikimedia/codex/dist/`.
-    * `style.css`: Additionnal styles.
+    * `codex.style.css`: Codex CSS styles, copied from `node_modules/@wikimedia/codex/dist/`.
+    * `style.css`: Additionnal styles for better parity with the wiki.
 * `src`: The root directory for the gadget’s sources.
     * `components`: Contains all Vue components used by the gadget.
+    * `tests`: Contains all JS unit tests.
     * `wiki_deps`: Contains all dependencies from the wiki. See section “Download wiki dependencies” for more details. You should not edit its contents manually. This directory is excluded from git.
     * `App.vue`: The root component of the gadget.
     * `main.js`: The gadget’s main file on the wiki.
@@ -49,9 +50,9 @@ The project’s structure is as follows (only relevant files and directories are
 
 # Local testing
 
-To test the gadget locally, run `npm run dev` then go to the address shown in the terminal.
+To run the gadget locally, run `npm run dev` then go to the address shown in the terminal. You need to disable CORS rules in your browser.
 
-If you want to use features that make calls to the MediaWiki API (/w/api.php), you need to enable CORS in your browser.
+To run unit test, run `npm run test`.
 
 # Syncing with the wiki
 
@@ -96,6 +97,22 @@ To do so, run `python3 sync.py updatewikideps`. It will download the dependencie
 
 The same actions are performed on the downloaded `.js` files as the `pull` command.
 
+### Update available languages for all WMF wikis (`updatewikislist`)
+
+The list of all available languages of WMF wikis needs to be updated once in a while. To do so, run `python3 sync.py updatewikislist`. It will download the latest list from [WikiMedia’s GitLab](https://gitlab.wikimedia.org/repos/movement-insights/canonical-data/-/raw/main/wiki/wikis.tsv) and patch `src/wikis.json` with the new language lists.
+
+List of impacted wiki families:
+* `wiktionary`
+* `wikipedia`
+* `wikisource`
+* `wikiquote`
+* `wikiversity`
+* `wikibooks`
+* `wikivoyage`
+* `wikinews`
+
+**Note**: The languages for `vikidia` and `dicoado` need to be updated manually as they’re not WMF wikis.
+
 ## Changing Pywikibot credentials
 
 If you want to change your Pywikibot credentials, edit `user-config.py` and `user-password.py` with your new username and bot token.
@@ -104,13 +121,13 @@ If you want to change your Pywikibot credentials, edit `user-config.py` and `use
 
 You can create a bot password by going to [Special:BotPasswords](https://fr.wiktionary.org/wiki/Special:BotPasswords) while logged into the account you want to use.
 
-## `config.py`
+## `config.json`
 
 This file contains the configuration for `sync.py`. Its structure is as follows:
 * `gadgetName`: The gadget’s name on the wiki. It comes from the title of the gadget’s description page, [MediaWiki:Gadget-*wikt.create-new-entry*](https://fr.wiktionary.org/wiki/MediaWiki:Gadget-wikt.create-new-entry), which is also the prefix of all the gadget’s source pages.
 * `gadgetDependencies`: The list of runtime npm dependencies. These are used to set the `dependencies=` option of the gadget’s definition in [MediaWiki:Gadgets-definition](https://fr.wiktionary.org/wiki/MediaWiki:Gadgets-definition).
 * `wikiDependencies`: The list of runtime wiki dependencies, in alphabetical order (tho it does not really matter). These are necessary to run the gadget locally, and are downloaded when running the `updatewikideps` command.
-* `ignoredFiles`: A list of files from the `src/` directory to ignore when running the `push` command.
+* `ignoredFiles`: A list of files from the `src/` directory to be ignored by the `push` command.
 
 # Author(s)
 
