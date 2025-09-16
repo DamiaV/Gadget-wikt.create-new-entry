@@ -363,8 +363,11 @@ export default defineComponent({
               page-title="Aide:Définitions"
               anchor="Astuces_pour_rédiger_une_définition"
               >droit d’auteur</wiki-link
-            >, la définition ne doit pas être recopiée depuis un autre
-            dictionnaire.
+            >,
+            <strong
+              >la définition ne doit pas être recopiée depuis un autre
+              dictionnaire, sauf s’il est libre de droit</strong
+            >.
           </template>
         </input-with-toolbar>
 
