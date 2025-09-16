@@ -75,7 +75,7 @@ export default defineComponent({
         Object.values(relatedWords.value).every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)
         ) &&
-        !!notes.value
+        !notes.value
       );
     }
 
