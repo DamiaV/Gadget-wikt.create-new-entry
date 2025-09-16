@@ -169,9 +169,10 @@ def update_wiki_deps(verbose: bool = False) -> int:
 
 
 WIKI_GROUPS = {
-    "wikipedia",
     "wiktionary",
+    "wikipedia",
     "wikisource",
+    "wikiquote",
     "wikiversity",
     "wikibooks",
     "wikivoyage",
@@ -225,7 +226,7 @@ def update_wikis_list(verbose: bool = False) -> int:
             continue
         if database_group == "wiktionary" and lang_code == "fr":
             if verbose:
-                print(f"Skipping frwikt.")
+                print("Skipping frwikt.")
             continue
         wikis[database_group].append(lang_code)
 

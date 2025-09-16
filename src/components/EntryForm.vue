@@ -21,6 +21,7 @@ import T from "../types.js";
 import utils from "../utils.js";
 import WordPropertiesSelector from "./WordPropertiesSelector.vue";
 import PronunciationForm from "./PronunciationForm.vue";
+import RelatedWordsLists from "./RelatedWordsLists.vue";
 
 export default defineComponent({
   components: {
@@ -32,6 +33,7 @@ export default defineComponent({
     WordPropertiesSelector,
     DefinitionForm,
     PronunciationForm,
+    RelatedWordsLists,
   },
 
   props: {
@@ -57,12 +59,16 @@ export default defineComponent({
       properties: props.modelValue.wordProperties,
     });
     const definitions = ref(props.modelValue.definitions);
+    const relatedWords = ref(props.modelValue.relatedWords);
     const pronunciations = ref(props.modelValue.pronunciations || []);
 
     function isEmpty() {
       return (
         definitions.value.every((def) => def.empty) &&
-        pronunciations.value.every((p) => p.empty)
+        pronunciations.value.every((p) => p.empty) &&
+        Object.values(relatedWords.value).every((relatedWords) =>
+          relatedWords.every((relatedWord) => relatedWord.empty)
+        )
       );
     }
 
@@ -77,6 +83,7 @@ export default defineComponent({
           wordType: wordTypeProperties.value.wordType,
           wordProperties: wordTypeProperties.value.properties,
           definitions: definitions.value,
+          relatedWords: relatedWords.value,
           pronunciations: pronunciations.value,
           empty: isEmpty(),
         },
@@ -242,6 +249,7 @@ export default defineComponent({
       // Data
       wordTypeProperties,
       definitions,
+      relatedWords,
       pronunciations,
       // Deletion dialog
       dialogPrimaryAction,
@@ -250,6 +258,7 @@ export default defineComponent({
       // Other
       utils,
       config,
+      sectionsData: T.entrySectionsData,
       // Icons
       cdxIconTrash,
       cdxIconArrowPrevious,
@@ -340,8 +349,12 @@ export default defineComponent({
       </cdx-button>
     </cdx-tab>
 
-    <cdx-tab name="other-sections" label="Synonymes, dérivés, etc.">
-      🚧 En construction 🏗️
+    <cdx-tab name="other-sections" label="Variantes, dérivés, etc.">
+      <related-words-lists
+        v-model="relatedWords"
+        :sections="sectionsData"
+        @update:model-value="fireUpdateEvent()"
+      ></related-words-lists>
     </cdx-tab>
 
     <cdx-tab

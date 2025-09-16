@@ -8,7 +8,10 @@
         "wikt.core.cookies.js",
         "wikt.core.languages.js",
         "wikt.core.languages.json",
-        "wikt.core.user.js"
+        "wikt.core.sections.js",
+        "wikt.core.sections.json",
+        "wikt.core.user.js",
+        "wikt.core.word-types.json"
     ],
     "ignoredFiles": [
         "main-dev.js"

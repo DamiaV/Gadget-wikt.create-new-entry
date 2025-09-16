@@ -1,0 +1,98 @@
+{
+    "abréviations": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Abréviations, sigles et acronymes"
+    },
+    "anciennes orthographes": {
+    },
+    "antonymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Synonymes et antonymes"
+    },
+    "apparentés": {
+        "helpPage": "Aide:Mots apparentés"
+    },
+    "augmentatifs": {
+        "definitionSpecific": true
+    },
+    "composés": {
+    },
+    "conjugaison": {
+        "helpPage": "Aide:Conjugaisons",
+        "conventionPage": "Convention:Conjugaisons"
+    },
+    "déclinaison": {
+    },
+    "dérivés": {
+        "helpPage": "Aide:Mots et locutions dérivés"
+    },
+    "dérivés autres langues": {
+    },
+    "diminutifs": {
+        "definitionSpecific": true
+    },
+    "écriture": {
+    },
+    "faux-amis": {
+    },
+    "gentilés": {
+        "definitionSpecific": true
+    },
+    "holonymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Méronymes et holonymes"
+    },
+    "hyperonymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Hyperonymes et hyponymes"
+    },
+    "hyper-verbes": {
+        "definitionSpecific": true
+    },
+    "hyponymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Hyperonymes et hyponymes"
+    },
+    "méronymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Méronymes et holonymes"
+    },
+    "modification phonétique": {
+    },
+    "noms vernaculaires": {
+        "definitionSpecific": true
+    },
+    "notes": {
+        "conventionPage": "Convention:Notes"
+    },
+    "phrases": {
+        "helpPage": "Aide:Mots et locutions dérivés"
+    },
+    "quasi-synonymes": {
+        "definitionSpecific": true
+    },
+    "synonymes": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Synonymes et antonymes"
+    },
+    "transcriptions": {
+    },
+    "translittérations": {
+    },
+    "troponymes": {
+        "definitionSpecific": true
+    },
+    "variantes": {
+    },
+    "variantes dialectales": {
+    },
+    "variantes orthographiques": {
+    },
+    "vidéos": {
+        "definitionSpecific": true
+    },
+    "vocabulaire": {
+        "definitionSpecific": true,
+        "helpPage": "Aide:Vocabulaire apparenté"
+    }
+}

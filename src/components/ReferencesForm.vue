@@ -439,6 +439,7 @@ export default defineComponent({
   display: flex;
   gap: 0.5em;
   align-items: center;
+  margin-bottom: 0.2em;
 }
 </style>
 <!-- </nowiki> -->

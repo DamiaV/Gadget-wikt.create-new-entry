@@ -12,6 +12,7 @@ import {
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconLink,
   cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
@@ -22,6 +23,7 @@ import WikiLink from "./WikiLink.vue";
 import ExampleForm from "./ExampleForm.vue";
 import IllustrationForm from "./IllustrationForm.vue";
 import CollapsedPreview from "./CollapsedPreview.vue";
+import RelatedWordsLists from "./RelatedWordsLists.vue";
 
 export default defineComponent({
   components: {
@@ -34,6 +36,7 @@ export default defineComponent({
     ExampleForm,
     IllustrationForm,
     CollapsedPreview,
+    RelatedWordsLists,
   },
 
   props: {
@@ -53,15 +56,31 @@ export default defineComponent({
     const text = ref(props.modelValue.text);
     const examples = ref(props.modelValue.examples);
     const illustration = ref(props.modelValue.illustration);
+    const relatedWords = ref(props.modelValue.relatedWords);
+    const relatedWordsNumber = computed(() =>
+      Object.values(relatedWords.value).reduce(
+        (acc, relatedWords) =>
+          acc +
+          relatedWords.reduce(
+            (acc2, relatedWord) => acc2 + relatedWord.words.length,
+            0
+          ),
+        0
+      )
+    );
 
     const showFields = ref(true);
     const showExamples = ref(true);
+    const showRelatedWords = ref(true);
 
     function isEmpty() {
       return (
         !text.value &&
         examples.value.every((ex) => ex.empty) &&
-        (!illustration.value || illustration.value.empty)
+        (!illustration.value || illustration.value.empty) &&
+        Object.values(relatedWords.value).every((relatedWords) =>
+          relatedWords.every((relatedWord) => relatedWord.empty)
+        )
       );
     }
 
@@ -75,6 +94,7 @@ export default defineComponent({
           id: props.modelValue.id,
           text: text.value,
           examples: examples.value,
+          relatedWords: relatedWords.value,
           illustration: illustration.value,
           empty: isEmpty(),
         },
@@ -177,7 +197,7 @@ export default defineComponent({
       fireUpdateEvent();
     }
 
-    /**
+    /*
      * Illustration
      */
 
@@ -216,10 +236,13 @@ export default defineComponent({
       text,
       examples,
       illustration,
+      relatedWords,
       // Visuals
       showFields,
       showExamples,
+      showRelatedWords,
       collapsedPreviewText,
+      relatedWordsNumber,
       // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -227,6 +250,7 @@ export default defineComponent({
       // Other
       utils,
       config,
+      sectionsData: T.definitionSectionsData,
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
@@ -239,6 +263,7 @@ export default defineComponent({
       cdxIconEllipsis,
       cdxIconQuotes,
       cdxIconArticle,
+      cdxIconLink,
       // Callbacks
       fireUpdateEvent,
       onDelete,
@@ -404,6 +429,40 @@ export default defineComponent({
           ></collapsed-preview>
         </cdx-field>
 
+        <cdx-field class="cne-related-words cne-box" is-fieldset>
+          <template #label>
+            <cdx-icon :icon="cdxIconLink"></cdx-icon>
+            Mots liés
+            <span class="cne-fieldset-btns">
+              <cdx-button
+                type="button"
+                size="small"
+                :aria-label="showRelatedWords ? 'Enrouler' : 'Dérouler'"
+                :title="showRelatedWords ? 'Enrouler' : 'Dérouler'"
+                @click="showRelatedWords = !showRelatedWords"
+              >
+                <cdx-icon
+                  :icon="showRelatedWords ? cdxIconCollapse : cdxIconExpand"
+                ></cdx-icon>
+              </cdx-button>
+            </span>
+          </template>
+
+          <related-words-lists
+            v-show="showRelatedWords"
+            v-model="relatedWords"
+            :sections="sectionsData"
+          ></related-words-lists>
+          <collapsed-preview
+            v-show="!showRelatedWords"
+            :text="
+              relatedWordsNumber === 0
+                ? 'Aucun mot lié'
+                : `${relatedWordsNumber} mot${relatedWordsNumber > 1 ? 's' : ''}`
+            "
+          ></collapsed-preview>
+        </cdx-field>
+
         <div v-if="!illustration">
           <cdx-button
             type="button"
@@ -453,7 +512,8 @@ export default defineComponent({
   flex-grow: 1;
 }
 
-.cne-examples {
+.cne-examples,
+.cne-related-words {
   margin-top: 2em;
   margin-bottom: 2em;
 }
