@@ -21,10 +21,13 @@ import {
   cdxIconAdd,
   cdxIconCollapse,
   cdxIconDownload,
+  cdxIconError,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconHistory,
   cdxIconInfoFilled,
+  cdxIconLabFlask,
+  cdxIconLanguage,
   cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
@@ -236,6 +239,36 @@ export default defineComponent({
     }
 
     /**
+     * Open the reports page of the gadget in edit mode.
+     * @param {"bug" | "language" | "feature"} type The report type.
+     */
+    function onReport(type) {
+      let pageTitle, title;
+
+      switch (type) {
+        case "bug":
+          pageTitle = title = "Bug";
+          break;
+        case "language":
+          pageTitle = "Language";
+          title = "Demande de langue";
+          break;
+        case "feature":
+          pageTitle = title = "Suggestion";
+          break;
+      }
+
+      const params = new URLSearchParams({
+        action: "edit",
+        preload: `Projet:Gadget_de_création_d’entrées/Suggestions/Preload${pageTitle}`,
+        preloadtitle: `[${title}] Titre`,
+        section: "new",
+        title: "Projet:Gadget_de_création_d’entrées/Suggestions",
+      });
+      window.open("https://fr.wiktionary.org/w/index.php?" + params, "_blank");
+    }
+
+    /**
      * @type {import("./types.js").AppConfig}
      */
     const config = inject("config");
@@ -261,6 +294,9 @@ export default defineComponent({
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconHistory,
+      cdxIconError,
+      cdxIconLabFlask,
+      cdxIconLanguage,
       // Callbacks
       onLanguageSelection,
       onAddEntry,
@@ -269,6 +305,7 @@ export default defineComponent({
       onMoveEntryLeft,
       onMoveEntryRight,
       onSubmit,
+      onReport,
     };
   },
 });
@@ -334,6 +371,36 @@ export default defineComponent({
             vous avez entrées seront perdues.
           </strong>
         </cdx-message>
+
+        <div class="cne-report-bug">
+          <cdx-button
+            type="button"
+            weight="quiet"
+            action="progressive"
+            @click="onReport('bug')"
+          >
+            <cdx-icon :icon="cdxIconError"></cdx-icon>
+            Signaler un bug
+          </cdx-button>
+          <cdx-button
+            type="button"
+            weight="quiet"
+            action="progressive"
+            @click="onReport('language')"
+          >
+            <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
+            Demander l’ajout d’une langue
+          </cdx-button>
+          <cdx-button
+            type="button"
+            weight="quiet"
+            action="progressive"
+            @click="onReport('feature')"
+          >
+            <cdx-icon :icon="cdxIconLabFlask"></cdx-icon>
+            Suggérer une amélioration
+          </cdx-button>
+        </div>
 
         <language-selector
           v-model="formData.language"
@@ -539,6 +606,14 @@ a .cdx-icon svg {
 
 .bottom-btns {
   display: flex;
+  justify-content: center;
+  margin: 1em 0;
+}
+
+.cne-report-bug {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
   justify-content: center;
   margin: 1em 0;
 }
