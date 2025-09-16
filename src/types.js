@@ -122,6 +122,7 @@ import wikisData from "./wikis.json";
  *  definitions: Definition[],
  *  relatedWords: Record<string, RelatedWord[]>,
  *  pronunciations: Pronunciation[],
+ *  notes: string,
  *  empty: boolean,
  * }} Entry
  */
@@ -224,6 +225,7 @@ function createEmptyEntry(id) {
     definitions: [createEmptyDefinition()],
     relatedWords: {},
     pronunciations: [],
+    notes: "",
     empty: true,
   };
 }

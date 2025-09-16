@@ -4,13 +4,13 @@ import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
   CdxDialog,
+  CdxField,
   CdxIcon,
   CdxTab,
   CdxTabs,
 } from "@wikimedia/codex";
 import {
   cdxIconHelpNotice,
-  cdxIconInfoFilled,
   cdxIconAdd,
   cdxIconArrowPrevious,
   cdxIconArrowNext,
@@ -22,18 +22,23 @@ import utils from "../utils.js";
 import WordPropertiesSelector from "./WordPropertiesSelector.vue";
 import PronunciationForm from "./PronunciationForm.vue";
 import RelatedWordsLists from "./RelatedWordsLists.vue";
+import InputWithToolbar from "./InputWithToolbar.vue";
+import WikiLink from "./WikiLink.vue";
 
 export default defineComponent({
   components: {
+    CdxField,
     CdxTabs,
     CdxTab,
     CdxButton,
     CdxIcon,
     CdxDialog,
+    InputWithToolbar,
     WordPropertiesSelector,
     DefinitionForm,
     PronunciationForm,
     RelatedWordsLists,
+    WikiLink,
   },
 
   props: {
@@ -61,6 +66,7 @@ export default defineComponent({
     const definitions = ref(props.modelValue.definitions);
     const relatedWords = ref(props.modelValue.relatedWords);
     const pronunciations = ref(props.modelValue.pronunciations || []);
+    const notes = ref(props.modelValue.notes);
 
     function isEmpty() {
       return (
@@ -68,7 +74,8 @@ export default defineComponent({
         pronunciations.value.every((p) => p.empty) &&
         Object.values(relatedWords.value).every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)
-        )
+        ) &&
+        !!notes.value
       );
     }
 
@@ -85,6 +92,7 @@ export default defineComponent({
           definitions: definitions.value,
           relatedWords: relatedWords.value,
           pronunciations: pronunciations.value,
+          notes: notes.value,
           empty: isEmpty(),
         },
       };
@@ -251,6 +259,7 @@ export default defineComponent({
       definitions,
       relatedWords,
       pronunciations,
+      notes,
       // Deletion dialog
       dialogPrimaryAction,
       dialogDefaultAction,
@@ -264,7 +273,6 @@ export default defineComponent({
       cdxIconArrowPrevious,
       cdxIconArrowNext,
       cdxIconHelpNotice,
-      cdxIconInfoFilled,
       cdxIconAdd,
       // Callbacks
       fireUpdateEvent,
@@ -349,7 +357,25 @@ export default defineComponent({
       </cdx-button>
     </cdx-tab>
 
-    <cdx-tab name="other-sections" label="Variantes, dérivés, etc.">
+    <cdx-tab name="other-sections" label="Notes, variantes, dérivés, etc.">
+      <cdx-field class="cne-box" is-fieldset>
+        <template #label>
+          Notes
+          <span class="cne-fieldset-btns">
+            <wiki-link page-title="Convention:Notes">
+              <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+            </wiki-link>
+          </span>
+        </template>
+        <input-with-toolbar
+          v-model="notes"
+          text-area
+          @update:model-value="fireUpdateEvent()"
+        ></input-with-toolbar>
+      </cdx-field>
+
+      <hr class="cne-horizontal-separator" />
+
       <related-words-lists
         v-model="relatedWords"
         :sections="sectionsData"
