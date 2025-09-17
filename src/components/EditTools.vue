@@ -4,8 +4,15 @@ import { defineComponent } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import {
   cdxIconBold,
+  cdxIconCode,
   cdxIconItalic,
+  cdxIconNoWikitext,
   cdxIconPuzzle,
+  cdxIconQuotes,
+  cdxIconReference,
+  cdxIconSubscript,
+  cdxIconSuperscript,
+  cdxIconWikitext,
 } from "@wikimedia/codex-icons";
 import W from "../wikitext.js";
 
@@ -41,8 +48,15 @@ export default defineComponent({
   emits: [
     "style:bold",
     "style:italic",
-    "insert-char",
-    "insert-template",
+    "insert:char",
+    "insert:superscript",
+    "insert:subscript",
+    "insert:link",
+    "insert:nowiki",
+    "insert:code",
+    "insert:quotes",
+    "insert:ref",
+    "insert:template",
     "custom-action",
   ],
 
@@ -50,8 +64,15 @@ export default defineComponent({
     return {
       // Icons
       cdxIconBold,
+      cdxIconCode,
       cdxIconItalic,
+      cdxIconNoWikitext,
       cdxIconPuzzle,
+      cdxIconQuotes,
+      cdxIconReference,
+      cdxIconSubscript,
+      cdxIconSuperscript,
+      cdxIconWikitext,
     };
   },
 });
@@ -80,6 +101,79 @@ export default defineComponent({
       >
         <cdx-icon :icon="cdxIconItalic"></cdx-icon>
       </cdx-button>
+      &nbsp;
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Mettre en exposant"
+        title="Mettre en exposant"
+        size="small"
+        @click="$emit('insert:superscript')"
+      >
+        <cdx-icon :icon="cdxIconSuperscript"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Mettre en indice"
+        title="Mettre en indice"
+        size="small"
+        @click="$emit('insert:subscript')"
+      >
+        <cdx-icon :icon="cdxIconSubscript"></cdx-icon>
+      </cdx-button>
+      &nbsp;
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer un lien"
+        title="Insérer un lien"
+        size="small"
+        @click="$emit('insert:link')"
+      >
+        <cdx-icon :icon="cdxIconWikitext"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer des balises <nowiki>"
+        title="Insérer des balises <nowiki>"
+        size="small"
+        @click="$emit('insert:nowiki')"
+      >
+        <cdx-icon :icon="cdxIconNoWikitext"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer des balises <code>"
+        title="Insérer des balises <code>"
+        size="small"
+        @click="$emit('insert:code')"
+      >
+        <cdx-icon :icon="cdxIconCode"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer des guillemets"
+        title="Insérer des guillemets"
+        size="small"
+        @click="$emit('insert:quotes')"
+      >
+        <cdx-icon :icon="cdxIconQuotes"></cdx-icon>
+      </cdx-button>
+      &nbsp;
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer une référence"
+        title="Insérer une référence"
+        size="small"
+        @click="$emit('insert:ref')"
+      >
+        <cdx-icon :icon="cdxIconReference"></cdx-icon>
+      </cdx-button>
       <cdx-button
         v-if="$props.showTemplateButton"
         class="format-btn"
@@ -87,7 +181,7 @@ export default defineComponent({
         aria-label="Insérer un modèle"
         title="Insérer un modèle"
         size="small"
-        @click="$emit('insert-template')"
+        @click="$emit('insert:template')"
       >
         <cdx-icon :icon="cdxIconPuzzle"></cdx-icon>
       </cdx-button>
@@ -114,7 +208,7 @@ export default defineComponent({
         href="#"
         :aria-label="`Insérer un ${char}`"
         title="Cliquer pour insérer le caractère"
-        @click.prevent="$emit('insert-char', char)"
+        @click.prevent="$emit('insert:char', char)"
       >
         {{ char }}
       </a>

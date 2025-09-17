@@ -33,8 +33,6 @@ const specialCharacters = [
   "Ü",
   "ÿ",
   "Ÿ",
-  "«\u00a0",
-  "\u00a0»",
   "·",
   "’",
 ];

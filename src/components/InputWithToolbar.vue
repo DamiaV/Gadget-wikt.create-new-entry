@@ -121,6 +121,37 @@ export default defineComponent({
     }
 
     /**
+     * Insert a wikilink around the current selection.
+     */
+    function onInsertLink() {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}[[${selection}]]${afterSelection}`
+      );
+    }
+
+    /**
+     * Insert quotes around the current selection.
+     */
+    function onInsertQuotes() {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}«\u00a0${selection}\u00a0»${afterSelection}`
+      );
+    }
+
+    /**
+     * Insert the given tags around the current selection.
+     * @param {string} tagName The name of the tag to insert.
+     */
+    function onInsertTag(tagName) {
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}<${tagName}>${selection}</${tagName}>${afterSelection}`
+      );
+    }
+
+    /**
      * Wrap the input’s selected text with `''' '''` to make it bold.
      */
     function onBold() {
@@ -174,6 +205,9 @@ export default defineComponent({
       onInput,
       onInvalid,
       onInsertChar,
+      onInsertLink,
+      onInsertQuotes,
+      onInsertTag,
       onBold,
       onItalic,
       onCustomAction,
@@ -191,11 +225,18 @@ export default defineComponent({
         :show-template-button="$props.showTemplateButton"
         :characters="$props.specialCharacters"
         :custom-actions="$props.customActions"
-        @insert-char="onInsertChar"
         @style:bold="onBold"
         @style:italic="onItalic"
+        @insert:char="onInsertChar"
+        @insert:link="onInsertLink"
+        @insert:quotes="onInsertQuotes"
+        @insert:nowiki="onInsertTag('nowiki')"
+        @insert:subscript="onInsertTag('sub')"
+        @insert:superscript="onInsertTag('sup')"
+        @insert:code="onInsertTag('code')"
+        @insert:ref="onInsertTag('ref')"
+        @insert:template="openTemplateDialog = true"
         @custom-action="onCustomAction"
-        @insert-template="openTemplateDialog = true"
       ></edit-tools>
       <component
         :is="textInputType"

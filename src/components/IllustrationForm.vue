@@ -452,7 +452,6 @@ export default defineComponent({
         v-model="description"
         clearable
         required
-        :show-template-button="false"
         @change="fireUpdateEvent"
       >
         <template #label>Légende</template>

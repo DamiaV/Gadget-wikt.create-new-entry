@@ -310,6 +310,7 @@ export default defineComponent({
 
   <cdx-dialog
     v-model:open="openEditDialog"
+    class="cne-related-words-dialog"
     :title="utils.capitalize($props.sectionData.name)"
     :subtitle="$props.description"
     use-close-button
@@ -363,8 +364,6 @@ export default defineComponent({
       <input-with-toolbar
         v-model="editedItem.annotation"
         clearable
-        :show-format-buttons="false"
-        :show-template-button="false"
       ></input-with-toolbar>
       <cdx-toggle-switch v-model="editedItem.nonFormattedAnnotation">
         Désactiver le formatage automatique de l’annotation
@@ -408,6 +407,10 @@ export default defineComponent({
 .cne-words-annotation.cne-words-annotation-formatted,
 .cne-missing-definition {
   font-style: italic;
+}
+
+.cne-related-words-dialog {
+  max-width: 50em;
 }
 </style>
 <!-- </nowiki> -->
