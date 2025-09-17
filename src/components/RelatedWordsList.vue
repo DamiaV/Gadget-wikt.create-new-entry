@@ -7,6 +7,7 @@ import {
   CdxField,
   CdxIcon,
   CdxTextInput,
+  CdxToggleSwitch,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -27,6 +28,7 @@ export default defineComponent({
     CdxField,
     CdxIcon,
     CdxTextInput,
+    CdxToggleSwitch,
     InputWithToolbar,
     WikiLink,
   },
@@ -68,6 +70,7 @@ export default defineComponent({
           id: item.id,
           words: Array.from(item.words),
           annotation: item.annotation,
+          nonFormattedAnnotation: item.nonFormattedAnnotation,
           empty: isEmpty(),
         });
       }
@@ -115,11 +118,13 @@ export default defineComponent({
       if (addMode.value) {
         editedItem.words = [""];
         editedItem.annotation = "";
+        editedItem.nonFormattedAnnotation = false;
       } else {
         const item = items.value[index];
         editedItem.id = item.id;
         editedItem.words = Array.from(item.words);
         editedItem.annotation = item.annotation;
+        editedItem.nonFormattedAnnotation = item.nonFormattedAnnotation;
       }
       openEditDialog.value = true;
     }
@@ -131,11 +136,13 @@ export default defineComponent({
           id: utils.getNextId(items.value),
           words: words,
           annotation: editedItem.annotation,
+          nonFormattedAnnotation: editedItem.nonFormattedAnnotation,
         });
       } else {
         const item = items.value[editedItemIndex.value];
         item.words = words;
         item.annotation = editedItem.annotation;
+        item.nonFormattedAnnotation = editedItem.nonFormattedAnnotation;
       }
       items.value.sort((i1, i2) =>
         i1.words[0].toLowerCase().localeCompare(i2.words[0].toLowerCase())
@@ -279,11 +286,20 @@ export default defineComponent({
           <span>
             <template v-for="(word, j) in item.words" :key="j">
               <wiki-link :page-title="word"></wiki-link
-              >{{ j < item.words.length - 1 ? ", " : "" }}
+              >{{ j < item.words.length - 1 ? ", " : " " }}
             </template>
             <template v-if="item.annotation">
-              <span class="cne-words-annotation">
-                ({{ item.annotation }})
+              <span
+                :class="{
+                  'cne-words-annotation': true,
+                  'cne-words-annotation-formatted':
+                    !item.nonFormattedAnnotation,
+                }"
+              >
+                <template v-if="item.nonFormattedAnnotation">
+                  {{ item.annotation }}
+                </template>
+                <template v-else>({{ item.annotation }})</template>
               </span>
             </template>
           </span>
@@ -350,6 +366,9 @@ export default defineComponent({
         :show-format-buttons="false"
         :show-template-button="false"
       ></input-with-toolbar>
+      <cdx-toggle-switch v-model="editedItem.nonFormattedAnnotation">
+        Désactiver le formatage automatique de l’annotation
+      </cdx-toggle-switch>
     </cdx-field>
   </cdx-dialog>
 
@@ -386,7 +405,7 @@ export default defineComponent({
   margin-bottom: 0.2em;
 }
 
-.cne-words-annotation,
+.cne-words-annotation.cne-words-annotation-formatted,
 .cne-missing-definition {
   font-style: italic;
 }

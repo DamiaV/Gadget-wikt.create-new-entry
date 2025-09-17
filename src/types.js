@@ -167,6 +167,7 @@ import wikisData from "./wikis.json";
  *  id: number,
  *  words: string[],
  *  annotation: string,
+ *  nonFormattedAnnotation: boolean,
  *  empty: boolean,
  * }} RelatedWord
  */
@@ -306,6 +307,7 @@ function createEmptyRelatedWord(id) {
     id: id || 1,
     words: [],
     annotation: "",
+    nonFormattedAnnotation: false,
     empty: true,
   };
 }
