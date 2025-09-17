@@ -410,7 +410,7 @@ export default defineComponent({
 }
 
 .cne-related-words-dialog {
-  max-width: 50em;
+  max-width: 60em;
 }
 </style>
 <!-- </nowiki> -->

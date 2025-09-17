@@ -255,8 +255,6 @@ export default defineComponent({
 
       for (const [paramName, paramDef] of Object.entries(templateData.params))
         if (paramDef.required) onToggleParam(paramName);
-      console.log(selectedTemplate);
-      console.log(sortedSelectedParams.value);
     }
 
     /**
