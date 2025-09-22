@@ -179,8 +179,7 @@ function templateToString(filledTemplate) {
  */
 function parseTemplateFormat(formatString) {
   if (formatString === "inline") return parseTemplateFormat("{{_|_=_}}");
-  if (formatString === "block")
-    return parseTemplateFormat("{{_\\n| _ = _\\n}}");
+  if (formatString === "block") return parseTemplateFormat("{{_\n| _ = _\n}}");
 
   /**
    * @type {TemplateFormat}
@@ -213,10 +212,9 @@ function parseTemplateFormat(formatString) {
 
     switch (state) {
       case "before template":
-        if (c + nextC === "\\n") {
+        if (c === "\n") {
           if (format.newLineBeforeTemplate) throwError(i);
           format.newLineBeforeTemplate = true;
-          i++;
         } else if (c + nextC === "{{") {
           state = "after template opening";
           i++;
@@ -229,18 +227,17 @@ function parseTemplateFormat(formatString) {
         break;
 
       case "in template name":
-        if (c + nextC === "\\n") {
+        if (c === "\n") {
           if (format.spacesBeforePipe !== 0 || format.newLineBeforePipe)
             throwError(i);
           format.newLineBeforePipe = true;
-          i++;
         } else if (c === " ") format.spacesBeforePipe++;
         else if (c === "|") state = "after pipe";
         else throwError(i);
         break;
 
       case "after pipe":
-        if (c + nextC === "\\n") {
+        if (c === "\n") {
           if (
             format.newLineBeforePipe ||
             format.spacesBeforeParamName !== 0 ||
@@ -248,7 +245,6 @@ function parseTemplateFormat(formatString) {
           )
             throwError(i);
           format.newLineAfterPipe = true;
-          i++;
         } else if (c === " ") format.spacesBeforeParamName++;
         else if (c === "_") {
           format.minParamNameLength++;
@@ -278,10 +274,9 @@ function parseTemplateFormat(formatString) {
         break;
 
       case "after value":
-        if (c + nextC === "\\n") {
+        if (c === "\n") {
           if (format.newLineBeforeClosing) throwError(i);
           format.newLineBeforeClosing = true;
-          i++;
         } else if (c + nextC === "}}") {
           state = "after template";
           i++;
@@ -289,10 +284,9 @@ function parseTemplateFormat(formatString) {
         break;
 
       case "after template":
-        if (c + nextC === "\\n") {
+        if (c === "\n") {
           if (format.newLineAfterTemplate) throwError(i);
           format.newLineAfterTemplate = true;
-          i++;
         } else throwError(i);
         break;
     }

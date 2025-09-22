@@ -51,7 +51,7 @@ const testData = [
     },
   ],
   [
-    "{{_\\n| _ = _\\n}}",
+    "{{_\n| _ = _\n}}",
     {
       newLineBeforeTemplate: false,
       newLineAfterTemplate: false,
@@ -66,7 +66,7 @@ const testData = [
     },
   ],
   [
-    "\\n{{_\\n|_ = _\\n}}\\n",
+    "\n{{_\n|_ = _\n}}\n",
     {
       newLineBeforeTemplate: true,
       newLineAfterTemplate: true,
@@ -81,7 +81,7 @@ const testData = [
     },
   ],
   [
-    "{{_\\n |_ = _\\n}}",
+    "{{_\n |_ = _\n}}",
     {
       newLineBeforeTemplate: false,
       newLineAfterTemplate: false,
@@ -96,7 +96,7 @@ const testData = [
     },
   ],
   [
-    "{{_\\n|______________ = _\\n}}\\n",
+    "{{_\n|______________ = _\n}}\n",
     {
       newLineBeforeTemplate: false,
       newLineAfterTemplate: true,
@@ -111,7 +111,7 @@ const testData = [
     },
   ],
   [
-    "{{_|\\n  ______________ = _}}",
+    "{{_|\n  ______________ = _}}",
     {
       newLineBeforeTemplate: false,
       newLineAfterTemplate: false,
@@ -126,7 +126,7 @@ const testData = [
     },
   ],
   [
-    "\\n{{_ | _ = _}}",
+    "\n{{_ | _ = _}}",
     {
       newLineBeforeTemplate: true,
       newLineAfterTemplate: false,
@@ -141,7 +141,7 @@ const testData = [
     },
   ],
   [
-    "\\n{{_ |\\n  ______________ = _}}",
+    "\n{{_ |\n  ______________ = _}}",
     {
       newLineBeforeTemplate: true,
       newLineAfterTemplate: false,
@@ -161,41 +161,41 @@ const testData = [
  * @type {[string, number][]}
  */
 const failTestData = [
-  ["\\n\\n{{", 2],
-  ["\\n!{{", 2],
-  ["\\n {{", 2],
+  ["\n\n{{", 1],
+  ["\n!{{", 1],
+  ["\n {{", 1],
   ["!{{", 0],
   [" {{", 0],
-  ["{{\\n_", 2],
+  ["{{\n_", 2],
   ["{{!_", 2],
   ["{{ _", 2],
   ["{{__", 3],
   ["{{_!", 3],
-  ["{{_\\n\\n", 5],
-  ["{{_\\n!", 5],
+  ["{{_\n\n", 4],
+  ["{{_\n!", 4],
   ["{{_ !", 4],
   ["{{_|!", 4],
-  ["{{_|\\n!", 6],
-  ["{{_|\\n !", 7],
+  ["{{_|\n!", 5],
+  ["{{_|\n !", 6],
   ["{{_|_!", 5],
-  ["{{_|_\\n", 5],
-  ["{{_|_ \\n", 6],
+  ["{{_|_\n", 5],
+  ["{{_|_ \n", 6],
   ["{{_|_ !", 6],
   ["{{_|_=!", 6],
-  ["{{_|_=\\n", 6],
-  ["{{_|_= \\n", 7],
+  ["{{_|_=\n", 6],
+  ["{{_|_= \n", 7],
   ["{{_|_= !", 7],
   ["{{_|_=__", 7],
   ["{{_|_=_!", 7],
   ["{{_|_=_ ", 7],
-  ["{{_|_=_\\n\\n", 9],
-  ["{{_|_=_\\n!", 9],
-  ["{{_|_=_\\n ", 9],
+  ["{{_|_=_\n\n", 8],
+  ["{{_|_=_\n!", 8],
+  ["{{_|_=_\n ", 8],
   ["{{_|_=_}}!", 9],
   ["{{_|_=_}} ", 9],
-  ["{{_|_=_}}\\n\\n", 11],
-  ["{{_|_=_}}\\n!", 11],
-  ["{{_|_=_}}\\n ", 11],
+  ["{{_|_=_}}\n\n", 10],
+  ["{{_|_=_}}\n!", 10],
+  ["{{_|_=_}}\n ", 10],
 ];
 
 for (const [input, expectedOutput] of testData) {
