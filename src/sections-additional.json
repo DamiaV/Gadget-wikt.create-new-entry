@@ -42,6 +42,8 @@
         "definitionSpecific": true,
         "helpPage": "Aide:Méronymes et holonymes"
     },
+    "homophones": {
+    },
     "hyperonymes": {
         "definitionSpecific": true,
         "helpPage": "Aide:Hyperonymes et hyponymes"
@@ -71,6 +73,8 @@
     "synonymes": {
         "definitionSpecific": true,
         "helpPage": "Aide:Synonymes et antonymes"
+    },
+    "paronymes": {
     },
     "transcriptions": {
     },

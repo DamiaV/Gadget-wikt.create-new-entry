@@ -8,6 +8,7 @@
         "wikt.core.cookies.js",
         "wikt.core.languages.js",
         "wikt.core.languages.json",
+        "wikt.core.page.js",
         "wikt.core.sections.js",
         "wikt.core.sections.json",
         "wikt.core.user.js",

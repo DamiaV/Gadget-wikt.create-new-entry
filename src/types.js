@@ -83,7 +83,9 @@ import wikisData from "./wikis.json";
  *  etymology: string,
  *  wikiLinks: Record<string, ExternalWikiLink>,
  *  categories: string[],
+ *  pronunciationInfo: string,
  *  references: References,
+ *  sortKey: string,
  * }} FormData
  */
 
@@ -122,6 +124,8 @@ import wikisData from "./wikis.json";
  *  definitions: Definition[],
  *  relatedWords: Record<string, RelatedWord[]>,
  *  pronunciations: Pronunciation[],
+ *  homophones: RelatedWord[],
+ *  nearHomophones: RelatedWord[],
  *  notes: string,
  *  empty: boolean,
  * }} Entry
@@ -180,7 +184,7 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  type: "image" | "video" | "audio",
  *  fileName: string,
- *  description?: string,
+ *  description: string,
  *  alt?: string,
  *  empty: boolean,
  * }} MediaIllustration
@@ -190,25 +194,16 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  type: "text",
  *  text: string,
- *  description?: string,
+ *  description: string,
  *  empty: boolean,
  * }} TextIllustration
  */
 
 /**
  * @typedef {{
- *  type: "audio",
- *  fileName: string,
- *  description?: string,
- *  empty: boolean,
- * }} AudioIllustration
- */
-
-/**
- * @typedef {{
  *  type: "color",
  *  color: string,
- *  description?: string,
+ *  description: string,
  *  empty: boolean,
  * }} ColorIllustration
  */
@@ -226,6 +221,8 @@ function createEmptyEntry(id) {
     definitions: [createEmptyDefinition()],
     relatedWords: {},
     pronunciations: [],
+    homophones: [],
+    nearHomophones: [],
     notes: "",
     empty: true,
   };
@@ -328,22 +325,33 @@ const definitionSectionsData = {};
  * @type {Record<string, SectionData>}
  */
 const entrySectionsData = {};
+/**
+ * @type {Record<string, SectionData>}
+ */
+const otherSectionsData = {};
 
 for (const code of S.getSectionCodes()) {
   const sectionData = S.getSectionData(code);
-  if (
-    code === "traductions" ||
-    sectionData.level !== 4 ||
-    sectionData.parent !== "type de mot"
-  )
-    continue;
+  /**
+   * @type {{
+   *  definitionSpecific?: boolean,
+   *  helpPage?: string,
+   *  conventionPage?: string,
+   * }}
+   */
   const additionalData = additionalSectionsData[code];
+  if (code === "traductions" || sectionData.level !== 4 || !additionalData)
+    continue;
+
   if (additionalData.helpPage) sectionData.helpPage = additionalData.helpPage;
   if (additionalData.conventionPage)
     sectionData.conventionPage = additionalData.conventionPage;
-  if (additionalData.definitionSpecific)
-    definitionSectionsData[code] = sectionData;
-  else entrySectionsData[code] = sectionData;
+  if (sectionData.parent === "type de mot") {
+    if (additionalData.definitionSpecific)
+      definitionSectionsData[code] = sectionData;
+    else entrySectionsData[code] = sectionData;
+  } else if (sectionData.parent === "pron")
+    otherSectionsData[code] = sectionData;
 }
 
 /**
@@ -374,14 +382,14 @@ class GrammaticalProperty {
   }
 
   /**
-   * @return {string} The label.
+   * @returns {string} The label.
    */
   get label() {
     return this._label;
   }
 
   /**
-   * @return {string} The template if any.
+   * @returns {string} The template or an empty string if there is none.
    */
   get template() {
     return this._template;
@@ -417,14 +425,14 @@ class GrammaticalClass {
   }
 
   /**
-   * @return {string} Class’ label.
+   * @returns {string} Class’ label.
    */
   get label() {
     return this._label;
   }
 
   /**
-   * @return {string} Class’ section code.
+   * @returns {string} Class’ section code.
    */
   get sectionCode() {
     return this._sectionCode;
@@ -471,14 +479,14 @@ class GrammaticalItem {
   }
 
   /**
-   * @return {GrammaticalClass} The grammatical class.
+   * @returns {GrammaticalClass} The grammatical class.
    */
   get grammaticalClass() {
     return this._grammaticalClass;
   }
 
   /**
-   * @return {Record<string, GrammaticalProperty[]>} The available grammatical properties.
+   * @returns {Record<string, GrammaticalProperty[]>} The available grammatical properties.
    */
   get properties() {
     return this._properties;
@@ -488,7 +496,7 @@ class GrammaticalItem {
    * Fetches the grammatical property with the given index and label.
    * @param {number} index
    * @param {string} label
-   * @return {GrammaticalProperty | null}
+   * @returns {GrammaticalProperty | null}
    */
   getProperty(index, label) {
     const props = this._properties[index];
@@ -502,7 +510,7 @@ class GrammaticalItem {
    * @param {string} word The base word.
    * @param {string[]} labels Grammatical properties’ labels.
    * @param {string} pronunciation IPA pronunciation.
-   * @return {string} Template’s wikicode.
+   * @returns {string} Template’s wikicode.
    */
   getInflectionsTemplate(word, labels, pronunciation) {
     let grammarClass = this._grammaticalClass.label;
@@ -604,56 +612,56 @@ class Language {
   }
 
   /**
-   * @return {string} This language’s code.
+   * @returns {string} This language’s code.
    */
   get code() {
     return this._code;
   }
 
   /**
-   * @return {string} This language’s WikiMedia code.
+   * @returns {string} This language’s WikiMedia code.
    */
   get wikimediaCode() {
     return this._wikimediaCode;
   }
 
   /**
-   * @return {string} This language’s ISO 639-3 code.
+   * @returns {string} This language’s ISO 639-3 code.
    */
   get iso6393Code() {
     return this._iso6393Code;
   }
 
   /**
-   * @return {string} This language’s name.
+   * @returns {string} This language’s name.
    */
   get name() {
     return this._name;
   }
 
   /**
-   * @return {string[][]} The IPA symbols for this language.
+   * @returns {string[][]} The IPA symbols for this language.
    */
   get ipaSymbols() {
     return this._ipaSymbols;
   }
 
   /**
-   * @return {Record<string, GrammaticalItem>} The grammatical items for this language.
+   * @returns {Record<string, GrammaticalItem>} The grammatical items for this language.
    */
   get grammarItems() {
     return this._grammarItems;
   }
 
   /**
-   * @return {boolean} True if this language is officialy supported by the gadget, false otherwise.
+   * @returns {boolean} True if this language is officialy supported by the gadget, false otherwise.
    */
   get isSupported() {
     return this._isSupported;
   }
 
   /**
-   * @return {boolean} True if this language has an "Annexe/Prononciation/<name>" page.
+   * @returns {boolean} True if this language has an "Annexe/Prononciation/<name>" page.
    */
   get hasPronunciationAppendix() {
     return this._hasPronunciationAppendix;
@@ -662,7 +670,7 @@ class Language {
   /**
    * Fetches the grammatical item that has the given section title.
    * @param {string} sectionName Section’s title.
-   * @return {GrammaticalItem | undefined} The grammatical item if found or undefined otherwise.
+   * @returns {GrammaticalItem | undefined} The grammatical item if found or undefined otherwise.
    */
   getGrammarItem(sectionName) {
     return this._grammarItems[sectionName];
@@ -671,7 +679,7 @@ class Language {
   /**
    * Generates the pronunciation of the given word for this language.
    * @param {string} word The word.
-   * @return {string} The pronunciation or an empty string if no function was defined in the constructor.
+   * @returns {string} The pronunciation or an empty string if no function was defined in the constructor.
    */
   generatePronunciation(word) {
     return this._pronGenerator(word);
@@ -799,6 +807,7 @@ export default {
   wikis,
   definitionSectionsData,
   entrySectionsData,
+  otherSectionsData,
   getWikiUrl,
   createEmptyEntry,
   createEmptyDefinition,

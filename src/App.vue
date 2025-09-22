@@ -31,6 +31,7 @@ import {
   cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
+import P from "./wiki_deps/wikt.core.page.js";
 import L from "./languages.js";
 import T from "./types.js";
 import utils from "./utils.js";
@@ -92,6 +93,11 @@ export default defineComponent({
     );
 
     /**
+     * @type {import("./types.js").AppConfig}
+     */
+    const config = inject("config");
+
+    /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
      */
     const form = useTemplateRef("form");
@@ -106,7 +112,9 @@ export default defineComponent({
       etymology: "",
       wikiLinks: {},
       categories: [],
+      pronunciationInfo: "",
       references: T.createEmptyReferences(),
+      sortKey: P.getSortingKey(config.word),
     };
 
     for (const key of Object.keys(T.wikis)) {
@@ -267,11 +275,6 @@ export default defineComponent({
       });
       window.open("https://fr.wiktionary.org/w/index.php?" + params, "_blank");
     }
-
-    /**
-     * @type {import("./types.js").AppConfig}
-     */
-    const config = inject("config");
 
     return {
       // Data

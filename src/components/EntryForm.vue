@@ -24,6 +24,7 @@ import PronunciationForm from "./PronunciationForm.vue";
 import RelatedWordsLists from "./RelatedWordsLists.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
+import RelatedWordsList from "./RelatedWordsList.vue";
 
 export default defineComponent({
   components: {
@@ -37,6 +38,7 @@ export default defineComponent({
     WordPropertiesSelector,
     DefinitionForm,
     PronunciationForm,
+    RelatedWordsList,
     RelatedWordsLists,
     WikiLink,
   },
@@ -66,6 +68,8 @@ export default defineComponent({
     const definitions = ref(props.modelValue.definitions);
     const relatedWords = ref(props.modelValue.relatedWords);
     const pronunciations = ref(props.modelValue.pronunciations || []);
+    const homophones = ref(props.modelValue.homophones);
+    const nearHomophones = ref(props.modelValue.nearHomophones);
     const notes = ref(props.modelValue.notes);
 
     function isEmpty() {
@@ -73,6 +77,12 @@ export default defineComponent({
         definitions.value.every((def) => def.empty) &&
         pronunciations.value.every((p) => p.empty) &&
         Object.values(relatedWords.value).every((relatedWords) =>
+          relatedWords.every((relatedWord) => relatedWord.empty)
+        ) &&
+        homophones.value.every((relatedWords) =>
+          relatedWords.every((relatedWord) => relatedWord.empty)
+        ) &&
+        nearHomophones.value.every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)
         ) &&
         !notes.value
@@ -92,6 +102,8 @@ export default defineComponent({
           definitions: definitions.value,
           relatedWords: relatedWords.value,
           pronunciations: pronunciations.value,
+          homophones: homophones.value,
+          nearHomophones: nearHomophones.value,
           notes: notes.value,
           empty: isEmpty(),
         },
@@ -259,6 +271,8 @@ export default defineComponent({
       definitions,
       relatedWords,
       pronunciations,
+      homophones,
+      nearHomophones,
       notes,
       // Deletion dialog
       dialogPrimaryAction,
@@ -268,6 +282,7 @@ export default defineComponent({
       utils,
       config,
       sectionsData: T.entrySectionsData,
+      otherSectionsData: T.otherSectionsData,
       // Icons
       cdxIconTrash,
       cdxIconArrowPrevious,
@@ -418,6 +433,7 @@ export default defineComponent({
           <strong>espace insécable fine</strong> en <strong>espace</strong>
         </li>
       </ul>
+
       <pronunciation-form
         v-for="(pronunciation, i) in pronunciations"
         :key="pronunciation.id"
@@ -440,6 +456,17 @@ export default defineComponent({
         <cdx-icon :icon="cdxIconAdd"></cdx-icon>
         Ajouter une prononciation
       </cdx-button>
+
+      <related-words-list
+        v-model="homophones"
+        section-type="homophones"
+        :section-data="otherSectionsData['homophones']"
+      ></related-words-list>
+      <related-words-list
+        v-model="nearHomophones"
+        section-type="paronymes"
+        :section-data="otherSectionsData['paronymes']"
+      ></related-words-list>
     </cdx-tab>
   </cdx-tabs>
 
