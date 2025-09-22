@@ -16,6 +16,7 @@ import {
   CdxMessage,
   CdxTab,
   CdxTabs,
+  CdxTextInput,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -52,6 +53,7 @@ export default defineComponent({
     CdxCheckbox,
     CdxTabs,
     CdxTab,
+    CdxTextInput,
     CdxField,
     CdxMessage,
     LanguageSelector,
@@ -405,6 +407,8 @@ export default defineComponent({
           </cdx-button>
         </div>
 
+        <hr class="cne-horizontal-separator" />
+
         <language-selector
           v-model="formData.language"
           :languages="languages"
@@ -420,6 +424,17 @@ export default defineComponent({
             >.
           </template>
         </cdx-checkbox>
+
+        <cdx-field>
+          <template #label>Clé de tri</template>
+          <template #description>
+            Cette valeur est utilisée pour trier correctement la page dans les
+            catégories.
+          </template>
+          <cdx-text-input v-model.trim="formData.sortKey"></cdx-text-input>
+        </cdx-field>
+
+        <hr class="cne-horizontal-separator" />
 
         <cdx-button
           type="button"
