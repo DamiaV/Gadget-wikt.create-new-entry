@@ -241,7 +241,7 @@ export default defineComponent({
       <component
         :is="textInputType"
         ref="textInput"
-        v-model="value"
+        v-model.trim="value"
         :required="$props.required"
         :clearable="$props.clearable"
         @update:model-value="onInput"

@@ -349,7 +349,7 @@ export default defineComponent({
     <div v-show="showFields" class="cne-definition-grid">
       <div class="cne-definition-form-fields">
         <input-with-toolbar
-          v-model.trim="text"
+          v-model="text"
           required
           text-area
           @change="fireUpdateEvent"

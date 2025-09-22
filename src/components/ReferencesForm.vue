@@ -393,7 +393,7 @@ export default defineComponent({
       <cdx-field>
         <template #label>Titre de la page</template>
         <cdx-text-input
-          v-model="editDialogData.title"
+          v-model.trim="editDialogData.title"
           clearable
         ></cdx-text-input>
         <template #help-text>
@@ -405,7 +405,7 @@ export default defineComponent({
       <cdx-field>
         <template #label>Numéro de version de la page</template>
         <cdx-text-input
-          v-model="editDialogData.oldId"
+          v-model.trim="editDialogData.oldId"
           clearable
         ></cdx-text-input>
         <template #help-text>

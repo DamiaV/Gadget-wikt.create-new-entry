@@ -222,7 +222,7 @@ export default defineComponent({
 
     <div v-show="showFields">
       <input-with-toolbar
-        v-model.trim="text"
+        v-model="text"
         required
         text-area
         @change="fireUpdateEvent"
@@ -256,7 +256,7 @@ export default defineComponent({
 
       <input-with-toolbar
         v-show="!disableTranslation"
-        v-model.trim="translation"
+        v-model="translation"
         text-area
         @change="fireUpdateEvent"
       >
@@ -274,7 +274,7 @@ export default defineComponent({
 
       <input-with-toolbar
         v-show="showTranscription"
-        v-model.trim="transcription"
+        v-model="transcription"
         text-area
         @change="fireUpdateEvent"
       >
@@ -285,7 +285,7 @@ export default defineComponent({
         </template>
       </input-with-toolbar>
 
-      <input-with-toolbar v-model.trim="source" @change="fireUpdateEvent">
+      <input-with-toolbar v-model="source" @change="fireUpdateEvent">
         <template #label>Source</template>
         <template #description>
           La référence de l’ouvrage ou du site web d’où provient l’exemple.
@@ -298,7 +298,7 @@ export default defineComponent({
           Le lien de la source si absente du champ ci-dessus.
         </template>
         <cdx-text-input
-          v-model.trim="link"
+          v-model="link"
           @change="fireUpdateEvent"
         ></cdx-text-input>
       </cdx-field>
