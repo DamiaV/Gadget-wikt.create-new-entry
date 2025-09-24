@@ -72,7 +72,7 @@ export default defineComponent({
      */
     function searchPages(query) {
       pages
-        .searchPages(query, props.namespaces)
+        .searchPages(query, props.namespaces, config.api)
         .then((results) => {
           /**
            * @type {[string, import("../types.js").Namespace][]}

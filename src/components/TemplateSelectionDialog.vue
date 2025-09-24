@@ -197,7 +197,7 @@ export default defineComponent({
      */
     function searchTemplates(query) {
       templates
-        .searchTemplates(query, "fr")
+        .searchTemplates(query, "fr", config.api)
         .then((results) => {
           templateDatas = {};
           /**
@@ -315,13 +315,13 @@ export default defineComponent({
 
     function refreshFavoriteTemplates() {
       templates
-        .fetchFavoriteTemplates()
+        .fetchFavoriteTemplates(config.api)
         .then((favTemplates) => (favoriteTemplates.value = favTemplates))
         .catch((error) => {
           console.warn(error);
         });
       templates
-        .fetchFeaturedTemplates()
+        .fetchFeaturedTemplates(config.api)
         .then((featTemplates) => (featuredTemplates.value = featTemplates))
         .catch((error) => {
           console.warn(error);

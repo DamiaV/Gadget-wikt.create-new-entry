@@ -1,5 +1,6 @@
 // <nowiki>
 import pages from "./pages.js";
+import utils from "./utils.js";
 
 /**
  * @typedef {{
@@ -299,36 +300,40 @@ function parseTemplateFormat(formatString) {
  * Search for templates matching the given search query or list of page titles or page IDs.
  * @param {string | string[] | number[]} query A query or list of page titles or page IDs.
  * @param {string} langCode The language code for the labels.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<TemplateData[]>} A list of matching template’s data.
  */
-async function searchTemplates(query, langCode) {
-  const params = new URLSearchParams();
-  params.append("action", "templatedata");
-  params.append("includeMissingTitles", true);
-  params.append("redirects", true);
+async function searchTemplates(query, langCode, api) {
+  const params = {
+    action: "templatedata",
+    includeMissingTitles: true,
+    redirects: true,
+    lang: langCode,
+    format: "json",
+  };
   if (typeof query === "string") {
-    params.append("generator", "search");
-    params.append("gsrsearch", pages.escapeQuery(query));
-    params.append("gsrnamespace", 10);
-    params.append("gsrlimit", 50);
-    params.append("gsrprop", "redirecttitle");
+    params.generator = "search";
+    params.gsrsearch = pages.escapeQuery(query);
+    params.gsrnamespace = 10;
+    params.gsrlimit = 50;
+    params.gsrprop = "redirecttitle";
   } else if (query.length && typeof query[0] === "number")
-    params.append("pageids", query.join("|"));
-  else params.append("titles", query.join("|"));
-  params.append("lang", langCode);
-  params.append("format", "json");
+    params.pageids = query.join("|");
+  else params.titles = query.join("|");
 
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
   /**
-   * @type {{pages: {[pageId: string]: ApiTemplateData | ApiNoTemplateData}}}
+   * @type {{pages: Record<string, ApiTemplateData | ApiNoTemplateData>}}}
    */
-  const json = await response.json();
+  const json = await utils.queryWikiApi(params, api);
 
+  /**
+   * @type {TemplateData[]}
+   */
   const results = [];
   for (const templateData of Object.values(json.pages)) {
     if (
       templateData.title.includes("/Documentation") ||
-      templateData.title.toLocaleLowerCase().includes("/bac à sable")
+      templateData.title.toLowerCase().includes("/bac à sable")
     )
       continue;
 
@@ -400,16 +405,10 @@ async function searchTemplates(query, langCode) {
 
 /**
  * Fetch the list of the current user’s favorite templates.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<TemplateData[]>} An array containing the page IDs of each favorite template.
  */
-async function fetchFavoriteTemplates() {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("meta", "userinfo");
-  params.append("uiprop", "options");
-  params.append("format", "json");
-
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
+async function fetchFavoriteTemplates(api) {
   /**
    * @type {{
    *  query: {
@@ -421,26 +420,30 @@ async function fetchFavoriteTemplates() {
    *  }
    * }}
    */
-  const json = await response.json();
+  const json = await utils.queryWikiApi(
+    {
+      action: "query",
+      meta: "userinfo",
+      uiprop: "options",
+      format: "json",
+    },
+    api
+  );
   /**
    * @type {number[]}
    */
   const templateIDs = JSON.parse(
     json.query.userinfo.options["templatedata-favorite-templates"]
   );
-  return await searchTemplates(templateIDs);
+  return await searchTemplates(templateIDs, api);
 }
 
-async function fetchFeaturedTemplates() {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("meta", "communityconfiguration");
-  params.append("ccrprovider", "TemplateData-FeaturedTemplates");
-  params.append("ccrassertversion", "1.0.0");
-  params.append("formatversion", 2);
-  params.append("format", "json");
-
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
+/**
+ * Fetch the list of the wiki’s featured templates.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @returns {Promise<TemplateData[]>} An array containing the page IDs of each featured template.
+ */
+async function fetchFeaturedTemplates(api) {
   /**
    * @type {{
    *  communityconfiguration: {
@@ -454,9 +457,20 @@ async function fetchFeaturedTemplates() {
    *  }
    * }}
    */
-  const json = await response.json();
+  const json = await utils.queryWikiApi(
+    {
+      action: "query",
+      meta: "communityconfiguration",
+      ccrprovider: "TemplateData-FeaturedTemplates",
+      ccrassertversion: "1.0.0",
+      formatversion: 2,
+      format: "json",
+    },
+    api
+  );
   return await searchTemplates(
-    json.communityconfiguration.data.FeaturedTemplates[0].titles
+    json.communityconfiguration.data.FeaturedTemplates[0].titles,
+    api
   );
 }
 

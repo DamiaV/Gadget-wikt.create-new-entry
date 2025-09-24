@@ -1,4 +1,6 @@
 // <nowiki>
+import utils from "./utils.js";
+
 const specialQueryChars = '~*\\?-"!';
 
 /**
@@ -16,30 +18,29 @@ function escapeQuery(query) {
  * Search for pages that match the given query.
  * @param {string} query A query.
  * @param {number[]?} namespaces A list of namespaces IDs to search into. If null or empty, all namespaces will be searched.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<string[]>} The list of matching page titles.
  */
-async function searchPages(query, namespaces) {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("generator", "search");
-  params.append("gsrsearch", escapeQuery(query) + "*");
-  if (namespaces && namespaces.length)
-    params.append("gsrnamespace", namespaces.map(String).join("|"));
-  else params.append("gsrnamespace", "*");
-  params.append("gsrlimit", 50);
-  params.append("format", "json");
-
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
+async function searchPages(query, namespaces, api) {
   /**
    * @type {{
    *  query?: {
-   *    pages: {
-   *      [pageId: string]: { title: string }
-   *    }
+   *    pages: Record<string, { title: string }>
    *  }
    * }}
    */
-  const json = await response.json();
+  const json = await utils.queryWikiApi(
+    {
+      action: "query",
+      generator: "search",
+      gsrsearch: escapeQuery(query) + "*",
+      gsrnamespace:
+        namespaces && namespaces.length ? namespaces.join("|") : "*",
+      gsrlimit: 50,
+      format: "json",
+    },
+    api
+  );
 
   const results = [];
   if (json.query)
@@ -51,31 +52,22 @@ async function searchPages(query, namespaces) {
 
 /**
  * Fetch information about the wiki’s namespaces.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<import("./types.js").Namespace[]>}
  */
-async function getNamespacesInfo() {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("meta", "siteinfo");
-  params.append("siprop", "namespaces|namespacealiases");
-  params.append("formatversion", 2);
-  params.append("format", "json");
-
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
+async function getNamespacesInfo(api) {
   /**
    * @type {{
    *  query: {
-   *    namespaces: {
-   *      [id: string]: {
-   *        id: number,
-   *        case: string,
-   *        name: string,
-   *        subpages: boolean,
-   *        canonical?: string,
-   *        content: boolean,
-   *        nonincludable: boolean,
-   *      }
-   *    },
+   *    namespaces: Record<string, {
+   *      id: number,
+   *      case: string,
+   *      name: string,
+   *      subpages: boolean,
+   *      canonical?: string,
+   *      content: boolean,
+   *      nonincludable: boolean,
+   *    }>,
    *    namespacealiases: {
    *      id: number,
    *      alias: string,
@@ -83,18 +75,25 @@ async function getNamespacesInfo() {
    *  }
    * }}
    */
-  const json = await response.json();
+  const json = await utils.queryWikiApi(
+    {
+      action: "query",
+      meta: "siteinfo",
+      siprop: "namespaces|namespacealiases",
+      formatversion: 2,
+      format: "json",
+    },
+    api
+  );
 
-  const allAliases = json.query.namespacealiases;
+  const { namespacealiases: namespaceAliases, namespaces } = json.query;
   /**
    * @type {import("./types.js").Namespace[]}
    */
   const results = [];
-  for (const { id, name, canonical, subpages } of Object.values(
-    json.query.namespaces
-  )) {
+  for (const { id, name, canonical, subpages } of Object.values(namespaces)) {
     const aliases = [];
-    for (const { id: aliasId, alias } of allAliases)
+    for (const { id: aliasId, alias } of namespaceAliases)
       if (id === aliasId) aliases.push(alias);
     results.push({
       id,

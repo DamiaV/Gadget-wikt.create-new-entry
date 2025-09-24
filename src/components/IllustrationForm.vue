@@ -100,6 +100,11 @@ export default defineComponent({
       { label: "Couleur", value: "color" },
     ];
 
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+
     function isEmpty() {
       return (
         !fileName.value &&
@@ -203,19 +208,19 @@ export default defineComponent({
         switch (type.value) {
           case "image":
             utils
-              .getImageFileUrl(fileName.value)
+              .getImageFileUrl(fileName.value, config.api)
               .then((url) => (imageUrl.value = url))
               .catch((error) => console.warn(error));
             break;
           case "video":
             utils
-              .getVideoFileUrls(fileName.value)
+              .getVideoFileUrls(fileName.value, config.api)
               .then((sources) => (videoSources.value = sources || {}))
               .catch((error) => console.warn(error));
             break;
           case "audio":
             utils
-              .getAudioFileUrls(fileName.value)
+              .getAudioFileUrls(fileName.value, config.api)
               .then((sources) => (audioSources.value = sources || []))
               .catch((error) => console.warn(error));
             break;
@@ -223,11 +228,6 @@ export default defineComponent({
       }
       fireUpdateEvent();
     }
-
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
 
     return {
       // Data

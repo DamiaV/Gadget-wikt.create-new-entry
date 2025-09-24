@@ -33,6 +33,7 @@ import wikisData from "./wikis.json";
 
 /**
  * @typedef {{
+ *  api?: mw.Api,
  *  word: string,
  *  userGender: string,
  *  namespaces: Namespace[],

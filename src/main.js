@@ -8,15 +8,17 @@ const version = "6.0";
 console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
 
 (async () => {
+  const api = new mw.Api({
+    userAgent: `Gadget-wikt.create-new-entry/${version}`,
+  });
   /**
    * @type {import("./types.js").AppConfig}
    */
   const config = {
-    word: mw.config.get("wgPageName"),
-    userGender: await U.getGender(
-      new mw.Api({ userAgent: `Gadget-wikt.create-new-entry/${version}` })
-    ),
-    namespaces: await pages.getNamespacesInfo(),
+    api,
+    word: mw.config.get("wgPageName").replaceAll("_", " "),
+    userGender: await U.getGender(api),
+    namespaces: await pages.getNamespacesInfo(api),
   };
 
   const app = createMwApp(App, {

@@ -32,26 +32,40 @@ function getNextId(objectsWithId) {
 /**
  * Get the static URL for the given image file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
  */
-async function getImageFileUrl(pageName) {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("titles", `File:${pageName}`);
-  params.append("prop", "imageinfo");
-  params.append("iiprop", "url|mediatype");
-  params.append("format", "json");
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
-  const json = await response.json();
-  const pageInfo = json.query.pages["-1"];
-  if (!pageInfo.imageinfo) return null;
+async function getImageFileUrl(pageName, api) {
+  /**
+   * @type {{
+   *  query: {
+   *    pages: {
+   *      "-1": {
+   *        imageinfo?: {
+   *          url: string,
+   *          mediatype: string,
+   *        }[]
+   *      }
+   *    }
+   *  }
+   * }}
+   */
+  const json = await queryWikiApi(
+    {
+      action: "query",
+      titles: `File:${pageName}`,
+      prop: "imageinfo",
+      iiprop: "url|mediatype",
+      format: "json",
+    },
+    api
+  );
+  const { imageinfo } = json.query.pages["-1"];
+  if (!imageinfo) return null;
 
-  const imageInfo = pageInfo.imageinfo[0];
-
+  const { mediatype, url } = imageinfo[0];
   // bitmap = png, jpg, gif, bmp; drawing = svg
-  return ["BITMAP", "DRAWING"].includes(imageInfo.mediatype)
-    ? imageInfo.url
-    : null;
+  return ["BITMAP", "DRAWING"].includes(mediatype) ? url : null;
 }
 
 /**
@@ -70,63 +84,110 @@ async function getImageFileUrl(pageName) {
 /**
  * Get the static URLs for the given video file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<VideoFileSources | null>} The corresponding static URls or null if the file does not exist.
  */
-async function getVideoFileUrls(pageName) {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("titles", `File:${pageName}`);
-  params.append("prop", "videoinfo");
-  params.append("viprop", "derivatives|size|mediatype");
-  params.append("format", "json");
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
-  const json = await response.json();
-  const pageInfo = json.query.pages["-1"];
-  if (!pageInfo.videoinfo) return null;
-
-  const videoInfo = pageInfo.videoinfo[0];
-  if (videoInfo.mediatype !== "VIDEO") return null;
-
-  const params2 = new URLSearchParams();
-  params2.append("action", "query");
-  params2.append("titles", `File:${pageName}`);
-  params2.append("prop", "videoinfo");
-  params2.append("viprop", "url");
-  params2.append("viurlwidth", videoInfo.width);
-  params2.append("format", "json");
-  const response2 = await fetch(
-    `https://fr.wiktionary.org/w/api.php?${params2}`
+async function getVideoFileUrls(pageName, api) {
+  const fileName = `File:${pageName}`;
+  /**
+   * @type {{
+   *  query: {
+   *    pages: {
+   *      "-1": {
+   *        videoinfo?: {
+   *          mediatype: string,
+   *          derivatives: MediaFileSource[],
+   *          width: number,
+   *        }[]
+   *      }
+   *    }
+   *  }
+   * }}
+   */
+  const json = await queryWikiApi(
+    {
+      action: "query",
+      titles: fileName,
+      prop: "videoinfo",
+      viprop: "derivatives|size|mediatype",
+      format: "json",
+    },
+    api
   );
-  const json2 = await response2.json();
-  const pageInfo2 = json2.query.pages["-1"];
+  const { videoinfo } = json.query.pages["-1"];
+  if (!videoinfo) return null;
+
+  const { mediatype, derivatives, width } = videoinfo[0];
+  if (mediatype !== "VIDEO") return null;
+
+  /**
+   * @type {{
+   *  query: {
+   *    pages: {
+   *      "-1": {
+   *        videoinfo: { thumburl: string }[]
+   *      }
+   *    }
+   *  }
+   * }}
+   */
+  const json2 = await queryWikiApi(
+    {
+      action: "query",
+      titles: fileName,
+      prop: "videoinfo",
+      viprop: "url",
+      viurlwidth: width,
+      format: "json",
+    },
+    api
+  );
+  const { videoinfo: thumbVideoInfo } = json2.query.pages["-1"];
 
   return {
-    thumbUrl: pageInfo2.videoinfo[0].thumburl,
-    sources: videoInfo.derivatives,
+    thumbUrl: thumbVideoInfo[0].thumburl,
+    sources: derivatives,
   };
 }
 
 /**
  * Get the static URLs for the given audio file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
  * @returns {Promise<MediaFileSource[] | null>} The corresponding static URls or null if the file does not exist.
  */
-async function getAudioFileUrls(pageName) {
-  const params = new URLSearchParams();
-  params.append("action", "query");
-  params.append("titles", `File:${pageName}`);
-  params.append("prop", "videoinfo");
-  params.append("viprop", "derivatives|mediatype");
-  params.append("format", "json");
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${params}`);
-  const json = await response.json();
-  const pageInfo = json.query.pages["-1"];
-  if (!pageInfo.videoinfo) return null;
+async function getAudioFileUrls(pageName, api) {
+  /**
+   * @type {{
+   *  query: {
+   *    pages: {
+   *      "-1": {
+   *        videoinfo?: {
+   *          mediatype: string,
+   *          derivatives: MediaFileSource[],
+   *        }[]
+   *      }
+   *    }
+   *  }
+   * }}
+   */
+  const json = await queryWikiApi(
+    {
+      action: "query",
+      titles: `File:${pageName}`,
+      prop: "videoinfo",
+      viprop: "derivatives|mediatype",
+      format: "json",
+    },
+    api
+  );
+  const { videoinfo } = json.query.pages["-1"];
+  if (!videoinfo) return null;
 
-  const videoInfo = pageInfo.videoinfo[0];
-  if (videoInfo.mediatype !== "AUDIO") return null;
+  const { mediatype, derivatives } = videoinfo[0];
+  if (mediatype !== "AUDIO") return null;
 
-  return videoInfo.derivatives;
+  return derivatives;
 }
 
 /**
@@ -138,6 +199,21 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.substring(1);
 }
 
+/**
+ * Send a GET query to the wiki’s API.
+ * @param {Record<string, any>} params The request’s GET parameters.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @returns {Promise<Record<string, any>>}
+ */
+async function queryWikiApi(params, api) {
+  if (api) return await api.get(params);
+  // For local testing
+  const args = new URLSearchParams();
+  for (const [name, value] of Object.entries(params)) args.append(name, value);
+  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${args}`);
+  return await response.json();
+}
+
 // </nowiki>
 
 export default {
@@ -146,5 +222,6 @@ export default {
   getImageFileUrl,
   getVideoFileUrls,
   getAudioFileUrls,
+  queryWikiApi,
   capitalize,
 };
