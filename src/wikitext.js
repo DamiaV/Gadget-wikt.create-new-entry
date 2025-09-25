@@ -42,7 +42,34 @@ const specialCharacters = [
   "’",
 ];
 
-const sectionsOrder = [];
+const sectionsOrder = [
+  "variantes orthographiques",
+  "variantes",
+  "transcriptions",
+  "abréviations",
+  "augmentatifs",
+  "diminutifs",
+  "synonymes",
+  "quasi-synonymes",
+  "antonymes",
+  "gentilés",
+  "composés",
+  "dérivés",
+  "apparentés",
+  "vocabulaire",
+  "phrases",
+  "variantes dialectales",
+  "hyperonymes",
+  "hyponymes",
+  "holonymes",
+  "méronymes",
+  "hyper-verbes",
+  "troponymes",
+  "traductions",
+  "dérivés autres langues",
+  "faux-amis",
+  "notes",
+];
 
 const inlineTemplateFormat = templates.parseTemplateFormat("inline");
 
