@@ -3,6 +3,7 @@ import { createMwApp } from "vue";
 import U from "./wiki_deps/wikt.core.user.js";
 import App from "./App.vue";
 import pages from "./pages.js";
+import W from "./wikitext.js";
 
 const version = "6.0";
 console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
@@ -23,6 +24,16 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
 
   const app = createMwApp(App, {
     existingLanguageSections: [], // TODO extract lang codes from edit form
+    /**
+     * Called when the form is submitted.
+     * @param {import("./types.js").FormData} formData The submitted form data.
+     */
+    onSubmit(formData) {
+      console.log(formData);
+      const wikitext = W.generateWikitext(formData, config.word);
+      console.log(wikitext);
+      // TODO insert wikitext
+    },
   });
   app.provide("config", config);
   app.mount("#gadget-create-new-entry");

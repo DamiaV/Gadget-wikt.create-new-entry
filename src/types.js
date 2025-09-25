@@ -121,7 +121,7 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  id: number,
  *  wordType: string,
- *  wordProperties: string[],
+ *  wordProperties: Record<string, string>,
  *  definitions: Definition[],
  *  relatedWords: Record<string, RelatedWord[]>,
  *  pronunciations: Pronunciation[],
@@ -218,7 +218,7 @@ function createEmptyEntry(id) {
   return {
     id: id || 1,
     wordType: "",
-    wordProperties: [],
+    wordProperties: {},
     definitions: [createEmptyDefinition()],
     relatedWords: {},
     pronunciations: [],
@@ -495,12 +495,12 @@ class GrammaticalItem {
 
   /**
    * Fetches the grammatical property with the given index and label.
-   * @param {number} index
-   * @param {string} label
+   * @param {string} propertyType The type of the property to get.
+   * @param {string} label The label of the property to get.
    * @returns {GrammaticalProperty | null}
    */
-  getProperty(index, label) {
-    const props = this._properties[index];
+  getProperty(propertyType, label) {
+    const props = this._properties[propertyType];
     if (!props) return null;
     for (const prop of props) if (prop.label === label) return prop;
     return null;

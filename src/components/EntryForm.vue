@@ -457,6 +457,8 @@ export default defineComponent({
         Ajouter une prononciation
       </cdx-button>
 
+      <hr class="cne-horizontal-separator" />
+
       <related-words-list
         v-model="homophones"
         section-type="homophones"

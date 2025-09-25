@@ -72,7 +72,9 @@ export default defineComponent({
     existingLanguageSections: { type: Array, default: () => [] },
   },
 
-  setup(props) {
+  emits: ["submit"],
+
+  setup(props, ctx) {
     const languages = ref(L.loadLanguages());
     const previousLangCode = C.getCookie(COOKIE_NAME);
     let startLanguage;
@@ -161,7 +163,7 @@ export default defineComponent({
         const grammarItem = formData.language.getGrammarItem(wordType);
         if (!grammarItem) return true;
 
-        const selectedProps = entry.wordProperties;
+        const selectedProps = Object.values(entry.wordProperties);
         const expectedPropsCount = Object.entries(
           formData.language.getGrammarItem(wordType).properties
         ).length;
@@ -241,11 +243,8 @@ export default defineComponent({
      */
 
     function onSubmit() {
-      if (isFormInvalid()) {
-        console.log("cannot insert");
-        return;
-      }
-      console.log(formData);
+      if (isFormInvalid()) return;
+      ctx.emit("submit", formData);
     }
 
     /**

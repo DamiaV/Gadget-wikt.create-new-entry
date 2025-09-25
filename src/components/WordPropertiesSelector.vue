@@ -10,7 +10,7 @@ import WikiLink from "./WikiLink.vue";
 /**
  * @typedef {{
  *  wordType: string,
- *  properties: string[],
+ *  properties: Record<string, string>,
  * }} WordProperties
  */
 
@@ -86,9 +86,9 @@ export default defineComponent({
     const wordTypeStatus = ref("error");
 
     /**
-     * @type {import("vue").Ref<string[]>}
+     * @type {import("vue").Ref<Record<string, string>>}
      */
-    const wordPropertiesStatuses = ref([]);
+    const wordPropertiesStatuses = ref({});
 
     function fireUpdateEvent() {
       /**
@@ -103,37 +103,29 @@ export default defineComponent({
 
     function onWordTypeSelection() {
       wordTypeStatus.value = "default";
-
-      wordProperties.value.length = 0;
+      wordPropertiesStatuses.value = {};
+      wordProperties.value = {};
 
       const propertiesLists = props.language.getGrammarItem(
         wordType.value
       ).properties;
-      const selectedIndices = [];
-      Object.values(propertiesLists).forEach((properties, i) => {
+      Object.entries(propertiesLists).forEach(([propertyType, properties]) => {
         if (properties.length === 1) {
-          wordProperties.value[i] = properties[0].label;
-          selectedIndices.push(i);
-        }
+          wordProperties.value[propertyType] = properties[0].label;
+          wordPropertiesStatuses.value[propertyType] = "default";
+        } else wordPropertiesStatuses.value[propertyType] = "error";
       });
 
-      const newLength = wordTypePropertiesData.value[wordType.value].length;
-      wordPropertiesStatuses.value.length = newLength;
-      for (let i = 0; i < wordPropertiesStatuses.value.length; i++) {
-        wordPropertiesStatuses.value[i] = selectedIndices.includes(i)
-          ? "default"
-          : "error";
-      }
       fireUpdateEvent();
     }
 
     /**
-     * @param {number} index Index of the CdxSelect that fired the event.
+     * @param {number} propertyType Type of the CdxSelect that fired the event.
      * @param {string} value The selected value.
      */
-    function onWordPropertySelection(index, value) {
-      wordPropertiesStatuses.value[index] = "default";
-      wordProperties.value[index] = value;
+    function onWordPropertySelection(propertyType, value) {
+      wordPropertiesStatuses.value[propertyType] = "default";
+      wordProperties.value[propertyType] = value;
       fireUpdateEvent();
     }
 
@@ -189,14 +181,14 @@ export default defineComponent({
           )"
           v-show="wordTypePropertiesData[wordType][i].length > 1"
           :key="key"
-          :status="wordPropertiesStatuses[i]"
+          :status="wordPropertiesStatuses[key]"
         >
           <template #label>{{ utils.capitalize(key) }}</template>
           <cdx-select
-            :selected="wordProperties[i] || ''"
+            :selected="wordProperties[key] || ''"
             :menu-items="wordTypePropertiesData[wordType][i]"
             default-label="Choisissez une option"
-            @update:selected="onWordPropertySelection(i, $event)"
+            @update:selected="onWordPropertySelection(key, $event)"
           ></cdx-select>
         </cdx-field>
       </template>
