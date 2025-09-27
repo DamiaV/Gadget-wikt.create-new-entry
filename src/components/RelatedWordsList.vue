@@ -360,23 +360,28 @@ export default defineComponent({
           </cdx-button>
         </span>
       </template>
+
       <template #help-text>{{ $props.description }}</template>
-      <cdx-button
-        type="button"
-        action="progressive"
-        @click="onOpenFormattedItemEditDialog(-1)"
-      >
-        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-        Ajouter un mot
-      </cdx-button>
-      <cdx-button
-        type="button"
-        action="progressive"
-        @click="onOpenUnformattedItemEditDialog(-1)"
-      >
-        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-        Ajouter du texte libre
-      </cdx-button>
+
+      <div class="cne-related-words-buttons">
+        <cdx-button
+          type="button"
+          action="progressive"
+          @click="onOpenFormattedItemEditDialog(-1)"
+        >
+          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+          Ajouter un mot
+        </cdx-button>
+        <cdx-button
+          type="button"
+          action="progressive"
+          @click="onOpenUnformattedItemEditDialog(-1)"
+        >
+          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+          Ajouter du texte libre
+        </cdx-button>
+      </div>
+
       <ul v-if="items.length">
         <li v-for="(item, i) in items" :key="item.id">
           <cdx-button
@@ -531,6 +536,11 @@ export default defineComponent({
 </template>
 
 <style>
+.cne-related-words-buttons {
+  display: flex;
+  gap: 0.5em;
+}
+
 .cne-related-words-list {
   margin-bottom: 1em;
 }
