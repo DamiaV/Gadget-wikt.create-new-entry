@@ -3,11 +3,11 @@
 import { computed, defineComponent, inject, reactive, ref } from "vue";
 import {
   CdxButton,
+  CdxCheckbox,
   CdxDialog,
   CdxField,
   CdxIcon,
   CdxTextInput,
-  CdxToggleSwitch,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -24,11 +24,11 @@ import WikiLink from "./WikiLink.vue";
 export default defineComponent({
   components: {
     CdxButton,
+    CdxCheckbox,
     CdxDialog,
     CdxField,
     CdxIcon,
     CdxTextInput,
-    CdxToggleSwitch,
     InputWithToolbar,
     WikiLink,
   },
@@ -69,10 +69,11 @@ export default defineComponent({
        */
       const firedEvent = [];
       for (const item of items.value) {
+        const id = item.id;
         const empty = isEmpty(item);
         if ("words" in item)
           firedEvent.push({
-            id: item.id,
+            id,
             words: Array.from(item.words),
             annotation: item.annotation,
             nonFormattedAnnotation: item.nonFormattedAnnotation,
@@ -80,7 +81,7 @@ export default defineComponent({
           });
         else
           firedEvent.push({
-            id: item.id,
+            id,
             text: item.text,
             empty,
           });
@@ -267,7 +268,7 @@ export default defineComponent({
     };
 
     function onDelete() {
-      if (isEmpty()) deleteRelatedWordsList();
+      if (items.value.every(isEmpty)) deleteRelatedWordsList();
       else openDeletionDialog.value = true;
     }
 
@@ -435,7 +436,12 @@ export default defineComponent({
   <cdx-dialog
     v-model:open="openFormattedItemEditDialog"
     class="cne-related-words-dialog"
-    :title="utils.capitalize($props.sectionData.name)"
+    :title="
+      utils.capitalize($props.sectionData.name) +
+      '\u00a0: ' +
+      (addMode ? 'Ajout' : 'Modification') +
+      ' de mot(s)'
+    "
     :subtitle="$props.description"
     use-close-button
     :primary-action="formattedItemDialogPrimaryAction"
@@ -477,7 +483,7 @@ export default defineComponent({
       @click="editedFormattedItem.words.push('')"
     >
       <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-      Ajouter une variante
+      Ajouter une variante orthographique
     </cdx-button>
 
     <cdx-field>
@@ -489,16 +495,28 @@ export default defineComponent({
         v-model="editedFormattedItem.annotation"
         clearable
       ></input-with-toolbar>
-      <cdx-toggle-switch v-model="editedFormattedItem.nonFormattedAnnotation">
+    </cdx-field>
+
+    <cdx-field>
+      <cdx-checkbox v-model="editedFormattedItem.nonFormattedAnnotation">
         Désactiver le formatage automatique de l’annotation
-      </cdx-toggle-switch>
+      </cdx-checkbox>
+      <template #help-text>
+        Par défaut l’annotation sera affichée en italique et entre parenthèses.
+        Cochez cette case pour désactiver ce formatage.
+      </template>
     </cdx-field>
   </cdx-dialog>
 
   <cdx-dialog
     v-model:open="openUnformattedItemEditDialog"
     class="cne-related-words-dialog"
-    :title="utils.capitalize($props.sectionData.name)"
+    :title="
+      utils.capitalize($props.sectionData.name) +
+      '\u00a0: ' +
+      (addMode ? 'Ajout' : 'Modification') +
+      ' de texte libre'
+    "
     :subtitle="$props.description"
     use-close-button
     :primary-action="unformattedItemDialogPrimaryAction"
