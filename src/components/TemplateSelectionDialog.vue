@@ -663,6 +663,7 @@ export default defineComponent({
                   ? `Par ex.\u00a0: ${param.definition.example}`
                   : ''
               "
+              class="wikitext"
               clearable
               @update:model-value="onParamValueChange(param.name, $event)"
             ></cdx-text-input>
@@ -680,6 +681,7 @@ export default defineComponent({
                   ? `Par ex.\u00a0: ${param.definition.example}`
                   : ''
               "
+              class="wikitext"
               @update:model-value="onParamValueChange(param.name, $event)"
             ></cdx-text-area>
 

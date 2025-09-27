@@ -423,6 +423,7 @@ export default defineComponent({
         <template #label>Texte</template>
         <cdx-text-input
           v-model.trim="text"
+          class="wikitext"
           clearable
           required
           @change="fireUpdateEvent"

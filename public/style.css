@@ -15,3 +15,7 @@ a:hover {
     text-decoration: underline;
     filter: brightness(50%);
 }
+
+.API {
+    font-family: 'DejaVu Sans', 'Segoe UI', 'Lucida Grande', 'Charis SIL', 'Gentium Plus', 'Doulos SIL', sans-serif;
+}

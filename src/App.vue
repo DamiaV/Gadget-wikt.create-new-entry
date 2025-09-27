@@ -621,7 +621,7 @@ a .cdx-icon svg {
   flex-grow: 1;
 }
 
-.bottom-btns {
+.cne .bottom-btns {
   display: flex;
   justify-content: center;
   margin: 1em 0;
@@ -633,6 +633,11 @@ a .cdx-icon svg {
   align-items: center;
   justify-content: center;
   margin: 1em 0;
+}
+
+.cdx-text-area.wikitext > textarea,
+.cdx-text-input.wikitext > input {
+  font-family: monospace;
 }
 
 @media screen {

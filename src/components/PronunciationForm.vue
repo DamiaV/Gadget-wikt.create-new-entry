@@ -276,6 +276,7 @@ export default defineComponent({
     <div v-show="showFields">
       <input-with-toolbar
         v-model="pronunciation"
+        input-class="API"
         required
         clearable
         :show-format-buttons="false"

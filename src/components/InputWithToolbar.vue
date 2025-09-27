@@ -18,6 +18,7 @@ export default defineComponent({
 
   props: {
     required: { type: Boolean, default: false },
+    inputClass: { type: String, default: "" },
     textArea: { type: Boolean, default: false },
     clearable: { type: Boolean, default: false },
     showFormatButtons: { type: Boolean, default: true },
@@ -244,6 +245,7 @@ export default defineComponent({
         v-model.trim="value"
         :required="$props.required"
         :clearable="$props.clearable"
+        :class="$props.inputClass || 'wikitext'"
         @update:model-value="onInput"
         @change="$emit('change', value)"
         @invalid="onInvalid"
