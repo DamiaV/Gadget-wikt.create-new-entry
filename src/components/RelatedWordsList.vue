@@ -54,10 +54,13 @@ export default defineComponent({
      */
     const items = ref(props.modelValue);
 
-    function isEmpty() {
-      return items.value.every((relatedWord) =>
-        relatedWord.words.every((word) => !word)
-      );
+    /**
+     * Check whether the given item is empty.
+     * @param {import("../types.js").RelatedWord} item The item to check.
+     */
+    function isEmpty(item) {
+      if ("words" in item) return item.words.every((word) => !word);
+      return !item.text;
     }
 
     function fireEvent() {
@@ -66,42 +69,60 @@ export default defineComponent({
        */
       const firedEvent = [];
       for (const item of items.value) {
-        firedEvent.push({
-          id: item.id,
-          words: Array.from(item.words),
-          annotation: item.annotation,
-          nonFormattedAnnotation: item.nonFormattedAnnotation,
-          empty: isEmpty(),
-        });
+        const empty = isEmpty(item);
+        if ("words" in item)
+          firedEvent.push({
+            id: item.id,
+            words: Array.from(item.words),
+            annotation: item.annotation,
+            nonFormattedAnnotation: item.nonFormattedAnnotation,
+            empty,
+          });
+        else
+          firedEvent.push({
+            id: item.id,
+            text: item.text,
+            empty,
+          });
       }
       ctx.emit("update:model-value", firedEvent);
     }
 
+    function sortItems() {
+      items.value.sort((i1, i2) => {
+        if ("text" in i1 && "text" in i2)
+          return i1.text.toLowerCase().localeCompare(i2.text.toLowerCase());
+
+        if ("words" in i1 && "words" in i2) {
+          const smallestLength = Math.min(i1.words.length, i2.words.length);
+          // Seek the first differing word pair
+          for (let i = 0; i < smallestLength; i++) {
+            const w1 = i1.words[i];
+            const w2 = i2.words[i];
+            const comp = w1.toLowerCase().localeCompare(w2.toLowerCase());
+            if (comp !== 0) return comp;
+          }
+          // All words were the same, sort by array length
+          const comp = i1.words.length - i2.words.length;
+          if (comp !== 0) return comp;
+          // Arrays are identical, sort by annotation
+          return i1.annotation
+            .toLowerCase()
+            .localeCompare(i2.annotation.toLowerCase());
+        }
+
+        if ("text" in i1 && "words" in i2) return -1;
+
+        return 1;
+      });
+    }
+
     /*
-     * Edit dialog
+     * Edit dialogs
      */
 
-    const openEditDialog = ref(false);
-    /**
-     * @type {import("vue").Reactive<import("../types.js").RelatedWord>}
-     */
-    const editedItem = reactive(T.createEmptyRelatedWord());
-    const isDialogValid = computed(
-      () =>
-        editedItem.words.length !== 0 &&
-        editedItem.words.every((word) => !!word.trim())
-    );
     const editedItemIndex = ref(-1);
     const addMode = computed(() => editedItemIndex.value < 0);
-
-    /**
-     * @type {import("vue").ComputedRef<import("@wikimedia/codex").PrimaryModalAction>}
-     */
-    const dialogPrimaryAction = computed(() => ({
-      label: addMode.value ? "Ajouter" : "Appliquer",
-      actionType: "progressive",
-      disabled: !isDialogValid.value,
-    }));
     /**
      * @type {import("@wikimedia/codex").ModalAction}
      */
@@ -110,43 +131,124 @@ export default defineComponent({
     };
 
     /**
+     * Edit an item.
+     * @param {number} index The index of the item to edit.
+     */
+    function onOpenItemEditDialog(index) {
+      const item = items.value[index];
+      if ("words" in item) onOpenFormattedItemEditDialog(index);
+      else onOpenUnformattedItemEditDialog(index);
+    }
+
+    /*
+     * Formatted item edit dialog
+     */
+
+    const openFormattedItemEditDialog = ref(false);
+    /**
+     * @type {import("vue").Reactive<import("../types.js").FormattedRelatedWord>}
+     */
+    const editedFormattedItem = reactive(T.createEmptyFormattedRelatedWord());
+    const isFormattedItemDialogValid = computed(
+      () =>
+        editedFormattedItem.words.length !== 0 &&
+        editedFormattedItem.words.every((word) => !!word.trim())
+    );
+    /**
+     * @type {import("vue").ComputedRef<import("@wikimedia/codex").PrimaryModalAction>}
+     */
+    const formattedItemDialogPrimaryAction = computed(() => ({
+      label: addMode.value ? "Ajouter" : "Appliquer",
+      actionType: "progressive",
+      disabled: !isFormattedItemDialogValid.value,
+    }));
+
+    /**
      * Add or edit an item.
      * @param {number} index The index of the item to edit. Leave empty to create a new one.
      */
-    function onOpenEditDialog(index) {
+    function onOpenFormattedItemEditDialog(index) {
       editedItemIndex.value = index;
       if (addMode.value) {
-        editedItem.words = [""];
-        editedItem.annotation = "";
-        editedItem.nonFormattedAnnotation = false;
+        editedFormattedItem.words = [""];
+        editedFormattedItem.annotation = "";
+        editedFormattedItem.nonFormattedAnnotation = false;
       } else {
         const item = items.value[index];
-        editedItem.id = item.id;
-        editedItem.words = Array.from(item.words);
-        editedItem.annotation = item.annotation;
-        editedItem.nonFormattedAnnotation = item.nonFormattedAnnotation;
+        editedFormattedItem.id = item.id;
+        editedFormattedItem.words = Array.from(item.words);
+        editedFormattedItem.annotation = item.annotation;
+        editedFormattedItem.nonFormattedAnnotation =
+          item.nonFormattedAnnotation;
       }
-      openEditDialog.value = true;
+      openFormattedItemEditDialog.value = true;
     }
 
-    function onEditDialogSubmit() {
-      const words = Array.from(editedItem.words);
+    function onFormattedItemEditDialogSubmit() {
+      const words = Array.from(editedFormattedItem.words);
       if (addMode.value) {
         items.value.push({
           id: utils.getNextId(items.value),
           words: words,
-          annotation: editedItem.annotation,
-          nonFormattedAnnotation: editedItem.nonFormattedAnnotation,
+          annotation: editedFormattedItem.annotation,
+          nonFormattedAnnotation: editedFormattedItem.nonFormattedAnnotation,
         });
       } else {
         const item = items.value[editedItemIndex.value];
         item.words = words;
-        item.annotation = editedItem.annotation;
-        item.nonFormattedAnnotation = editedItem.nonFormattedAnnotation;
+        item.annotation = editedFormattedItem.annotation;
+        item.nonFormattedAnnotation =
+          editedFormattedItem.nonFormattedAnnotation;
       }
-      items.value.sort((i1, i2) =>
-        i1.words[0].toLowerCase().localeCompare(i2.words[0].toLowerCase())
-      );
+      sortItems();
+      fireEvent();
+    }
+
+    /*
+     * Unformatted item edit dialog
+     */
+
+    const openUnformattedItemEditDialog = ref(false);
+    /**
+     * @type {import("vue").Reactive<import("../types.js").UnformattedRelatedWord>}
+     */
+    const editedUnformattedItem = reactive(
+      T.createEmptyUnformattedRelatedWord()
+    );
+    const isUnformattedItemDialogValid = computed(
+      () => !!editedUnformattedItem.text
+    );
+    /**
+     * @type {import("vue").ComputedRef<import("@wikimedia/codex").PrimaryModalAction>}
+     */
+    const unformattedItemDialogPrimaryAction = computed(() => ({
+      label: addMode.value ? "Ajouter" : "Appliquer",
+      actionType: "progressive",
+      disabled: !isUnformattedItemDialogValid.value,
+    }));
+
+    /**
+     * Add or edit an item.
+     * @param {number} index The index of the item to edit. Leave empty to create a new one.
+     */
+    function onOpenUnformattedItemEditDialog(index) {
+      editedItemIndex.value = index;
+      if (addMode.value) editedUnformattedItem.text = "";
+      else editedUnformattedItem.text = items.value[index].text;
+      openUnformattedItemEditDialog.value = true;
+    }
+
+    function onUnformattedItemEditDialogSubmit() {
+      const text = editedUnformattedItem.text;
+      if (addMode.value) {
+        items.value.push({
+          id: utils.getNextId(items.value),
+          text,
+        });
+      } else {
+        items.value[editedItemIndex.value].text = text;
+      }
+      sortItems();
       fireEvent();
     }
 
@@ -195,11 +297,14 @@ export default defineComponent({
       utils,
       config,
       // Dialogs
-      dialogPrimaryAction,
+      formattedItemDialogPrimaryAction,
+      unformattedItemDialogPrimaryAction,
       dialogDefaultAction,
-      openEditDialog,
+      openFormattedItemEditDialog,
+      openUnformattedItemEditDialog,
       addMode,
-      editedItem,
+      editedFormattedItem,
+      editedUnformattedItem,
       editedItemIndex,
       deletionDialogPrimaryAction,
       openDeletionDialog,
@@ -210,8 +315,11 @@ export default defineComponent({
       cdxIconInfoFilled,
       cdxIconTrash,
       // Callbacks
-      onOpenEditDialog,
-      onEditDialogSubmit,
+      onOpenItemEditDialog,
+      onOpenFormattedItemEditDialog,
+      onFormattedItemEditDialogSubmit,
+      onOpenUnformattedItemEditDialog,
+      onUnformattedItemEditDialogSubmit,
       onDelete,
       deleteRelatedWordsList,
       onDeleteItem,
@@ -256,10 +364,18 @@ export default defineComponent({
       <cdx-button
         type="button"
         action="progressive"
-        @click="onOpenEditDialog(-1)"
+        @click="onOpenFormattedItemEditDialog(-1)"
       >
         <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-        Ajouter
+        Ajouter un mot
+      </cdx-button>
+      <cdx-button
+        type="button"
+        action="progressive"
+        @click="onOpenUnformattedItemEditDialog(-1)"
+      >
+        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+        Ajouter du texte libre
       </cdx-button>
       <ul v-if="items.length">
         <li v-for="(item, i) in items" :key="item.id">
@@ -278,12 +394,12 @@ export default defineComponent({
             size="small"
             aria-label="Modifier"
             title="Modifier"
-            @click="onOpenEditDialog(i)"
+            @click="onOpenItemEditDialog(i)"
           >
             <cdx-icon :icon="cdxIconEdit"></cdx-icon>
           </cdx-button>
 
-          <span>
+          <span v-if="'words' in item">
             <template v-for="(word, j) in item.words" :key="j">
               <wiki-link :page-title="word"></wiki-link
               >{{ j < item.words.length - 1 ? ", " : " " }}
@@ -303,37 +419,40 @@ export default defineComponent({
               </span>
             </template>
           </span>
+          <span v-else>
+            {{ item.text }}
+          </span>
         </li>
       </ul>
     </cdx-field>
   </div>
 
   <cdx-dialog
-    v-model:open="openEditDialog"
+    v-model:open="openFormattedItemEditDialog"
     class="cne-related-words-dialog"
     :title="utils.capitalize($props.sectionData.name)"
     :subtitle="$props.description"
     use-close-button
-    :primary-action="dialogPrimaryAction"
+    :primary-action="formattedItemDialogPrimaryAction"
     :default-action="dialogDefaultAction"
     @primary="
-      openEditDialog = false;
-      onEditDialogSubmit();
+      openFormattedItemEditDialog = false;
+      onFormattedItemEditDialogSubmit();
     "
-    @default="openEditDialog = false"
+    @default="openFormattedItemEditDialog = false"
   >
-    <cdx-field v-for="(word, i) in editedItem.words" :key="i">
+    <cdx-field v-for="(word, i) in editedFormattedItem.words" :key="i">
       <template #label>
-        {{ editedItem.words.length > 1 ? `Variante ${i + 1}` : "Mot" }}
+        {{ editedFormattedItem.words.length > 1 ? `Variante ${i + 1}` : "Mot" }}
         <span class="cne-fieldset-btns">
           <cdx-button
-            v-if="editedItem.words.length > 1"
+            v-if="editedFormattedItem.words.length > 1"
             type="button"
             size="small"
             action="destructive"
             aria-label="Supprimer"
             title="Supprimer"
-            @click="editedItem.words.splice(i, 1)"
+            @click="editedFormattedItem.words.splice(i, 1)"
           >
             <cdx-icon :icon="cdxIconTrash"></cdx-icon>
           </cdx-button>
@@ -343,14 +462,14 @@ export default defineComponent({
         :model-value="word"
         required
         clearable
-        @update:model-value="editedItem.words[i] = $event.trim()"
+        @update:model-value="editedFormattedItem.words[i] = $event.trim()"
       ></cdx-text-input>
     </cdx-field>
 
     <cdx-button
       type="button"
       action="progressive"
-      @click="editedItem.words.push('')"
+      @click="editedFormattedItem.words.push('')"
     >
       <cdx-icon :icon="cdxIconAdd"></cdx-icon>
       Ajouter une variante
@@ -362,12 +481,36 @@ export default defineComponent({
         Le terme est-il familier, soutenu, plus rare, plus courant, etc.&nbsp;?
       </template>
       <input-with-toolbar
-        v-model="editedItem.annotation"
+        v-model="editedFormattedItem.annotation"
         clearable
       ></input-with-toolbar>
-      <cdx-toggle-switch v-model="editedItem.nonFormattedAnnotation">
+      <cdx-toggle-switch v-model="editedFormattedItem.nonFormattedAnnotation">
         Désactiver le formatage automatique de l’annotation
       </cdx-toggle-switch>
+    </cdx-field>
+  </cdx-dialog>
+
+  <cdx-dialog
+    v-model:open="openUnformattedItemEditDialog"
+    class="cne-related-words-dialog"
+    :title="utils.capitalize($props.sectionData.name)"
+    :subtitle="$props.description"
+    use-close-button
+    :primary-action="unformattedItemDialogPrimaryAction"
+    :default-action="dialogDefaultAction"
+    @primary="
+      openUnformattedItemEditDialog = false;
+      onUnformattedItemEditDialogSubmit();
+    "
+    @default="openUnformattedItemEditDialog = false"
+  >
+    <cdx-field>
+      <template #label>Texte</template>
+      <input-with-toolbar
+        v-model="editedUnformattedItem.text"
+        required
+        clearable
+      ></input-with-toolbar>
     </cdx-field>
   </cdx-dialog>
 

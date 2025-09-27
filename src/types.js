@@ -168,13 +168,25 @@ import wikisData from "./wikis.json";
  */
 
 /**
+ * @typedef {FormattedRelatedWord | UnformattedRelatedWord} RelatedWord
+ */
+
+/**
  * @typedef {{
  *  id: number,
  *  words: string[],
  *  annotation: string,
  *  nonFormattedAnnotation: boolean,
  *  empty: boolean,
- * }} RelatedWord
+ * }} FormattedRelatedWord
+ */
+
+/**
+ * @typedef {{
+ *  id: number,
+ *  text: string,
+ *  empty: boolean,
+ * }} UnformattedRelatedWord
  */
 
 /**
@@ -296,16 +308,29 @@ function createEmptyReferences() {
 }
 
 /**
- * Create an empty RelatedWord object.
+ * Create an empty FormattedRelatedWord object.
  * @param {number?} id An optional ID. If null, the value 1 will be used.
- * @returns {RelatedWord} An empty RelatedWord object.
+ * @returns {FormattedRelatedWord} An empty FormattedRelatedWord object.
  */
-function createEmptyRelatedWord(id) {
+function createEmptyFormattedRelatedWord(id) {
   return {
     id: id || 1,
     words: [],
     annotation: "",
     nonFormattedAnnotation: false,
+    empty: true,
+  };
+}
+
+/**
+ * Create an empty UnformattedRelatedWord object.
+ * @param {number?} id An optional ID. If null, the value 1 will be used.
+ * @returns {UnformattedRelatedWord} An empty FormatteUnformattedRelatedWorddRelatedWord object.
+ */
+function createEmptyUnformattedRelatedWord(id) {
+  return {
+    id: id || 1,
+    text: "",
     empty: true,
   };
 }
@@ -816,6 +841,7 @@ export default {
   createEmptyIllustration,
   createEmptyPronunciation,
   createEmptyReferences,
-  createEmptyRelatedWord,
+  createEmptyFormattedRelatedWord,
+  createEmptyUnformattedRelatedWord,
 };
 // </nowiki>

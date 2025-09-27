@@ -389,15 +389,21 @@ function formatRelatedWords(relatedWords, langCode) {
   /**
    * @type {string[]}
    */
-  let lines = [];
-  for (const { words, annotation, nonFormattedAnnotation } of relatedWords) {
-    const links = words.map((word) => `{{lien|${word}|${langCode}}}`);
-    let line = `* ${links}`;
-    if (annotation) {
-      line += " ";
-      if (nonFormattedAnnotation) line += annotation;
-      else line += `''(${annotation})''`;
-    }
+  const lines = [];
+  for (const relatedWord of relatedWords) {
+    let line;
+    if ("words" in relatedWord) {
+      const { words, annotation, nonFormattedAnnotation } = relatedWord;
+      const links = words
+        .map((word) => `{{lien|${word}|${langCode}}}`)
+        .join(", ");
+      line = `* ${links}`;
+      if (annotation) {
+        line += " ";
+        if (nonFormattedAnnotation) line += annotation;
+        else line += `''(${annotation})''`;
+      }
+    } else line = `: ${relatedWord.text}`;
     lines.push(line);
   }
   return lines.join("\n") + "\n";

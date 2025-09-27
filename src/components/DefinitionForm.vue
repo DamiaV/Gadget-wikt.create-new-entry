@@ -62,7 +62,8 @@ export default defineComponent({
         (acc, relatedWords) =>
           acc +
           relatedWords.reduce(
-            (acc2, relatedWord) => acc2 + relatedWord.words.length,
+            (acc2, relatedWord) =>
+              acc2 + ("words" in relatedWord ? relatedWord.words.length : 1),
             0
           ),
         0
