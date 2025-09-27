@@ -1,9 +1,17 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, inject, reactive, ref } from "vue";
 import { CdxSelect } from "@wikimedia/codex";
 import RelatedWordsList from "./RelatedWordsList.vue";
 
+// </nowiki>
+/**
+ * A wrapper component to edit multiple arrays of RelatedWord objects.
+ * It features a dropdown menu to select the type of relation to add.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/RelatedWordsLists.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxSelect,
@@ -12,11 +20,13 @@ export default defineComponent({
 
   props: {
     /**
+     * The data for all selectable sections.
      * @type {import("vue").PropType<Record<string, import("../types.js").SectionData>>}
      */
     sections: { type: Object, required: true },
     /**
-     * @type {import("vue").PropType<Record<string, import("../types.js").RelatedWord>>}
+     * The arrays of RelatedWord objects to manage.
+     * @type {import("vue").PropType<Record<string, import("../types.js").RelatedWord[]>>}
      */
     modelValue: { type: Object, required: true },
   },
@@ -24,6 +34,9 @@ export default defineComponent({
   emits: ["update:model-value"],
 
   setup(props, ctx) {
+    /**
+     * @type {import("vue").Reactive<Record<string, import("../types.js").RelatedWord[]>>}
+     */
     const relatedWords = reactive(props.modelValue);
 
     function fireUpdateEvent() {
@@ -106,9 +119,9 @@ export default defineComponent({
       @update:selected="onSelection"
     ></cdx-select>
     <related-words-list
-      v-for="(relatedWord, sectionName) in relatedWords"
+      v-for="(relatedWordsList, sectionName) in relatedWords"
       :key="sectionName"
-      :model-value="relatedWord"
+      :model-value="relatedWordsList"
       :section-data="$props.sections[sectionName]"
       :section-type="sectionName"
       :description="
@@ -127,5 +140,5 @@ export default defineComponent({
 .cne-section-selector {
   margin-bottom: 1em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

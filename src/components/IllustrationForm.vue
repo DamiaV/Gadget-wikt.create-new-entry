@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
@@ -21,25 +21,33 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
+import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
-import CollapsedPreview from "./CollapsedPreview.vue";
 
+// </nowiki>
+/**
+ * A form component to edit an Illustration object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/IllustrationForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
-    CdxField,
-    CdxTextInput,
-    CdxIcon,
-    CdxRadio,
     CdxButton,
     CdxDialog,
-    WikiLink,
-    InputWithToolbar,
+    CdxField,
+    CdxIcon,
+    CdxRadio,
+    CdxTextInput,
     CollapsedPreview,
+    InputWithToolbar,
+    WikiLink,
   },
 
   props: {
     /**
+     * The Illustration object to manage.
      * @type {import("vue").PropType<import("../types.js").Illustration>}
      */
     modelValue: { type: Object, required: true },
@@ -536,5 +544,5 @@ export default defineComponent({
   width: 3em;
   height: 3em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

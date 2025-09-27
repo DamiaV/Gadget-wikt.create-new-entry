@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
 import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
@@ -14,17 +14,30 @@ import WikiLink from "./WikiLink.vue";
  * }} WordProperties
  */
 
+// </nowiki>
+/**
+ * A component to select grammatical properties in a given language.
+ * It features a dropdown selector to choose a grammatical class and
+ * dynamic dropdown selectors to choose the properties of the selected class.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/WordPropertiesSelector.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxField,
-    CdxSelect,
     CdxIcon,
+    CdxSelect,
     WikiLink,
   },
 
   props: {
+    /**
+     * The currently selected language.
+     */
     language: { type: T.Language, required: true },
     /**
+     * The WordProperties object to manage.
      * @type {import("vue").PropType<WordProperties>}
      */
     modelValue: { type: Object, required: true },
@@ -209,5 +222,5 @@ export default defineComponent({
 .cne-word-type-selects .cdx-field {
   margin-top: 0;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

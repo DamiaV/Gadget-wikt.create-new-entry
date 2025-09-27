@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
@@ -22,29 +22,55 @@ import {
 } from "@wikimedia/codex-icons";
 import T from "../types.js";
 import utils from "../utils.js";
+import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
-import CollapsedPreview from "./CollapsedPreview.vue";
 
+// </nowiki>
+/**
+ * A form component to edit a Pronunciation object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/PronunciationForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
-    CdxIcon,
-    CdxField,
     CdxButton,
-    CdxDialog,
     CdxCheckbox,
-    InputWithToolbar,
+    CdxDialog,
+    CdxField,
+    CdxIcon,
     CollapsedPreview,
+    InputWithToolbar,
     WikiLink,
   },
 
   props: {
+    /**
+     * The currently selected language.
+     */
     language: { type: T.Language, required: true },
+    /**
+     * The index of this form in the parent component.
+     */
     index: { type: Number, required: true },
+    /**
+     * Whether to enable the button to delete this form.
+     * Defaults to false.
+     */
     enableDeleteBtn: { type: Boolean, default: false },
+    /**
+     * Whether to enable the button to move this form before its preceding neighbor.
+     * Defaults to true.
+     */
     canMoveBefore: { type: Boolean, default: true },
+    /**
+     * Whether to enable the button to move this form after its following neighbor.
+     * Defaults to true.
+     */
     canMoveAfter: { type: Boolean, default: true },
     /**
+     * The Pronunciation object to manage.
      * @type {import("vue").PropType<import("../types.js").Pronunciation>}
      */
     modelValue: { type: Object, required: true },
@@ -322,5 +348,5 @@ export default defineComponent({
 .cne-pronunciation-form {
   margin-bottom: 1em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

@@ -1,7 +1,10 @@
+/**
+ * Main script for local testing.
+ */
 import { createApp } from "vue";
-import App from "./App.vue";
 import pages from "./pages.js";
 import W from "./wikitext.js";
+import App from "./App.vue";
 
 (async () => {
   /**

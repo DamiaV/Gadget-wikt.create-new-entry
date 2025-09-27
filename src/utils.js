@@ -1,5 +1,4 @@
 // <nowiki>
-
 /**
  * Select the text based the given gender.
  * @param {"unknown" | "female" | "male"} gender A gender.
@@ -215,7 +214,11 @@ async function queryWikiApi(params, api) {
 }
 
 // </nowiki>
-
+/**
+ * This module defines utility functions.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/utils.js]]
+ */
 export default {
   userGenderSwitch,
   getNextId,

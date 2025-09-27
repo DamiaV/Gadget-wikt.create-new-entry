@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent } from "vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import {
@@ -26,6 +26,15 @@ import W from "../wikitext.js";
  * }} CustomAction
  */
 
+// </nowiki>
+/**
+ * A toolbar with buttons to format the text of an associated text input or insert wikitext/characters into it.
+ *
+ * @see [[MediaWiki:Gadget-wikt.create-new-entry/components/InputWithToolbar.vue]]
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/EditTools.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxButton,
@@ -33,13 +42,24 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * Whether to show the text-formatting buttons. If set to false, the template button will be hidden as well.
+     * Defaults to true.
+     */
     showFormatButtons: { type: Boolean, default: true },
+    /**
+     * Whether to show the template button. The showFormatButtons property needs to be set to true for this setting to work.
+     * Defaults to true.
+     */
     showTemplateButton: { type: Boolean, default: true },
     /**
+     * An optional array of custom actions. Each action will be associated to a button.
      * @type {import("vue").PropType<CustomAction[]>}
      */
     customActions: { type: Array, default: () => [] },
     /**
+     * A list of insertable characters to show after the buttons.
+     * Defaults to a list of useful French characters.
      * @type {import("vue").PropType<string[][]>}
      */
     characters: { type: Array, default: () => [W.specialCharacters] },
@@ -222,5 +242,5 @@ export default defineComponent({
   gap: 0.15em;
   margin-bottom: 0.25em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

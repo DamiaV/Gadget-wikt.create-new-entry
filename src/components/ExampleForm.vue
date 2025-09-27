@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
@@ -21,27 +21,50 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import utils from "../utils.js";
-import InputWithToolbar from "./InputWithToolbar.vue";
 import CollapsedPreview from "./CollapsedPreview.vue";
+import InputWithToolbar from "./InputWithToolbar.vue";
 
+// </nowiki>
+/**
+ * A form component to edit an Example object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/EntryForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
-    CdxIcon,
     CdxButton,
+    CdxDialog,
     CdxField,
+    CdxIcon,
     CdxTextInput,
     CdxToggleSwitch,
-    CdxDialog,
-    InputWithToolbar,
     CollapsedPreview,
+    InputWithToolbar,
   },
 
   props: {
+    /**
+     * The index of this form in the parent component.
+     */
     index: { type: Number, required: true },
+    /**
+     * Whether to enable the button to delete this form.
+     * Defaults to false.
+     */
     enableDeleteBtn: { type: Boolean, default: false },
+    /**
+     * Whether to enable the button to move this form before its preceding neighbor.
+     * Defaults to true.
+     */
     canMoveBefore: { type: Boolean, default: true },
+    /**
+     * Whether to enable the button to move this form after its following neighbor.
+     * Defaults to true.
+     */
     canMoveAfter: { type: Boolean, default: true },
     /**
+     * The Example object to manage.
      * @type {import("vue").PropType<import("../types").Example>}
      */
     modelValue: { type: Object, required: true },
@@ -327,5 +350,5 @@ export default defineComponent({
   margin-bottom: 4em;
   background-color: var(--background-color-neutral, #eaecf0) !important;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

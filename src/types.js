@@ -1,8 +1,4 @@
-/**
- * Data type definitions for the gadget.
- */
 // <nowiki>
-
 import {
   cdxIconLogoWikibooks,
   cdxIconLogoWikidata,
@@ -824,6 +820,12 @@ class ArticleSection {
   }
 }
 
+// </nowiki>
+/**
+ * This module defines global types and type-related functions.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/types.js]]
+ */
 export default {
   GrammaticalProperty,
   GrammaticalClass,
@@ -844,4 +846,3 @@ export default {
   createEmptyFormattedRelatedWord,
   createEmptyUnformattedRelatedWord,
 };
-// </nowiki>

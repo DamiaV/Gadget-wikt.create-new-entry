@@ -478,8 +478,13 @@ function interpolateString(str, ...values) {
   );
 }
 
+// </nowiki>
+/**
+ * This module defines a function to generate wikitext from the gadget’s form data.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/wikitext.js]]
+ */
 export default {
   specialCharacters,
   generateWikitext,
 };
-// </nowiki>

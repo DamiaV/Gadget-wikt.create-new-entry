@@ -1,15 +1,25 @@
-<!-- <nowiki» -->
 <script>
+// <nowiki>
+import { defineComponent } from "vue";
 import { CdxIcon } from "@wikimedia/codex";
 import { cdxIconEllipsis } from "@wikimedia/codex-icons";
-import { defineComponent } from "vue";
 
+// </nowiki>
+/**
+ * A component that shows some text. Meant to be used to show a preview of a collapsed component.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/CollapsedPreview.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxIcon,
   },
 
   props: {
+    /**
+     * The text to show.
+     */
     text: { type: String, default: "" },
   },
 
@@ -40,5 +50,5 @@ export default defineComponent({
 .cne-collapsed-preview-text {
   color: gray;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

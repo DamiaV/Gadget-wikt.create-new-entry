@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, inject, reactive, ref } from "vue";
 import {
   CdxButton,
@@ -22,21 +22,29 @@ import T from "../types.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 
+// </nowiki>
+/**
+ * A form component to edit a References object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/ReferencesForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
-    CdxToggleSwitch,
-    CdxField,
-    CdxIcon,
     CdxButton,
     CdxDialog,
-    CdxTextInput,
+    CdxField,
+    CdxIcon,
     CdxSelect,
+    CdxTextInput,
+    CdxToggleSwitch,
     InputWithToolbar,
     WikiLink,
   },
 
   props: {
     /**
+     * The References object to manage.
      * @type {import("vue").PropType<import("../types.js").References>}
      */
     modelValue: { type: Object, required: true },
@@ -441,5 +449,5 @@ export default defineComponent({
   align-items: center;
   margin-bottom: 0.2em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

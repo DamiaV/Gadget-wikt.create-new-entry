@@ -1,8 +1,15 @@
-<!-- <nowiki> -->
 <script>
-import { CdxMenuItem } from "@wikimedia/codex";
+// <nowiki>
 import { defineComponent } from "vue";
+import { CdxMenuItem } from "@wikimedia/codex";
 
+// </nowiki>
+/**
+ * A component that shows a clickable list of wiki templates.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/TemplateList.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxMenuItem,
@@ -10,6 +17,7 @@ export default defineComponent({
 
   props: {
     /**
+     * The array of TemplateData objects to display.
      * @type {import("vue").PropType<import("../templates.js").TemplateData[]>}
      */
     templates: { type: Array, required: true },
@@ -44,5 +52,5 @@ export default defineComponent({
 .cne-templates-list .cdx-menu-item:hover {
   background-color: var(--background-color-interactive-subtle--hover, #eaecf0);
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

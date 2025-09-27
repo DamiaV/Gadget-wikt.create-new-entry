@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, inject, reactive, ref } from "vue";
 import {
   CdxButton,
@@ -21,6 +21,13 @@ import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 
+// </nowiki>
+/**
+ * A component to edit an array of RelatedWord objects.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/RelatedWordsList.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxButton,
@@ -34,14 +41,26 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The type of section this component represents.
+     */
     sectionType: { type: String, required: true },
     /**
+     * The data for the type of section this component represents.
      * @type {import("vue").PropType<import("../types.js").SectionData>}
      */
     sectionData: { type: Object, required: true },
+    /**
+     * An optional description for the type of section this component represents.
+     */
     description: { type: String, default: "" },
+    /**
+     * Whether to disable the delete button.
+     * Defaults to false.
+     */
     disableDelete: { type: Boolean, default: false },
     /**
+     * The array of RelatedWord objects to manage.
      * @type {import("vue").PropType<import("../types.js").RelatedWord[]>}
      */
     modelValue: { type: Array, required: true },
@@ -585,5 +604,5 @@ export default defineComponent({
 .cne-related-words-dialog {
   max-width: 60em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

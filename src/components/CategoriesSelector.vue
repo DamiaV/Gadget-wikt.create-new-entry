@@ -1,11 +1,18 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, ref } from "vue";
-import PageLookup from "./PageLookup.vue";
-import WikiLink from "./WikiLink.vue";
 import { CdxButton, CdxIcon } from "@wikimedia/codex";
 import { cdxIconTrash } from "@wikimedia/codex-icons";
+import PageLookup from "./PageLookup.vue";
+import WikiLink from "./WikiLink.vue";
 
+// </nowiki>
+/**
+ * A component to select wiki category names.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/CategoriesSelector.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxButton,
@@ -16,6 +23,7 @@ export default defineComponent({
 
   props: {
     /**
+     * The array of category names to manage.
      * @type {import("vue").PropType<string[]>}
      */
     modelValue: { type: Array, required: true },
@@ -115,5 +123,5 @@ export default defineComponent({
   gap: 0.5em;
   align-items: center;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

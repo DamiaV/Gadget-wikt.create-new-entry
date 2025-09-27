@@ -475,7 +475,11 @@ async function fetchFeaturedTemplates(api) {
 }
 
 // </nowiki>
-
+/**
+ * This module defines types and functions related to wiki templates.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/templates.js]]
+ */
 export default {
   templateToString,
   parseTemplateFormat,

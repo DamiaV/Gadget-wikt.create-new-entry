@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import {
   computed,
   defineComponent,
@@ -28,30 +28,45 @@ import {
   cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import templates from "../templates.js";
-import WikiLink from "./WikiLink.vue";
-import PageLookup from "./PageLookup.vue";
 import pages from "../pages.js";
+import PageLookup from "./PageLookup.vue";
 import TemplateList from "./TemplateList.vue";
+import WikiLink from "./WikiLink.vue";
 
+// </nowiki>
+/**
+ * A dialog component for inserting a wiki template in a text input.
+ * It is a re-implementation of MediaWiki’s default template wizard for use in gadgets.
+ *
+ * @see [[MediaWiki:Gadget-wikt.create-new-entry/components/EditTools.vue]]
+ * @see [[MediaWiki:Gadget-wikt.create-new-entry/components/InputWithToolbar.vue]]
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/TemplateSelectionDialog.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
+    CdxButton,
+    CdxCheckbox,
     CdxDialog,
-    CdxLookup,
     CdxField,
     CdxIcon,
-    CdxButton,
-    CdxTextInput,
-    CdxTextArea,
-    CdxCheckbox,
+    CdxLookup,
     CdxSelect,
-    CdxTabs,
     CdxTab,
-    WikiLink,
+    CdxTabs,
+    CdxTextArea,
+    CdxTextInput,
     PageLookup,
     TemplateList,
+    WikiLink,
   },
 
   props: {
+    /**
+     * Whether this dialog should be open.
+     * Defaults to false.
+     */
     open: { type: Boolean, default: false },
   },
 
@@ -844,5 +859,5 @@ export default defineComponent({
   overflow: auto;
   width: calc(100% - 15em);
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

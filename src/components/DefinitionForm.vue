@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, inject, ref } from "vue";
 import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
 import {
@@ -16,35 +16,58 @@ import {
   cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import utils from "../utils.js";
 import T from "../types.js";
-import InputWithToolbar from "./InputWithToolbar.vue";
-import WikiLink from "./WikiLink.vue";
+import utils from "../utils.js";
+import CollapsedPreview from "./CollapsedPreview.vue";
 import ExampleForm from "./ExampleForm.vue";
 import IllustrationForm from "./IllustrationForm.vue";
-import CollapsedPreview from "./CollapsedPreview.vue";
+import InputWithToolbar from "./InputWithToolbar.vue";
 import RelatedWordsLists from "./RelatedWordsLists.vue";
+import WikiLink from "./WikiLink.vue";
 
+// </nowiki>
+/**
+ * A form component to edit a Definition object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/DefinitionForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxIcon,
     CdxButton,
     CdxField,
     CdxDialog,
-    InputWithToolbar,
-    WikiLink,
+    CollapsedPreview,
     ExampleForm,
     IllustrationForm,
-    CollapsedPreview,
+    InputWithToolbar,
     RelatedWordsLists,
+    WikiLink,
   },
 
   props: {
+    /**
+     * The index of this form in the parent component.
+     */
     index: { type: Number, required: true },
+    /**
+     * Whether to enable the button to delete this form.
+     * Defaults to false.
+     */
     enableDeleteBtn: { type: Boolean, default: false },
+    /**
+     * Whether to enable the button to move this form before its preceding neighbor.
+     * Defaults to true.
+     */
     canMoveBefore: { type: Boolean, default: true },
+    /**
+     * Whether to enable the button to move this form after its following neighbor.
+     * Defaults to true.
+     */
     canMoveAfter: { type: Boolean, default: true },
     /**
+     * The Definition object to manage.
      * @type {import("vue").PropType<import("../types").Definition>}
      */
     modelValue: { type: Object, required: true },
@@ -521,5 +544,5 @@ export default defineComponent({
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

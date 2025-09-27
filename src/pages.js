@@ -141,7 +141,11 @@ function stripNamespace(pageTitle, namespacesInfo) {
 }
 
 // </nowiki>
-
+/**
+ * This module defines functions for querying and handling wiki pages data.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/pages.js]]
+ */
 export default {
   escapeQuery,
   searchPages,

@@ -1,10 +1,17 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, inject, ref } from "vue";
 import { CdxField, CdxLookup } from "@wikimedia/codex";
 import { cdxIconSearch } from "@wikimedia/codex-icons";
 import pages from "../pages.js";
 
+// </nowiki>
+/**
+ * A search bar component to lookup wiki pages. It features properties to filter namespaces and subpages.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/PageLookup.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxField,
@@ -13,14 +20,40 @@ export default defineComponent({
 
   props: {
     /**
+     * An optional array containing the IDs of the only namespaces to search into.
      * @type {import("vue").PropType<number[]>}
      */
     namespaces: { type: Array, default: () => [] },
+    /**
+     * A short textual description of the type of pages this component searches for.
+     * It should start with a determiner like “un” or “une”.
+     * Defaults to `"une page"`.
+     */
     pageType: { type: String, default: "une page" },
+    /**
+     * Whether to include subpages in the search results.
+     * Defaults to false.
+     */
     allowSubpages: { type: Boolean, default: false },
+    /**
+     * Whether to strip the namespace from the input’s text.
+     * Defaults to false.
+     */
     stripNamespace: { type: Boolean, default: false },
+    /**
+     * If true, the `update:model-value` event will only be fired when the user clicks a search result instead of every input change.
+     * Defaults to false.
+     */
     reportOnlySelection: { type: Boolean, default: false },
+    /**
+     * Whether to erase the input’s text when the user clicks on a search result.
+     * Defaults to false.
+     * @note This feature is a bit buggy and may not work.
+     */
     eraseOnSelection: { type: Boolean, default: false },
+    /**
+     * The input’s text.
+     */
     modelValue: { type: String, required: true },
   },
 
@@ -150,4 +183,7 @@ export default defineComponent({
     </cdx-lookup>
   </cdx-field>
 </template>
-<!-- </nowiki> -->
+
+<style>
+/* </nowiki> */
+</style>

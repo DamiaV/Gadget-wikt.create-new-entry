@@ -1,6 +1,3 @@
-/**
- * This object contains the data for languages needed by the gadget.
- */
 // <nowiki>
 import L from "./wiki_deps/wikt.core.languages.js";
 import T from "./types.js";
@@ -2368,9 +2365,14 @@ function containsLanguage(codes, code) {
   return false;
 }
 
+// </nowiki>
+/**
+ * This module defines the languages and language-related data used by the gadget.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/languages.js]]
+ */
 export default {
   loadLanguages,
   getDefaultLanguage,
   containsLanguage,
 };
-// </nowiki>

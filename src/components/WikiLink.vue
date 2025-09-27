@@ -1,22 +1,46 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent } from "vue";
 import L from "../wiki_deps/wikt.core.languages.js";
 import T from "../types.js";
 
+// </nowiki>
+/**
+ * A component that create a link to a wiki page.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/WikiLink.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   props: {
     /**
+     * The target wiki’s data.
+     * Defaults to `wiktionary`.
      * @type {import("vue").PropType<import("../types.js").Wiki>}
      */
     wiki: { type: Object, default: () => T.wikis.wiktionary },
+    /**
+     * The target wikis’ MediaWiki language code.
+     * Defaults to `"fr"`.
+     */
     wikiLanguage: { type: String, default: "fr" },
+    /**
+     * The title of the target page.
+     */
     pageTitle: { type: String, required: true },
     /**
+     * Optional URL GET parameters to append to the link’s URL.
      * @type {import("vue").PropType<Record<string, any> | null>}
      */
     urlParams: { type: Object, default: null },
+    /**
+     * Optional anchor to append to the link’s URL.
+     */
     anchor: { type: String, default: "" },
+    /**
+     * Whether to open the link in a new tab.
+     * Defaults to true.
+     */
     openInNewTab: { type: Boolean, default: true },
   },
 
@@ -58,4 +82,7 @@ export default defineComponent({
     ><slot>{{ $props.pageTitle }}</slot></a
   >
 </template>
-<!-- </nowiki> -->
+
+<style>
+/* </nowiki> */
+</style>

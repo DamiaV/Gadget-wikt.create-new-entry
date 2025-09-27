@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, inject, ref } from "vue";
 import {
   CdxButton,
@@ -16,40 +16,66 @@ import {
   cdxIconArrowNext,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import DefinitionForm from "./DefinitionForm.vue";
 import T from "../types.js";
 import utils from "../utils.js";
-import WordPropertiesSelector from "./WordPropertiesSelector.vue";
-import PronunciationForm from "./PronunciationForm.vue";
-import RelatedWordsLists from "./RelatedWordsLists.vue";
+import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
-import WikiLink from "./WikiLink.vue";
+import PronunciationForm from "./PronunciationForm.vue";
 import RelatedWordsList from "./RelatedWordsList.vue";
+import RelatedWordsLists from "./RelatedWordsLists.vue";
+import WikiLink from "./WikiLink.vue";
+import WordPropertiesSelector from "./WordPropertiesSelector.vue";
 
+// </nowiki>
+/**
+ * A form component to edit an Entry object.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/EntryForm.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
+    CdxButton,
+    CdxDialog,
     CdxField,
+    CdxIcon,
     CdxTabs,
     CdxTab,
-    CdxButton,
-    CdxIcon,
-    CdxDialog,
-    InputWithToolbar,
-    WordPropertiesSelector,
     DefinitionForm,
+    InputWithToolbar,
     PronunciationForm,
     RelatedWordsList,
     RelatedWordsLists,
     WikiLink,
+    WordPropertiesSelector,
   },
 
   props: {
-    index: { type: Number, required: true },
+    /**
+     * The currently selected language.
+     */
     language: { type: T.Language, required: true },
+    /**
+     * The index of this form in the parent component.
+     */
+    index: { type: Number, required: true },
+    /**
+     * Whether to enable the button to delete this form.
+     * Defaults to false.
+     */
     enableDeleteBtn: { type: Boolean, default: false },
+    /**
+     * Whether to enable the button to move this form before its preceding neighbor.
+     * Defaults to true.
+     */
     canMoveBefore: { type: Boolean, default: true },
+    /**
+     * Whether to enable the button to move this form after its following neighbor.
+     * Defaults to true.
+     */
     canMoveAfter: { type: Boolean, default: true },
     /**
+     * The Entry object to manage.
      * @type {import("vue").PropType<import("../types.js").Entry>}
      */
     modelValue: { type: Object, required: true },
@@ -501,5 +527,5 @@ export default defineComponent({
 .cne-entry-tabs .cdx-tabs__content section {
   margin-top: 1em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

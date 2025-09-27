@@ -1,5 +1,5 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import {
   computed,
   defineComponent,
@@ -36,37 +36,45 @@ import P from "./wiki_deps/wikt.core.page.js";
 import L from "./languages.js";
 import T from "./types.js";
 import utils from "./utils.js";
-import LanguageSelector from "./components/LanguageSelector.vue";
-import EntryForm from "./components/EntryForm.vue";
-import InputWithToolbar from "./components/InputWithToolbar.vue";
-import WikiLink from "./components/WikiLink.vue";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
+import EntryForm from "./components/EntryForm.vue";
 import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
+import InputWithToolbar from "./components/InputWithToolbar.vue";
+import LanguageSelector from "./components/LanguageSelector.vue";
 import ReferencesForm from "./components/ReferencesForm.vue";
+import WikiLink from "./components/WikiLink.vue";
 
 const COOKIE_NAME = "cne_lang";
 
+// </nowiki>
+/**
+ * The gadget’s root component.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/App.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxButton,
-    CdxIcon,
     CdxCheckbox,
-    CdxTabs,
-    CdxTab,
-    CdxTextInput,
     CdxField,
+    CdxIcon,
     CdxMessage,
-    LanguageSelector,
-    EntryForm,
-    InputWithToolbar,
-    WikiLink,
+    CdxTab,
+    CdxTabs,
+    CdxTextInput,
     CategoriesSelector,
+    EntryForm,
     ExternalWikiLinks,
+    LanguageSelector,
+    InputWithToolbar,
     ReferencesForm,
+    WikiLink,
   },
 
   props: {
     /**
+     * An optional array containing the language codes of all sections that already exist in the page.
      * @type {import("vue").PropType<string[]>}
      */
     existingLanguageSections: { type: Array, default: () => [] },
@@ -673,5 +681,5 @@ a .cdx-icon svg {
     filter: opacity(5%);
   }
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki> -->

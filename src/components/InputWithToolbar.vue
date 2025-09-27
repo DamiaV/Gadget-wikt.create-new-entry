@@ -1,44 +1,86 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
-import EditTools from "./EditTools.vue";
-import W from "../wikitext.js";
 import templates from "../templates.js";
+import W from "../wikitext.js";
+import EditTools from "./EditTools.vue";
 import TemplateSelectionDialog from "./TemplateSelectionDialog.vue";
 
+// </nowiki>
+/**
+ * A text input component with a toolbar.
+ *
+ * @see [[MediaWiki:Gadget-wikt.create-new-entry/components/EditTools.vue]]
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/InputWithToolbar.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxField,
-    CdxTextInput,
     CdxTextArea,
+    CdxTextInput,
     EditTools,
     TemplateSelectionDialog,
   },
 
   props: {
+    /**
+     * Whether the wrapped text input should be required.
+     */
     required: { type: Boolean, default: false },
+    /**
+     * Additional CSS classes to add to the wrapped text input.
+     */
     inputClass: { type: String, default: "" },
+    /**
+     * Whether the wrapped text input should be a textarea instead of a single line.
+     * Defaults to false.
+     */
     textArea: { type: Boolean, default: false },
+    /**
+     * Whether the wrapped text input should be clearable.
+     * Defaults to false.
+     */
     clearable: { type: Boolean, default: false },
+    /**
+     * Whether to show the text-formatting buttons. If set to false, the template button will be hidden as well.
+     * Defaults to true.
+     */
     showFormatButtons: { type: Boolean, default: true },
+    /**
+     * Whether to show the template button. The showFormatButtons property needs to be set to true for this setting to work.
+     * Defaults to true.
+     */
     showTemplateButton: { type: Boolean, default: true },
     /**
+     * An optional array of custom actions. Each action will be associated to a button.
      * @type {import("vue").PropType<import("./EditTools.vue").CustomAction[]>}
      */
     customActions: { type: Array, default: () => [] },
     /**
+     * An optional validator function. If the function returns truthy string for the given text,
+     * the returned string will be shown as a warning below the text input.
+     * The function will be called for each input update.
      * @type {import("vue").PropType<(text: string) => string | null>}
      */
     validator: { type: Function, default: null },
     /**
+     * An optional function that transforms the input’s text.
+     * The function will be called for each input update.
      * @type {import("vue").PropType<(text: string) => string>}
      */
     transformer: { type: Function, default: null },
     /**
+     * A list of insertable characters to show after the toolbar’s buttons.
+     * Defaults to a list of useful French characters.
      * @type {import("vue").PropType<string[][]>}
      */
     specialCharacters: { type: Array, default: () => [W.specialCharacters] },
+    /**
+     * The input’s text.
+     */
     modelValue: { type: String, required: true },
   },
 
@@ -261,4 +303,7 @@ export default defineComponent({
     ></template-selection-dialog>
   </div>
 </template>
-<!-- </nowiki> -->
+
+<style>
+/* </nowiki> */
+</style>

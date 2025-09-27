@@ -1,4 +1,5 @@
 <script>
+// <nowiki>
 import { defineComponent, inject, reactive } from "vue";
 import {
   CdxField,
@@ -9,20 +10,31 @@ import {
 import { cdxIconSearch } from "@wikimedia/codex-icons";
 import T from "../types.js";
 
+// </nowiki>
+/**
+ * A form component to edit ExternalWikiLink objects.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/ExternalWikiLink.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
-    CdxIcon,
     CdxField,
+    CdxIcon,
     CdxTextInput,
     CdxToggleSwitch,
   },
 
   props: {
     /**
+     * The currently selected language.
+     */
+    language: { type: T.Language, required: true },
+    /**
+     * The links to manage.
      * @type {import("vue").PropType<{ [wikiName: string]: import("../types.js").ExternalWikiLink }>}
      */
     modelValue: { type: Object, required: true },
-    language: { type: T.Language, required: true },
   },
 
   emits: ["update:model-value"],
@@ -130,3 +142,7 @@ export default defineComponent({
     </template>
   </div>
 </template>
+
+<style>
+/* </nowiki> */
+</style>

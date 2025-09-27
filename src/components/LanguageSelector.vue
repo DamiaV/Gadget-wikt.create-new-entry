@@ -1,29 +1,42 @@
-<!-- <nowiki> -->
 <script>
+// <nowiki>
 import { computed, defineComponent, ref } from "vue";
 import { CdxField, CdxIcon, CdxLookup, CdxSelect } from "@wikimedia/codex";
 import { cdxIconLanguage, cdxIconSearch } from "@wikimedia/codex-icons";
 import LL from "../wiki_deps/wikt.core.languages.js";
-import T from "../types.js";
 import L from "../languages.js";
+import T from "../types.js";
 
+// </nowiki>
+/**
+ * A component to select a language from a dropdown menu.
+ * It features a search bar to add languages that are missing from the menu.
+ *
+ * [[Catégorie:Vue.js du Wiktionnaire|create-new-entry/components/LanguageSelector.vue]]
+ */
+// <nowiki>
 export default defineComponent({
   components: {
     CdxField,
     CdxIcon,
-    CdxSelect,
     CdxLookup,
+    CdxSelect,
   },
 
   props: {
     /**
+     * The list of all available languages.
      * @type {import("vue").PropType<import("../types.js").Language[]>}
      */
     languages: { type: Array, required: true },
     /**
+     * An optional array containing the language codes of all sections that already exist in the page.
      * @type {import("vue").PropType<string[]>}
      */
     existingLanguageSections: { type: Array, default: () => [] },
+    /**
+     * The selected language.
+     */
     modelValue: { type: T.Language, required: true },
   },
 
@@ -199,5 +212,5 @@ export default defineComponent({
   display: flex;
   gap: 1em;
 }
+/* </nowiki> */
 </style>
-<!-- </nowiki>-->
