@@ -464,11 +464,13 @@ export default defineComponent({
         v-model="homophones"
         section-type="homophones"
         :section-data="otherSectionsData['homophones']"
+        disable-delete
       ></related-words-list>
       <related-words-list
         v-model="nearHomophones"
         section-type="paronymes"
         :section-data="otherSectionsData['paronymes']"
+        disable-delete
       ></related-words-list>
     </cdx-tab>
   </cdx-tabs>

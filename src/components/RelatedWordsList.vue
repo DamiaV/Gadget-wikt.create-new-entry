@@ -40,6 +40,7 @@ export default defineComponent({
      */
     sectionData: { type: Object, required: true },
     description: { type: String, default: "" },
+    disableDelete: { type: Boolean, default: false },
     /**
      * @type {import("vue").PropType<import("../types.js").RelatedWord[]>}
      */
@@ -350,6 +351,7 @@ export default defineComponent({
           </wiki-link>
 
           <cdx-button
+            v-if="!$props.disableDelete"
             type="button"
             size="small"
             action="destructive"
