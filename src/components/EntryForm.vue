@@ -400,8 +400,9 @@ export default defineComponent({
 
     <cdx-tab
       name="pronunciation"
+      :disabled="$props.language.code === 'conv'"
       :label="
-        pronunciations.length
+        $props.language.code !== 'conv' && pronunciations.length
           ? `Prononciation${pronunciations.length > 1 ? 's' : ''} (${pronunciations.length})`
           : 'Prononciation'
       "
