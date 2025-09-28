@@ -139,6 +139,23 @@ export default defineComponent({
     const showFormFields = ref(false);
     const formData = reactive(initialFormData);
 
+    function isEmpty() {
+      return (
+        formData.entries.every((entry) => entry.empty) &&
+        !formData.etymology &&
+        Object.values(formData.wikiLinks).every(
+          (wikiLink) => !wikiLink.enabled
+        ) &&
+        formData.categories.length === 0 &&
+        !formData.pronunciationInfo &&
+        formData.references.empty
+      );
+    }
+
+    window.addEventListener("beforeunload", (event) => {
+      if (!isEmpty()) event.preventDefault();
+    });
+
     /*
      * Language
      */

@@ -65,11 +65,24 @@ export default defineComponent({
 
     const showImports = ref(true);
 
+    function isEmpty() {
+      return (
+        !data.bibliography &&
+        !data.imports &&
+        Object.values(data.wikiImports).length === 0
+      );
+    }
+
     function fireEvent() {
-      const firedEvent = T.createEmptyReferences();
-      firedEvent.wikiImports = data.wikiImports;
-      if (otherImportsEnabled.value) firedEvent.imports = data.imports;
-      firedEvent.bibliography = data.bibliography;
+      /**
+       * @type {import("../types.js").References}
+       */
+      const firedEvent = {
+        bibliography: data.bibliography,
+        imports: otherImportsEnabled.value ? data.imports : "",
+        wikiImports: data.wikiImports,
+        empty: isEmpty(),
+      };
       ctx.emit("update:model-value", firedEvent);
     }
 

@@ -99,6 +99,7 @@ import wikisData from "./wikis.json";
  *  wikiImports: Record<string, WikiImport[]>,
  *  imports: string,
  *  bibliography: string,
+ *  empty: boolean,
  * }} References
  */
 
@@ -300,6 +301,7 @@ function createEmptyReferences() {
     wikiImports: {},
     imports: "",
     bibliography: "",
+    empty: true,
   };
 }
 
