@@ -40,6 +40,9 @@ export default defineComponent({
   emits: ["update:model-value"],
 
   setup(props, ctx) {
+    /**
+     * @type {import("vue").Reactive<{ [wikiName: string]: import("../types.js").ExternalWikiLink }>}
+     */
     const wikiLinks = reactive(props.modelValue);
 
     /**

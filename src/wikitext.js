@@ -99,7 +99,7 @@ function generateWikitext(formData, word) {
   const sectionNumbers = {};
   for (const entry of formData.entries) {
     const wordType = entry.wordType;
-    let number = null;
+    let number;
     // FIXME only show number for word type if total is > 1
     if (sectionNumbers[wordType]) number = ++sectionNumbers[wordType];
     else number = sectionNumbers[wordType] = 1;
