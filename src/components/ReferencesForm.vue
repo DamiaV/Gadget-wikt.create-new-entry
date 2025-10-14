@@ -17,8 +17,8 @@ import {
   cdxIconReferences,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import L from "../wiki_deps/wikt.core.languages.js";
-import T from "../types.js";
+import languages from "../wiki_deps/wikt.core.languages.js";
+import types from "../types.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
 
@@ -59,7 +59,7 @@ export default defineComponent({
     const data = reactive(props.modelValue);
     const otherImportsEnabled = ref(false);
 
-    const wikis = Object.entries(T.wikis).filter(
+    const wikis = Object.entries(types.wikis).filter(
       ([, wiki]) => !!wiki.importTemplateName
     );
 
@@ -130,7 +130,7 @@ export default defineComponent({
        */
       const items = [];
       for (const langCode of selectedWiki.value.showOnlyForLangs) {
-        const language = L.getLanguage(langCode);
+        const language = languages.getLanguage(langCode);
         items.push({
           label: language.name,
           value: langCode,
@@ -164,7 +164,7 @@ export default defineComponent({
      */
     function openImportEditDialog(wikiName, index) {
       selectedWikiName.value = wikiName;
-      selectedWiki.value = T.wikis[wikiName];
+      selectedWiki.value = types.wikis[wikiName];
       const adding = index === undefined || index === null;
       addMode.value = adding;
       selectedIndex.value = index;
@@ -189,7 +189,10 @@ export default defineComponent({
         data.wikiImports[selectedWikiName.value].push(
           Object.assign(
             {
-              langName: L.getLanguageName(editDialogData.langCode, true),
+              langName: languages.getLanguageName(
+                editDialogData.langCode,
+                true
+              ),
             },
             editDialogData
           )
@@ -198,7 +201,7 @@ export default defineComponent({
         const selectedData =
           data.wikiImports[selectedWikiName.value][selectedIndex.value];
         selectedData.langCode = editDialogData.langCode;
-        selectedData.langName = L.getLanguageName(
+        selectedData.langName = languages.getLanguageName(
           editDialogData.langCode,
           true
         );

@@ -3,9 +3,9 @@
 import { computed, defineComponent, ref } from "vue";
 import { CdxField, CdxIcon, CdxLookup, CdxSelect } from "@wikimedia/codex";
 import { cdxIconLanguage, cdxIconSearch } from "@wikimedia/codex-icons";
-import LL from "../wiki_deps/wikt.core.languages.js";
-import L from "../languages.js";
-import T from "../types.js";
+import languages from "../wiki_deps/wikt.core.languages.js";
+import langs from "../languages.js";
+import types from "../types.js";
 
 // </nowiki>
 /**
@@ -37,7 +37,7 @@ export default defineComponent({
     /**
      * The selected language.
      */
-    modelValue: { type: T.Language, required: true },
+    modelValue: { type: types.Language, required: true },
   },
 
   emits: ["update:model-value"],
@@ -47,7 +47,7 @@ export default defineComponent({
      * @type {import("@wikimedia/codex").MenuItemData[]}
      */
     const languagesData = [];
-    for (const [code, langData] of LL.getLanguages().entries()) {
+    for (const [code, langData] of languages.getLanguages().entries()) {
       languagesData.push({
         label: langData.name,
         value: code,
@@ -97,7 +97,7 @@ export default defineComponent({
     };
 
     const status = computed(() =>
-      L.containsLanguage(props.existingLanguageSections, langCode.value)
+      langs.containsLanguage(props.existingLanguageSections, langCode.value)
         ? "error"
         : "default"
     );
@@ -141,7 +141,7 @@ export default defineComponent({
      */
     function onMenuSelection(code) {
       if (!code) return;
-      const language = L.getDefaultLanguage(code);
+      const language = langs.getDefaultLanguage(code);
       langCode.value = language.code;
       menuSelection.value = ""; // Reset lookup selection
       ctx.emit("update:model-value", language);

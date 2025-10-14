@@ -30,11 +30,11 @@ import {
   cdxIconLabFlask,
   cdxIconLanguage,
 } from "@wikimedia/codex-icons";
-import C from "./wiki_deps/wikt.core.cookies.js";
-import P from "./wiki_deps/wikt.core.page.js";
-import L from "./languages.js";
+import cookies from "./wiki_deps/wikt.core.cookies.js";
+import pages from "./wiki_deps/wikt.core.page.js";
+import langs from "./languages.js";
 import strings from "./strings.js";
-import T from "./types.js";
+import types from "./types.js";
 import utils from "./utils.js";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
 import EntryForm from "./components/EntryForm.vue";
@@ -83,8 +83,8 @@ export default defineComponent({
   emits: ["submit"],
 
   setup(props, ctx) {
-    const languages = ref(L.loadLanguages());
-    const previousLangCode = C.getCookie(COOKIE_NAME);
+    const languages = ref(langs.loadLanguages());
+    const previousLangCode = cookies.getCookie(COOKIE_NAME);
     let startLanguage;
     for (const lang of languages.value) {
       if (lang.code === previousLangCode) {
@@ -93,7 +93,7 @@ export default defineComponent({
       }
     }
     if (!startLanguage) {
-      startLanguage = L.getDefaultLanguage(previousLangCode);
+      startLanguage = langs.getDefaultLanguage(previousLangCode);
       if (startLanguage) languages.value.push(startLanguage);
       else startLanguage = languages.value[0];
     }
@@ -101,7 +101,10 @@ export default defineComponent({
     const activeTab = ref("tab-1");
 
     const disableSubmitBtn = computed(() =>
-      L.containsLanguage(props.existingLanguageSections, formData.language.code)
+      langs.containsLanguage(
+        props.existingLanguageSections,
+        formData.language.code
+      )
     );
 
     /**
@@ -120,16 +123,16 @@ export default defineComponent({
     const initialFormData = {
       language: startLanguage,
       stub: false,
-      entries: [T.createEmptyEntry()],
+      entries: [types.createEmptyEntry()],
       etymology: "",
       wikiLinks: {},
       categories: [],
       pronunciationInfo: "",
-      references: T.createEmptyReferences(),
-      sortKey: P.getSortingKey(config.word),
+      references: types.createEmptyReferences(),
+      sortKey: pages.getSortingKey(config.word),
     };
 
-    for (const key of Object.keys(T.wikis)) {
+    for (const key of Object.keys(types.wikis)) {
       initialFormData.wikiLinks[key] = {
         enabled: false,
       };
@@ -168,7 +171,7 @@ export default defineComponent({
       if (!languages.value.some((lang) => lang.code === language.code))
         languages.value.push(language);
       const newLocal = COOKIE_NAME;
-      C.setCookie(newLocal, language.code, 30);
+      cookies.setCookie(newLocal, language.code, 30);
     }
 
     /**
@@ -215,7 +218,7 @@ export default defineComponent({
      */
     function onAddEntry() {
       const id = utils.getNextId(formData.entries);
-      formData.entries.push(T.createEmptyEntry(id));
+      formData.entries.push(types.createEmptyEntry(id));
       activeTab.value = `tab-${id}`;
     }
 

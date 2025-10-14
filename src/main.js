@@ -67,9 +67,9 @@
  */
 // <nowiki>
 import { createMwApp } from "vue";
-import U from "./wiki_deps/wikt.core.user.js";
+import user from "./wiki_deps/wikt.core.user.js";
 import pages from "./pages.js";
-import W from "./wikitext.js";
+import wtext from "./wikitext.js";
 import App from "./App.vue";
 
 const version = "6.0";
@@ -85,7 +85,7 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
   const config = {
     api,
     word: mw.config.get("wgPageName").replaceAll("_", " "),
-    userGender: await U.getGender(api),
+    userGender: await user.getGender(api),
     namespaces: await pages.getNamespacesInfo(api),
   };
 
@@ -97,7 +97,7 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
      */
     onSubmit(formData) {
       console.log(formData);
-      const wikitext = W.generateWikitext(formData, config.word);
+      const wikitext = wtext.generateWikitext(formData, config.word);
       console.log(wikitext);
       // TODO insert wikitext
     },

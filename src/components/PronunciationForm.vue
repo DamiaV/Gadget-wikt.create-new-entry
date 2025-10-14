@@ -20,7 +20,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
-import T from "../types.js";
+import types from "../types.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -48,7 +48,7 @@ export default defineComponent({
     /**
      * The currently selected language.
      */
-    language: { type: T.Language, required: true },
+    language: { type: types.Language, required: true },
     /**
      * The index of this form in the parent component.
      */

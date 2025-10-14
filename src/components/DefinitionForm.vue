@@ -15,8 +15,8 @@ import {
   cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import T from "../types.js";
 import strings from "../strings.js";
+import types from "../types.js";
 import utils from "../utils.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import ExampleForm from "./ExampleForm.vue";
@@ -185,7 +185,7 @@ export default defineComponent({
      */
     function onAddExample() {
       const id = utils.getNextId(examples.value);
-      examples.value.push(T.createEmptyExample(id));
+      examples.value.push(types.createEmptyExample(id));
       fireUpdateEvent();
     }
 
@@ -229,7 +229,7 @@ export default defineComponent({
      * Add a new empty image illustration.
      */
     function onAddIllustration() {
-      illustration.value = T.createEmptyIllustration();
+      illustration.value = types.createEmptyIllustration();
       fireUpdateEvent();
     }
 
@@ -273,7 +273,7 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
-      sectionsData: T.definitionSectionsData,
+      sectionsData: types.definitionSectionsData,
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,

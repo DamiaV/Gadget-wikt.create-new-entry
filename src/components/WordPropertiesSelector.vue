@@ -4,7 +4,7 @@ import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
 import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
-import T from "../types.js";
+import types from "../types.js";
 import WikiLink from "./WikiLink.vue";
 
 /**
@@ -35,7 +35,7 @@ export default defineComponent({
     /**
      * The currently selected language.
      */
-    language: { type: T.Language, required: true },
+    language: { type: types.Language, required: true },
     /**
      * The WordProperties object to manage.
      * @type {import("vue").PropType<WordProperties>}

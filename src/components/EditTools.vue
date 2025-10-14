@@ -14,7 +14,7 @@ import {
   cdxIconSuperscript,
   cdxIconWikitext,
 } from "@wikimedia/codex-icons";
-import W from "../wikitext.js";
+import wikitext from "../wikitext.js";
 
 /**
  * @typedef {{
@@ -62,7 +62,7 @@ export default defineComponent({
      * Defaults to a list of useful French characters.
      * @type {import("vue").PropType<string[][]>}
      */
-    characters: { type: Array, default: () => [W.specialCharacters] },
+    characters: { type: Array, default: () => [wikitext.specialCharacters] },
   },
 
   emits: [

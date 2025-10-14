@@ -1,8 +1,8 @@
 <script>
 // <nowiki>
 import { computed, defineComponent } from "vue";
-import L from "../wiki_deps/wikt.core.languages.js";
-import T from "../types.js";
+import languages from "../wiki_deps/wikt.core.languages.js";
+import types from "../types.js";
 
 // </nowiki>
 /**
@@ -18,7 +18,7 @@ export default defineComponent({
      * Defaults to `wiktionary`.
      * @type {import("vue").PropType<import("../types.js").Wiki>}
      */
-    wiki: { type: Object, default: () => T.wikis.wiktionary },
+    wiki: { type: Object, default: () => types.wikis.wiktionary },
     /**
      * The target wikis’ MediaWiki language code.
      * Defaults to `"fr"`.
@@ -45,13 +45,15 @@ export default defineComponent({
   },
 
   setup(props) {
-    const language = computed(() => L.getLanguage(props.wikiLanguage, true));
+    const language = computed(() =>
+      languages.getLanguage(props.wikiLanguage, true)
+    );
 
     return {
       // Data
       language,
       // Functions
-      getWikiUrl: T.getWikiUrl,
+      getWikiUrl: types.getWikiUrl,
     };
   },
 });

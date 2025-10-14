@@ -12,8 +12,8 @@ import {
   cdxIconLogoWikivoyage,
   cdxIconLogoWiktionary,
 } from "@wikimedia/codex-icons";
-import L from "./wiki_deps/wikt.core.languages.js";
-import S from "./wiki_deps/wikt.core.sections.js";
+import languages from "./wiki_deps/wikt.core.languages.js";
+import sections from "./wiki_deps/wikt.core.sections.js";
 import additionalSectionsData from "./sections-additional.json";
 import wikisData from "./wikis.json";
 
@@ -354,8 +354,8 @@ const entrySectionsData = {};
  */
 const otherSectionsData = {};
 
-for (const code of S.getSectionCodes()) {
-  const sectionData = S.getSectionData(code);
+for (const code of sections.getSectionCodes()) {
+  const sectionData = sections.getSectionData(code);
   /**
    * @type {{
    *  definitionSpecific?: boolean,
@@ -627,7 +627,7 @@ class Language {
      * @private
      */
     this._hasPronunciationAppendix =
-      L.getLanguage(code).hasPronunciationAppendix;
+      languages.getLanguage(code).hasPronunciationAppendix;
 
     for (const grammarItem of grammarItems || []) {
       this._grammarItems[grammarItem.grammaticalClass.sectionCode] =

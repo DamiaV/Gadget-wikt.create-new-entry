@@ -4,7 +4,7 @@ import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
 import strings from "../strings.js";
 import templates from "../templates.js";
-import W from "../wikitext.js";
+import wikitext from "../wikitext.js";
 import EditTools from "./EditTools.vue";
 import TemplateSelectionDialog from "./TemplateSelectionDialog.vue";
 
@@ -78,7 +78,10 @@ export default defineComponent({
      * Defaults to a list of useful French characters.
      * @type {import("vue").PropType<string[][]>}
      */
-    specialCharacters: { type: Array, default: () => [W.specialCharacters] },
+    specialCharacters: {
+      type: Array,
+      default: () => [wikitext.specialCharacters],
+    },
     /**
      * The input’s text.
      */

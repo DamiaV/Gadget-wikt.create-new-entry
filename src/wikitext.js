@@ -1,6 +1,6 @@
 // <nowiki>
-import L from "./wiki_deps/wikt.core.languages.js";
-import T from "./types.js";
+import langs from "./wiki_deps/wikt.core.languages.js";
+import types from "./types.js";
 import strings from "./strings.js";
 import templates from "./templates.js";
 
@@ -149,7 +149,7 @@ function generateWikitext(formData, word) {
     if (!wikiLink.enabled) continue;
     wikiLinks.push(
       templates.templateToString({
-        name: T.wikis[wikiName].templateName,
+        name: types.wikis[wikiName].templateName,
         format: inlineTemplateFormat,
         paramOrder: ["1", "2", "lang"],
         params: {
@@ -431,10 +431,10 @@ function formatReferences(references, anyReference) {
 
     if (wikiImports.length) {
       for (const [wikiName, wikiImports_] of wikiImports) {
-        let wiki = T.wikis[wikiName];
+        let wiki = types.wikis[wikiName];
         const templateName = `Source-${wiki.interwikiCode}`;
         for (const { langCode, title, oldId } of wikiImports_) {
-          const language = L.getLanguage(langCode, true);
+          const language = langs.getLanguage(langCode, true);
           const template = templates.templateToString({
             name: templateName,
             format: inlineTemplateFormat,

@@ -17,7 +17,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
-import T from "../types.js";
+import types from "../types.js";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -170,7 +170,9 @@ export default defineComponent({
     /**
      * @type {import("vue").Reactive<import("../types.js").FormattedRelatedWord>}
      */
-    const editedFormattedItem = reactive(T.createEmptyFormattedRelatedWord());
+    const editedFormattedItem = reactive(
+      types.createEmptyFormattedRelatedWord()
+    );
     const isFormattedItemDialogValid = computed(
       () =>
         editedFormattedItem.words.length !== 0 &&
@@ -235,7 +237,7 @@ export default defineComponent({
      * @type {import("vue").Reactive<import("../types.js").UnformattedRelatedWord>}
      */
     const editedUnformattedItem = reactive(
-      T.createEmptyUnformattedRelatedWord()
+      types.createEmptyUnformattedRelatedWord()
     );
     const isUnformattedItemDialogValid = computed(
       () => !!editedUnformattedItem.text

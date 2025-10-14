@@ -8,7 +8,7 @@ import {
   CdxToggleSwitch,
 } from "@wikimedia/codex";
 import { cdxIconSearch } from "@wikimedia/codex-icons";
-import T from "../types.js";
+import types from "../types.js";
 
 // </nowiki>
 /**
@@ -29,7 +29,7 @@ export default defineComponent({
     /**
      * The currently selected language.
      */
-    language: { type: T.Language, required: true },
+    language: { type: types.Language, required: true },
     /**
      * The links to manage.
      * @type {import("vue").PropType<{ [wikiName: string]: import("../types.js").ExternalWikiLink }>}
@@ -76,7 +76,7 @@ export default defineComponent({
       wikiLinks,
       // Other
       config,
-      wikis: T.wikis,
+      wikis: types.wikis,
       // Icons
       cdxIconSearch,
       // Callbacks

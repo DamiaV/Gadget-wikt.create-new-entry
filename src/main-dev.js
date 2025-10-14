@@ -3,7 +3,7 @@
  */
 import { createApp } from "vue";
 import pages from "./pages.js";
-import W from "./wikitext.js";
+import wtext from "./wikitext.js";
 import App from "./App.vue";
 
 (async () => {
@@ -24,7 +24,7 @@ import App from "./App.vue";
      */
     onSubmit(formData) {
       console.log(formData);
-      const wikitext = W.generateWikitext(formData, config.word);
+      const wikitext = wtext.generateWikitext(formData, config.word);
       console.log(wikitext);
       // TODO insert wikitext
     },

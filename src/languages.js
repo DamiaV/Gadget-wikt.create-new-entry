@@ -1,17 +1,17 @@
 // <nowiki>
-import L from "./wiki_deps/wikt.core.languages.js";
-import T from "./types.js";
+import langs from "./wiki_deps/wikt.core.languages.js";
+import types from "./types.js";
 
 /**
  * All available grammatical genders.
  */
 const GENDERS = {
-  MASCULINE: new T.GrammaticalProperty("masculin", "{{m}}"),
-  FEMININE: new T.GrammaticalProperty("féminin", "{{f}}"),
-  FEMININE_MASCULINE_DIFF: new T.GrammaticalProperty(
+  MASCULINE: new types.GrammaticalProperty("masculin", "{{m}}"),
+  FEMININE: new types.GrammaticalProperty("féminin", "{{f}}"),
+  FEMININE_MASCULINE_DIFF: new types.GrammaticalProperty(
     "masc. et fém. différents"
   ),
-  FEMININE_MASCULINE: new T.GrammaticalProperty(
+  FEMININE_MASCULINE: new types.GrammaticalProperty(
     "masc. et fém. identiques",
     "{{mf}}"
   ),
@@ -21,123 +21,127 @@ const GENDERS = {
  * All available grammatical numbers.
  */
 const NUMBERS = {
-  DIFF_SINGULAR_PLURAL: new T.GrammaticalProperty("sing. et plur. différents"),
-  SAME_SINGULAR_PLURAL: new T.GrammaticalProperty(
+  DIFF_SINGULAR_PLURAL: new types.GrammaticalProperty(
+    "sing. et plur. différents"
+  ),
+  SAME_SINGULAR_PLURAL: new types.GrammaticalProperty(
     "sing. et plur. identiques",
     "{{sp}}"
   ),
-  SINGULAR_ONLY: new T.GrammaticalProperty(
+  SINGULAR_ONLY: new types.GrammaticalProperty(
     "singulier uniquement",
     "{{au singulier uniquement|{0}}}"
   ),
-  PLURAL_ONLY: new T.GrammaticalProperty(
+  PLURAL_ONLY: new types.GrammaticalProperty(
     "pluriel uniquement",
     "{{au pluriel uniquement|{0}}}"
   ),
-  INVARIABLE: new T.GrammaticalProperty("invariable", "{{invariable}}"),
-  COLLECTIVE_SINGULATIVE: new T.GrammaticalProperty(
+  INVARIABLE: new types.GrammaticalProperty("invariable", "{{invariable}}"),
+  COLLECTIVE_SINGULATIVE: new types.GrammaticalProperty(
     "collectif et singulatif",
     "{{collectif}}"
   ),
-  COLLECTIVE_SINGULATIVE_PLURAL: new T.GrammaticalProperty(
+  COLLECTIVE_SINGULATIVE_PLURAL: new types.GrammaticalProperty(
     "collectif, singulatif, et pluriel du singulatif",
     "{{collectif}}"
   ),
-  SINGULATIVE_DUAL_PLURAL: new T.GrammaticalProperty(
+  SINGULATIVE_DUAL_PLURAL: new types.GrammaticalProperty(
     "singulier, duel, et pluriel"
   ),
 };
 
 const COMPARATIVES = {
-  COMPARABLE_MORE_MOST: new T.GrammaticalProperty("comparable (more…/most…)"),
-  COMPARABLE_ER_EST: new T.GrammaticalProperty("comparable (-er/-est)"),
-  UNCOMPARABLE: new T.GrammaticalProperty("incomparable"),
+  COMPARABLE_MORE_MOST: new types.GrammaticalProperty(
+    "comparable (more…/most…)"
+  ),
+  COMPARABLE_ER_EST: new types.GrammaticalProperty("comparable (-er/-est)"),
+  UNCOMPARABLE: new types.GrammaticalProperty("incomparable"),
 };
 
 /**
  * All available verb groups and types.
  */
 const VERBS = {
-  GROUP1: new T.GrammaticalProperty(
+  GROUP1: new types.GrammaticalProperty(
     "Premier groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=1}}"
   ),
-  GROUP2: new T.GrammaticalProperty(
+  GROUP2: new types.GrammaticalProperty(
     "Deuxième groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=2}}"
   ),
-  GROUP3: new T.GrammaticalProperty(
+  GROUP3: new types.GrammaticalProperty(
     "Troisième groupe",
     "{{type|{0}}} {{conjugaison|{0}|groupe=3}}"
   ),
-  REGULAR_VERB: new T.GrammaticalProperty("régulier", "{{type|{0}}}"),
-  IRREGULAR_VERB: new T.GrammaticalProperty(
+  REGULAR_VERB: new types.GrammaticalProperty("régulier", "{{type|{0}}}"),
+  IRREGULAR_VERB: new types.GrammaticalProperty(
     "irrégulier",
     "{{type|{0}}} {{irrégulier|{0}}}"
   ),
-  VERB: new T.GrammaticalProperty("verbe", "{{type|{0}}}"),
+  VERB: new types.GrammaticalProperty("verbe", "{{type|{0}}}"),
 };
 
 /**
  * All available grammatical classes.
  */
 const GRAMMATICAL_CLASSES = {
-  SYMBOL: new T.GrammaticalClass("symbole"),
-  LETTER: new T.GrammaticalClass("lettre"),
+  SYMBOL: new types.GrammaticalClass("symbole"),
+  LETTER: new types.GrammaticalClass("lettre"),
 
-  SCIENTIFIC_NAME: new T.GrammaticalClass("nom scientifique"),
+  SCIENTIFIC_NAME: new types.GrammaticalClass("nom scientifique"),
 
   // Nouns
-  NOUN: new T.GrammaticalClass("nom commun", "nom"),
-  PROPER_NOUN: new T.GrammaticalClass("nom propre"),
-  FIRST_NAME: new T.GrammaticalClass("prénom"),
-  LAST_NAME: new T.GrammaticalClass("nom de famille"),
+  NOUN: new types.GrammaticalClass("nom commun", "nom"),
+  PROPER_NOUN: new types.GrammaticalClass("nom propre"),
+  FIRST_NAME: new types.GrammaticalClass("prénom"),
+  LAST_NAME: new types.GrammaticalClass("nom de famille"),
 
   // Adjectives
-  ADJECTIVE: new T.GrammaticalClass("adjectif"),
-  INTERROGATIVE_ADJECTIVE: new T.GrammaticalClass("adjectif interrogatif"),
-  NUMERAL_ADJECTIVE: new T.GrammaticalClass("adjectif numéral"),
-  POSSESSIVE_ADJECTIVE: new T.GrammaticalClass("adjectif possessif"),
+  ADJECTIVE: new types.GrammaticalClass("adjectif"),
+  INTERROGATIVE_ADJECTIVE: new types.GrammaticalClass("adjectif interrogatif"),
+  NUMERAL_ADJECTIVE: new types.GrammaticalClass("adjectif numéral"),
+  POSSESSIVE_ADJECTIVE: new types.GrammaticalClass("adjectif possessif"),
 
   // Adverbs
-  ADVERB: new T.GrammaticalClass("adverbe"),
-  INTERROGATIVE_ADVERB: new T.GrammaticalClass("adverbe interrogatif"),
+  ADVERB: new types.GrammaticalClass("adverbe"),
+  INTERROGATIVE_ADVERB: new types.GrammaticalClass("adverbe interrogatif"),
 
   // Pronouns
-  PRONOUN: new T.GrammaticalClass("pronom"),
-  DEMONSTRATIVE_PRONOUN: new T.GrammaticalClass("pronom démonstratif"),
-  INDEFINITE_PRONOUN: new T.GrammaticalClass("pronom indéfini"),
-  INTERROGATIVE_PRONOUN: new T.GrammaticalClass("pronom interrogatif"),
-  PERSONAL_PRONOUN: new T.GrammaticalClass("pronom personnel"),
-  POSSESSIVE_PRONOUN: new T.GrammaticalClass("pronom possessif"),
-  RELATIVE_PRONOUN: new T.GrammaticalClass("pronom relatif"),
+  PRONOUN: new types.GrammaticalClass("pronom"),
+  DEMONSTRATIVE_PRONOUN: new types.GrammaticalClass("pronom démonstratif"),
+  INDEFINITE_PRONOUN: new types.GrammaticalClass("pronom indéfini"),
+  INTERROGATIVE_PRONOUN: new types.GrammaticalClass("pronom interrogatif"),
+  PERSONAL_PRONOUN: new types.GrammaticalClass("pronom personnel"),
+  POSSESSIVE_PRONOUN: new types.GrammaticalClass("pronom possessif"),
+  RELATIVE_PRONOUN: new types.GrammaticalClass("pronom relatif"),
 
   // Conjunctions
-  CONJUNCTION: new T.GrammaticalClass("conjonction"),
-  COORDINATION_CONJUNCTION: new T.GrammaticalClass(
+  CONJUNCTION: new types.GrammaticalClass("conjonction"),
+  COORDINATION_CONJUNCTION: new types.GrammaticalClass(
     "conjonction de coordination"
   ),
 
   // Articles
-  ARTICLE: new T.GrammaticalClass("article"),
-  INDEFINITE_ARTICLE: new T.GrammaticalClass("article indéfini"),
-  DEFINITE_ARTICLE: new T.GrammaticalClass("article défini"),
-  PARTITIVE_ARTICLE: new T.GrammaticalClass("article partitif"),
+  ARTICLE: new types.GrammaticalClass("article"),
+  INDEFINITE_ARTICLE: new types.GrammaticalClass("article indéfini"),
+  DEFINITE_ARTICLE: new types.GrammaticalClass("article défini"),
+  PARTITIVE_ARTICLE: new types.GrammaticalClass("article partitif"),
 
   // Affixes
-  PREFIX: new T.GrammaticalClass("préfixe"),
-  SUFFIX: new T.GrammaticalClass("suffixe"),
-  CIRCUMFIX: new T.GrammaticalClass("circonfixe"),
-  INFIX: new T.GrammaticalClass("infixe"),
+  PREFIX: new types.GrammaticalClass("préfixe"),
+  SUFFIX: new types.GrammaticalClass("suffixe"),
+  CIRCUMFIX: new types.GrammaticalClass("circonfixe"),
+  INFIX: new types.GrammaticalClass("infixe"),
 
-  VERB: new T.GrammaticalClass("verbe"),
-  PREPOSITION: new T.GrammaticalClass("préposition"),
-  POSTPOSITION: new T.GrammaticalClass("postposition"),
-  PARTICLE: new T.GrammaticalClass("particule"),
-  INTERJECTION: new T.GrammaticalClass("interjection"),
-  ONOMATOPOEIA: new T.GrammaticalClass("onomatopée"),
+  VERB: new types.GrammaticalClass("verbe"),
+  PREPOSITION: new types.GrammaticalClass("préposition"),
+  POSTPOSITION: new types.GrammaticalClass("postposition"),
+  PARTICLE: new types.GrammaticalClass("particule"),
+  INTERJECTION: new types.GrammaticalClass("interjection"),
+  ONOMATOPOEIA: new types.GrammaticalClass("onomatopée"),
 
-  PHRASE: new T.GrammaticalClass("locution/phrase", "locution-phrase"),
+  PHRASE: new types.GrammaticalClass("locution/phrase", "locution-phrase"),
 };
 
 /**
@@ -173,7 +177,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "fr",
       "fr",
       "fra",
@@ -221,7 +225,7 @@ function loadLanguages() {
         [".", "‿"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
@@ -235,8 +239,12 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getFrenchModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.ADVERB,
+          {},
+          getFrenchModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
@@ -254,19 +262,19 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
             GENDERS.FEMININE,
             GENDERS.MASCULINE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
           groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
@@ -281,7 +289,7 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
@@ -296,7 +304,7 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
@@ -311,12 +319,12 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
@@ -333,7 +341,7 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
@@ -350,7 +358,7 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
@@ -367,41 +375,45 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME, {}),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, {}, getFrenchModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME, {}),
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.PARTICLE,
+          {},
+          getFrenchModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {}),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {}),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
@@ -418,7 +430,7 @@ function loadLanguages() {
           },
           getFrenchModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
@@ -436,7 +448,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
@@ -454,7 +466,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
@@ -472,7 +484,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
@@ -490,7 +502,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
@@ -508,7 +520,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
@@ -526,7 +538,7 @@ function loadLanguages() {
           (word, grammarClass, properties, pron) =>
             getFrenchModel(word, grammarClass, properties, pron, true)
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // fr
@@ -572,7 +584,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "en",
       "en",
       "eng",
@@ -625,7 +637,7 @@ function loadLanguages() {
         [".", "ˈ", "ˌ", "ː"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             comparatif: [
@@ -636,8 +648,12 @@ function loadLanguages() {
           },
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getEnglishModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.ADVERB,
+          {},
+          getEnglishModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             nombre: [
@@ -649,7 +665,7 @@ function loadLanguages() {
           },
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PROPER_NOUN,
           {
             nombre: [
@@ -659,69 +675,69 @@ function loadLanguages() {
           },
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
           { type: [VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB] },
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.LAST_NAME,
           {
             nombre: [
@@ -731,18 +747,18 @@ function loadLanguages() {
           },
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.FIRST_NAME,
           {
             genre: [
@@ -757,43 +773,47 @@ function loadLanguages() {
           },
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, {}, getEnglishModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.PRONOUN,
+          {},
+          getEnglishModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {},
           getEnglishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // en
@@ -821,7 +841,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "it",
       "it",
       "ita",
@@ -857,7 +877,7 @@ function loadLanguages() {
         [".", "ˈ", "ː"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
@@ -871,8 +891,12 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getItalianModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.ADVERB,
+          {},
+          getItalianModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
@@ -889,19 +913,19 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
           groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
@@ -916,7 +940,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
@@ -931,7 +955,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
@@ -946,12 +970,12 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
@@ -968,7 +992,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
@@ -985,7 +1009,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
@@ -1002,51 +1026,51 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
@@ -1063,7 +1087,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
@@ -1080,7 +1104,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
@@ -1097,7 +1121,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
@@ -1114,7 +1138,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
@@ -1131,7 +1155,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
@@ -1148,7 +1172,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
@@ -1165,7 +1189,7 @@ function loadLanguages() {
           },
           getItalianModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // it
@@ -1215,7 +1239,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "es",
       "es",
       "spa",
@@ -1252,7 +1276,7 @@ function loadLanguages() {
         [".", "ˈ"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
@@ -1266,8 +1290,12 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getSpanishModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.ADVERB,
+          {},
+          getSpanishModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
@@ -1284,20 +1312,20 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
           groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
           régularité: [VERBS.REGULAR_VERB, VERBS.IRREGULAR_VERB],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
@@ -1312,7 +1340,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
@@ -1327,7 +1355,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
@@ -1342,12 +1370,12 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
@@ -1364,7 +1392,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
@@ -1381,7 +1409,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
@@ -1398,51 +1426,51 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
@@ -1459,7 +1487,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
@@ -1476,7 +1504,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
@@ -1493,7 +1521,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
@@ -1510,7 +1538,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
@@ -1527,7 +1555,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
@@ -1544,7 +1572,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
@@ -1561,7 +1589,7 @@ function loadLanguages() {
           },
           getSpanishModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // it
@@ -1587,7 +1615,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "pt",
       "pt",
       "por",
@@ -1625,7 +1653,7 @@ function loadLanguages() {
         ],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
@@ -1639,12 +1667,12 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADVERB,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
@@ -1661,13 +1689,13 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {}),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {}),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
           groupe: [VERBS.GROUP1, VERBS.GROUP2, VERBS.GROUP3],
         }),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
@@ -1682,7 +1710,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
@@ -1697,7 +1725,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
@@ -1712,12 +1740,12 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
@@ -1734,7 +1762,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
@@ -1751,7 +1779,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
@@ -1768,51 +1796,51 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTICLE,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
           ],
         }),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
@@ -1829,7 +1857,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
@@ -1846,7 +1874,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
@@ -1863,7 +1891,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
@@ -1880,7 +1908,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
@@ -1897,7 +1925,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
@@ -1914,7 +1942,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
@@ -1931,7 +1959,7 @@ function loadLanguages() {
           },
           getPortugueseModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // pt
@@ -1958,7 +1986,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "eo",
       "eo",
       "epo",
@@ -1992,55 +2020,59 @@ function loadLanguages() {
         [".", "ˈ"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {},
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADVERB,
           { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.NOUN, {}, getEsperantoModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.NOUN,
+          {},
+          getEsperantoModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PROPER_NOUN,
           {},
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
           { type: [VERBS.VERB] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.FIRST_NAME,
           {},
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PRONOUN,
           { nombre: [NUMBERS.INVARIABLE] },
           getEsperantoModel
@@ -2091,7 +2123,7 @@ function loadLanguages() {
   };
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "br",
       "br",
       "bre",
@@ -2136,13 +2168,17 @@ function loadLanguages() {
         [".", "ˈ", "ˑ", "ː"],
       ],
       [
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB, {}, getBretonModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.ADVERB,
+          {},
+          getBretonModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
@@ -2159,115 +2195,123 @@ function loadLanguages() {
           },
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.VERB,
           { type: [VERBS.VERB] },
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PHRASE),
 
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADVERB,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.CONJUNCTION,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.COORDINATION_CONJUNCTION,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERJECTION,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.ONOMATOPOEIA,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PARTICLE, {}, getBretonModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.LAST_NAME),
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.PARTICLE,
+          {},
+          getBretonModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSTPOSITION,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PRONOUN, {}, getBretonModel),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.PRONOUN,
+          {},
+          getBretonModel
+        ),
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(
+        new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {},
           getBretonModel
         ),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
   ); // br
@@ -2277,17 +2321,17 @@ function loadLanguages() {
    */
 
   languages.push(
-    new T.Language(
+    new types.Language(
       "conv",
       null,
       null,
       "conventions internationales",
       [],
       [
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SCIENTIFIC_NAME),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.SYMBOL),
-        new T.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SCIENTIFIC_NAME),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.SYMBOL),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.ADVERB),
       ]
     )
   ); // conv
@@ -2301,10 +2345,10 @@ function loadLanguages() {
  * @returns A new Language object or null if the given code is not registered.
  */
 function getDefaultLanguage(code) {
-  const langData = L.getLanguage(code, true);
+  const langData = langs.getLanguage(code, true);
   if (!langData) return null;
   if (langData.aliasOf) code = langData.aliasOf; // We don’t want to use the alias
-  let name = L.getLanguageName(code, true);
+  let name = langs.getLanguageName(code, true);
   if (!name) return null;
 
   // Add most common classes on top
@@ -2318,17 +2362,17 @@ function getDefaultLanguage(code) {
     "INTERJECTION",
   ];
   const items = topClasses.map(
-    (key) => new T.GrammaticalItem(GRAMMATICAL_CLASSES[key])
+    (key) => new types.GrammaticalItem(GRAMMATICAL_CLASSES[key])
   );
   // Add all remaining classes
   for (const [k, v] of Object.entries(GRAMMATICAL_CLASSES)) {
     if (!topClasses.includes(k)) {
-      items.push(new T.GrammaticalItem(v));
+      items.push(new types.GrammaticalItem(v));
       topClasses.push(k);
     }
   }
-  const languageData = L.getLanguage(code);
-  return new T.Language(
+  const languageData = langs.getLanguage(code);
+  return new types.Language(
     code,
     languageData.wikimediaCode || null,
     null,
@@ -2348,11 +2392,11 @@ function getDefaultLanguage(code) {
  * @returns {boolean} True if the code or any of its aliases is in the list, false otherwise.
  */
 function containsLanguage(codes, code) {
-  const lang = L.getLanguage(code, true);
+  const lang = langs.getLanguage(code, true);
   if (!lang) return false;
 
   for (const c of codes) {
-    const otherLang = L.getLanguage(c, true);
+    const otherLang = langs.getLanguage(c, true);
     if (!otherLang) continue;
     if (
       code === c ||

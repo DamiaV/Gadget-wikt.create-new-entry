@@ -16,8 +16,8 @@ import {
   cdxIconArrowNext,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import T from "../types.js";
 import strings from "../strings.js";
+import types from "../types.js";
 import utils from "../utils.js";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -55,7 +55,7 @@ export default defineComponent({
     /**
      * The currently selected language.
      */
-    language: { type: T.Language, required: true },
+    language: { type: types.Language, required: true },
     /**
      * The index of this form in the parent component.
      */
@@ -177,7 +177,7 @@ export default defineComponent({
      */
     function onAddDefinition() {
       const id = utils.getNextId(definitions.value);
-      definitions.value.push(T.createEmptyDefinition(id));
+      definitions.value.push(types.createEmptyDefinition(id));
       fireUpdateEvent();
     }
 
@@ -232,7 +232,7 @@ export default defineComponent({
      */
     function onAddPronunciation() {
       const id = utils.getNextId(pronunciations.value);
-      pronunciations.value.push(T.createEmptyPronunciation(id));
+      pronunciations.value.push(types.createEmptyPronunciation(id));
       fireUpdateEvent();
     }
 
@@ -307,8 +307,8 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
-      sectionsData: T.entrySectionsData,
-      otherSectionsData: T.otherSectionsData,
+      sectionsData: types.entrySectionsData,
+      otherSectionsData: types.otherSectionsData,
       // Icons
       cdxIconTrash,
       cdxIconArrowPrevious,
