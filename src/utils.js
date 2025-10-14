@@ -199,6 +199,19 @@ function capitalize(s) {
 }
 
 /**
+ * Extract the trailing whitespace from the given text and return all three parts separately.
+ * @param {string} text The text to transform.
+ * @returns {[string, string, string]} A triple containing the leading whitespace, the stripped text, and the tailing whitespace.
+ */
+function extractTrailingWhitespace(text) {
+  if (!text) return ["", "", ""];
+  if (/^\s+$/.test(text)) return [text, "", ""];
+  // The "s" (dotAll) flag is not available prior to ES2018
+  const match = /^(\s*)(\S[\S\s]*?)(\s*)$/.exec(text);
+  return [match[1], match[2], match[3]];
+}
+
+/**
  * Send a GET query to the wiki’s API.
  * @param {Record<string, any>} params The request’s GET parameters.
  * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
@@ -227,4 +240,5 @@ export default {
   getAudioFileUrls,
   queryWikiApi,
   capitalize,
+  extractTrailingWhitespace,
 };

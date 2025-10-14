@@ -3,6 +3,7 @@
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
 import templates from "../templates.js";
+import utils from "../utils.js";
 import W from "../wikitext.js";
 import EditTools from "./EditTools.vue";
 import TemplateSelectionDialog from "./TemplateSelectionDialog.vue";
@@ -128,8 +129,9 @@ export default defineComponent({
     /**
      * Transform the text of the wrapped input using the given transformer function.
      * @param {(beforeSelection: string, selection: string, afterSelection: string) => string} tranformer A function to apply to the text.
+     * @param {boolean?} extractWhitespace If true, extract the trailing whitespace from the selection.
      */
-    function transformText(tranformer) {
+    function transformText(tranformer, extractWhitespace = false) {
       /**
        * @type {HTMLInputElement | HTMLTextAreaElement}
        */
@@ -142,9 +144,17 @@ export default defineComponent({
       const selectionStart = node.selectionStart;
       const selectionEnd = node.selectionEnd;
       const text = value.value;
-      const beforeSelection = text.substring(0, selectionStart);
-      const selection = text.substring(selectionStart, selectionEnd);
-      const afterSelection = text.substring(selectionEnd);
+      let beforeSelection = text.substring(0, selectionStart);
+      let selection = text.substring(selectionStart, selectionEnd);
+      let afterSelection = text.substring(selectionEnd);
+
+      if (extractWhitespace) {
+        const [wsLeft, text, wsRight] =
+          utils.extractTrailingWhitespace(selection);
+        beforeSelection += wsLeft;
+        selection = text;
+        afterSelection = wsRight + afterSelection;
+      }
 
       value.value = tranformer(beforeSelection, selection, afterSelection);
       ctx.emit("update:model-value", value.value);
@@ -169,7 +179,8 @@ export default defineComponent({
     function onInsertLink() {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}[[${selection}]]${afterSelection}`
+          `${beforeSelection}[[${selection}]]${afterSelection}`,
+        true
       );
     }
 
@@ -179,7 +190,8 @@ export default defineComponent({
     function onInsertQuotes() {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}«\u00a0${selection}\u00a0»${afterSelection}`
+          `${beforeSelection}«\u00a0${selection}\u00a0»${afterSelection}`,
+        true
       );
     }
 
@@ -190,7 +202,8 @@ export default defineComponent({
     function onInsertTag(tagName) {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}<${tagName}>${selection}</${tagName}>${afterSelection}`
+          `${beforeSelection}<${tagName}>${selection}</${tagName}>${afterSelection}`,
+        true
       );
     }
 
@@ -200,7 +213,8 @@ export default defineComponent({
     function onBold() {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}'''${selection}'''${afterSelection}`
+          `${beforeSelection}'''${selection}'''${afterSelection}`,
+        true
       );
     }
 
@@ -210,7 +224,8 @@ export default defineComponent({
     function onItalic() {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}''${selection}''${afterSelection}`
+          `${beforeSelection}''${selection}''${afterSelection}`,
+        true
       );
     }
 
@@ -221,7 +236,8 @@ export default defineComponent({
     function onCustomAction(action) {
       transformText(
         (beforeSelection, selection, afterSelection) =>
-          `${beforeSelection}${action(selection)}${afterSelection}`
+          `${beforeSelection}${action(selection)}${afterSelection}`,
+        true
       );
     }
 
