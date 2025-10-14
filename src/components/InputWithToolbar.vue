@@ -2,8 +2,8 @@
 // <nowiki>
 import { defineComponent, ref, useTemplateRef } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
+import strings from "../strings.js";
 import templates from "../templates.js";
-import utils from "../utils.js";
 import W from "../wikitext.js";
 import EditTools from "./EditTools.vue";
 import TemplateSelectionDialog from "./TemplateSelectionDialog.vue";
@@ -150,7 +150,7 @@ export default defineComponent({
 
       if (extractWhitespace) {
         const [wsLeft, text, wsRight] =
-          utils.extractTrailingWhitespace(selection);
+          strings.extractTrailingWhitespace(selection);
         beforeSelection += wsLeft;
         selection = text;
         afterSelection = wsRight + afterSelection;

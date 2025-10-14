@@ -17,6 +17,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import T from "../types.js";
+import strings from "../strings.js";
 import utils from "../utils.js";
 import DefinitionForm from "./DefinitionForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -305,7 +306,6 @@ export default defineComponent({
       dialogDefaultAction,
       openDeletionDialog,
       // Other
-      utils,
       config,
       sectionsData: T.entrySectionsData,
       otherSectionsData: T.otherSectionsData,
@@ -329,6 +329,7 @@ export default defineComponent({
       onDeletePronunciation,
       onMovePronunciationUp,
       onMovePronunciationDown,
+      userGenderSwitch: strings.userGenderSwitch,
     };
   },
 });
@@ -511,8 +512,8 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette entrée&nbsp;?
+    {{ userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de vouloir
+    supprimer cette entrée&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

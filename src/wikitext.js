@@ -1,8 +1,8 @@
 // <nowiki>
 import L from "./wiki_deps/wikt.core.languages.js";
 import T from "./types.js";
+import strings from "./strings.js";
 import templates from "./templates.js";
-import utils from "./utils.js";
 
 const specialCharacters = [
   "à",
@@ -106,7 +106,7 @@ function generateWikitext(formData, word) {
     wikitext += formatEntry(entry, word, language, number);
 
     const label =
-      utils.capitalize(
+      strings.capitalize(
         formData.language.getGrammarItem(wordType).grammaticalClass.label
       ) + ` ${number}`;
     if (entry.homophones.length) homophones.push([label, entry.homophones]);

@@ -13,15 +13,14 @@ import {
   cdxIconArrowUp,
   cdxIconCollapse,
   cdxIconExpand,
-  cdxIconFeedback,
   cdxIconHelp,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
   cdxIconSpeechBubble,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
+import strings from "../strings.js";
 import T from "../types.js";
-import utils from "../utils.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -205,11 +204,9 @@ export default defineComponent({
       dialogPrimaryAction,
       dialogDefaultAction,
       // Other
-      utils,
       config,
       // Icons
       cdxIconHelp,
-      cdxIconFeedback,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconCollapse,
@@ -224,6 +221,7 @@ export default defineComponent({
       deletePronunciation,
       pronunciationValidator,
       pronunciationTransformer,
+      userGenderSwitch: strings.userGenderSwitch,
     };
   },
 });
@@ -338,8 +336,8 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette prononciation&nbsp;?
+    {{ userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de vouloir
+    supprimer cette prononciation&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

@@ -16,6 +16,7 @@ import {
   cdxIconInfoFilled,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
+import strings from "../strings.js";
 import T from "../types.js";
 import utils from "../utils.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
@@ -315,7 +316,6 @@ export default defineComponent({
       // Data
       items,
       // Other
-      utils,
       config,
       // Dialogs
       formattedItemDialogPrimaryAction,
@@ -344,6 +344,8 @@ export default defineComponent({
       onDelete,
       deleteRelatedWordsList,
       onDeleteItem,
+      userGenderSwitch: strings.userGenderSwitch,
+      capitalize: strings.capitalize,
     };
   },
 });
@@ -353,7 +355,7 @@ export default defineComponent({
   <div class="cne-related-words-list">
     <cdx-field class="cne-box" is-fieldset>
       <template #label>
-        {{ utils.capitalize($props.sectionData.name) }}
+        {{ capitalize($props.sectionData.name) }}
         <span class="cne-fieldset-btns">
           <wiki-link
             v-if="$props.sectionData.helpPage"
@@ -458,7 +460,7 @@ export default defineComponent({
     v-model:open="openFormattedItemEditDialog"
     class="cne-related-words-dialog"
     :title="
-      utils.capitalize($props.sectionData.name) +
+      capitalize($props.sectionData.name) +
       '\u00a0: ' +
       (addMode ? 'Ajout' : 'Modification') +
       ' de mot(s)'
@@ -533,7 +535,7 @@ export default defineComponent({
     v-model:open="openUnformattedItemEditDialog"
     class="cne-related-words-dialog"
     :title="
-      utils.capitalize($props.sectionData.name) +
+      capitalize($props.sectionData.name) +
       '\u00a0: ' +
       (addMode ? 'Ajout' : 'Modification') +
       ' de texte libre'
@@ -568,8 +570,8 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette section&nbsp;?
+    {{ userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de vouloir
+    supprimer cette section&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

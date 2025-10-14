@@ -3,8 +3,8 @@
 import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
 import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
+import strings from "../strings.js";
 import T from "../types.js";
-import utils from "../utils.js";
 import WikiLink from "./WikiLink.vue";
 
 /**
@@ -154,11 +154,10 @@ export default defineComponent({
       // Icons
       cdxIconHelpNotice,
       cdxIconSettings,
-      // Other
-      utils,
       // Callbacks
       onWordTypeSelection,
       onWordPropertySelection,
+      capitalize: strings.capitalize,
     };
   },
 });
@@ -196,7 +195,7 @@ export default defineComponent({
           :key="key"
           :status="wordPropertiesStatuses[key]"
         >
-          <template #label>{{ utils.capitalize(key) }}</template>
+          <template #label>{{ capitalize(key) }}</template>
           <cdx-select
             :selected="wordProperties[key] || ''"
             :menu-items="wordTypePropertiesData[wordType][i]"

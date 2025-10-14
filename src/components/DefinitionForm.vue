@@ -8,7 +8,6 @@ import {
   cdxIconArrowUp,
   cdxIconArticle,
   cdxIconCollapse,
-  cdxIconEllipsis,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
@@ -17,6 +16,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import T from "../types.js";
+import strings from "../strings.js";
 import utils from "../utils.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import ExampleForm from "./ExampleForm.vue";
@@ -272,7 +272,6 @@ export default defineComponent({
       dialogDefaultAction,
       openDeletionDialog,
       // Other
-      utils,
       config,
       sectionsData: T.definitionSectionsData,
       // Icons
@@ -284,7 +283,6 @@ export default defineComponent({
       cdxIconAdd,
       cdxIconCollapse,
       cdxIconExpand,
-      cdxIconEllipsis,
       cdxIconQuotes,
       cdxIconArticle,
       cdxIconLink,
@@ -300,6 +298,7 @@ export default defineComponent({
       onAddIllustration,
       onIllustrationUpdate,
       onDeleteIllustration,
+      userGenderSwitch: strings.userGenderSwitch,
     };
   },
 });
@@ -524,8 +523,8 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette définition&nbsp;?
+    {{ userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de vouloir
+    supprimer cette définition&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

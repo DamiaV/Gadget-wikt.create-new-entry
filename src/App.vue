@@ -29,11 +29,11 @@ import {
   cdxIconInfoFilled,
   cdxIconLabFlask,
   cdxIconLanguage,
-  cdxIconSearch,
 } from "@wikimedia/codex-icons";
 import C from "./wiki_deps/wikt.core.cookies.js";
 import P from "./wiki_deps/wikt.core.page.js";
 import L from "./languages.js";
+import strings from "./strings.js";
 import T from "./types.js";
 import utils from "./utils.js";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
@@ -311,15 +311,11 @@ export default defineComponent({
       showForm,
       showFormFields,
       disableSubmitBtn,
-      // Other
-      utils,
-      config,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconDownload,
       cdxIconAdd,
-      cdxIconSearch,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconHistory,
@@ -335,6 +331,7 @@ export default defineComponent({
       onMoveEntryRight,
       onSubmit,
       onReport,
+      capitalize: strings.capitalize,
     };
   },
 });
@@ -477,7 +474,7 @@ export default defineComponent({
             :name="`tab-${entry.id}`"
             :label="
               entry.wordType && formData.language.getGrammarItem(entry.wordType)
-                ? utils.capitalize(
+                ? capitalize(
                     formData.language.getGrammarItem(entry.wordType)
                       .grammaticalClass.label
                   )

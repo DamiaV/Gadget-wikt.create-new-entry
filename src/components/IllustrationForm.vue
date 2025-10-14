@@ -11,16 +11,15 @@ import {
 } from "@wikimedia/codex";
 import {
   cdxIconCollapse,
-  cdxIconEllipsis,
   cdxIconExpand,
   cdxIconHelpNotice,
   cdxIconImageLayoutFrame,
   cdxIconInfoFilled,
-  cdxIconReload,
   cdxIconSearch,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import utils from "../utils.js";
+import requests from "../requests.js";
+import strings from "../strings.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -215,19 +214,19 @@ export default defineComponent({
       if (fileName.value) {
         switch (type.value) {
           case "image":
-            utils
+            requests
               .getImageFileUrl(fileName.value, config.api)
               .then((url) => (imageUrl.value = url))
               .catch((error) => console.warn(error));
             break;
           case "video":
-            utils
+            requests
               .getVideoFileUrls(fileName.value, config.api)
               .then((sources) => (videoSources.value = sources || {}))
               .catch((error) => console.warn(error));
             break;
           case "audio":
-            utils
+            requests
               .getAudioFileUrls(fileName.value, config.api)
               .then((sources) => (audioSources.value = sources || []))
               .catch((error) => console.warn(error));
@@ -259,17 +258,14 @@ export default defineComponent({
       dialogDefaultAction,
       openDeletionDialog,
       // Other
-      utils,
       config,
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
       cdxIconTrash,
       cdxIconSearch,
-      cdxIconReload,
       cdxIconCollapse,
       cdxIconExpand,
-      cdxIconEllipsis,
       cdxIconImageLayoutFrame,
       // Callbacks
       fireUpdateEvent,
@@ -279,6 +275,7 @@ export default defineComponent({
       onInvalid,
       onTypeUpdate,
       onFileNameUpdate,
+      userGenderSwitch: strings.userGenderSwitch,
     };
   },
 });
@@ -519,8 +516,8 @@ export default defineComponent({
     @default="openDeletionDialog = false"
   >
     Êtes-vous
-    {{ utils.userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de
-    vouloir supprimer cette illustration&nbsp;?
+    {{ userGenderSwitch(config.userGender, "sûr·e", "sûre", "sûr") }} de vouloir
+    supprimer cette illustration&nbsp;?
     <template #footer-text>Cette action est irréversible.</template>
   </cdx-dialog>
 </template>

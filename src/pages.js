@@ -1,5 +1,5 @@
 // <nowiki>
-import utils from "./utils.js";
+import requests from "./requests.js";
 
 const specialQueryChars = '~*\\?-"!';
 
@@ -29,7 +29,7 @@ async function searchPages(query, namespaces, api) {
    *  }
    * }}
    */
-  const json = await utils.queryWikiApi(
+  const json = await requests.queryWikiApi(
     {
       action: "query",
       generator: "search",
@@ -75,7 +75,7 @@ async function getNamespacesInfo(api) {
    *  }
    * }}
    */
-  const json = await utils.queryWikiApi(
+  const json = await requests.queryWikiApi(
     {
       action: "query",
       meta: "siteinfo",

@@ -1,6 +1,6 @@
 // <nowiki>
 import pages from "./pages.js";
-import utils from "./utils.js";
+import requests from "./requests.js";
 
 /**
  * @typedef {{
@@ -324,7 +324,7 @@ async function searchTemplates(query, langCode, api) {
   /**
    * @type {{pages: Record<string, ApiTemplateData | ApiNoTemplateData>}}}
    */
-  const json = await utils.queryWikiApi(params, api);
+  const json = await requests.queryWikiApi(params, api);
 
   /**
    * @type {TemplateData[]}
@@ -420,7 +420,7 @@ async function fetchFavoriteTemplates(api) {
    *  }
    * }}
    */
-  const json = await utils.queryWikiApi(
+  const json = await requests.queryWikiApi(
     {
       action: "query",
       meta: "userinfo",
@@ -457,7 +457,7 @@ async function fetchFeaturedTemplates(api) {
    *  }
    * }}
    */
-  const json = await utils.queryWikiApi(
+  const json = await requests.queryWikiApi(
     {
       action: "query",
       meta: "communityconfiguration",
