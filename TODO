@@ -1,3 +1,7 @@
+[ ] Système de préférences
+    [ ] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
+    [ ] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
+    [ ] Option pour désactiver le warning de fermeture de l’onglet.
 [ ] Retirer les trailing whitespace du formatage gras/italique.
 [x] Items non formattés dans RelatedWordList.vue.
 [x] Police monospace pour champs de texte.
@@ -6,8 +10,10 @@
 [x] Désactiver onglet prononciations si code = "conv"
 [x] Annuler l’event de fermeture de l’onglet quand le formulaire n’est pas vide.
 [ ] Liens wikis propres à chaque entrée ?
+[ ] Prévisualisation en temps réel ?
 [~] Génération du wikicode.
     [x] Utiliser le code de langue MediaWiki pour les modèles Source-w, etc.
     [x] Utiliser la clé de tri globale pour les catégories supplémentaires.
     [ ] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
+    [ ] Insérer le code généré au bon endroit.
     [ ] Tests.
