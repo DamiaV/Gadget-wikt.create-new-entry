@@ -388,6 +388,7 @@ export default defineComponent({
         :can-move-before="i > 0"
         :can-move-after="i < definitions.length - 1"
         :model-value="definition"
+        :language="$props.language"
         @update:model-value="onDefinitionUpdate"
         @delete="onDeleteDefinition"
         @move:before="onMoveDefinitionUp"

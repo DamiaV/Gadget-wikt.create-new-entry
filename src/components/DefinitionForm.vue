@@ -48,6 +48,10 @@ export default defineComponent({
 
   props: {
     /**
+     * The currently selected language.
+     */
+    language: { type: types.Language, required: true },
+    /**
      * The index of this form in the parent component.
      */
     index: { type: Number, required: true },
@@ -430,6 +434,7 @@ export default defineComponent({
               :can-move-before="i > 0"
               :can-move-after="i < examples.length - 1"
               :model-value="example"
+              :language="$props.language"
               @update:model-value="onExampleUpdate"
               @delete="onDeleteExample"
               @move:before="onMoveExampleUp"

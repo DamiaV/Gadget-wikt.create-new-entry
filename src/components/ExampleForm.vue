@@ -18,6 +18,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
+import types from "../types";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 
@@ -41,6 +42,10 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The currently selected language.
+     */
+    language: { type: types.Language, required: true },
     /**
      * The index of this form in the parent component.
      */
@@ -258,7 +263,7 @@ export default defineComponent({
         </template>
       </input-with-toolbar>
 
-      <cdx-field>
+      <cdx-field v-show="$props.language.code !== 'fr'">
         <cdx-toggle-switch
           v-model="disableTranslation"
           @change="fireUpdateEvent"
@@ -272,7 +277,7 @@ export default defineComponent({
       </cdx-field>
 
       <input-with-toolbar
-        v-show="!disableTranslation"
+        v-show="!disableTranslation && $props.language.code !== 'fr'"
         v-model="translation"
         text-area
         @change="fireUpdateEvent"
