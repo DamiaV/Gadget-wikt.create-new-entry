@@ -478,6 +478,45 @@ function interpolateString(str, ...values) {
   );
 }
 
+const SPECIAL_CHARS = "|<>[]{}#";
+
+/**
+ * Check whether the given text contains any wikitext special characters, and return the first one if any.
+ * @param {string} text The text to check.
+ * @param {string?} exclude A string containing characters to ignore.
+ * @returns {string | null} The first special character that was encountered, or `null` if there were none.
+ */
+function findWikitextSpecialChars(text, exclude) {
+  for (const char of text)
+    if (SPECIAL_CHARS.includes(char) && (!exclude || !exclude.includes(char)))
+      return char;
+  return null;
+}
+
+/**
+ * Create a new validator function for the given key prefix and characters exclusion list.
+ * @param {import("./types.js").ValidationLock} validationLock A validation lock.
+ * @param {string} keyPrefix The prefix for the generated key.
+ * @param {string?} excludeChars A string containing characters to ignore.
+ * @returns {[(text: string) => string | null, string]} A tuple containing the newly created validator function and the associated random key.
+ */
+function createWikitextValidator(validationLock, keyPrefix, excludeChars) {
+  const lockKey = validationLock.register(keyPrefix);
+  return [
+    function (text) {
+      const invalidChar = findWikitextSpecialChars(text, excludeChars);
+      if (invalidChar) {
+        validationLock.setError(lockKey, true);
+        return `Caractère invalide détecté\u00a0: «\u00a0${invalidChar}\u00a0»`;
+      }
+
+      validationLock.setError(lockKey, false);
+      return null;
+    },
+    lockKey,
+  ];
+}
+
 // </nowiki>
 /**
  * This module defines a function to generate wikitext from the gadget’s form data.
@@ -487,4 +526,6 @@ function interpolateString(str, ...values) {
 export default {
   specialCharacters,
   generateWikitext,
+  findWikitextSpecialChars,
+  createWikitextValidator,
 };

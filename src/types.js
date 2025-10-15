@@ -822,6 +822,67 @@ class ArticleSection {
   }
 }
 
+/**
+ * @typedef {{
+ *  register: (keyPrefix: string) => string,
+ *  unregister: (key: string) => void,
+ *  setError: (key: string, error: boolean) => void,
+ *  anyError: () => boolean,
+ * }} ValidationLock
+ */
+/**
+ * A validation lock is used to check whether any error is present in the form, and if so to prevent its submitting.
+ */
+class ValidationLock {
+  constructor() {
+    /**
+     * @type {Record<string, boolean>}
+     */
+    this._registry = {};
+    this._counter = 0;
+  }
+
+  /**
+   * Register a new entry. This method returns a randomly generated key using the given prefix.
+   * All subsequent operations for the registered entry should use the returned key.
+   * @param {string} keyPrefix The prefix for the generated key.
+   * @returns {string} The randomly generated keyk
+   */
+  register(keyPrefix) {
+    const key = keyPrefix + this._counter++;
+    this._registry[key] = false;
+    return key;
+  }
+
+  /**
+   * Unregister the given key.
+   * @param {string} key The key to unregister.
+   */
+  unregister(key) {
+    if (!(key in this._registry)) return;
+    delete this._registry[key];
+  }
+
+  /**
+   * Set the error status for the given key.
+   * @param {string} key A key returned by {@link register()}.
+   * @param {boolean} error The new error value.
+   */
+  setError(key, error) {
+    if (!(key in this._registry))
+      throw new Error(`Key "${key}" is not registered.`);
+    this._registry[key] = error;
+  }
+
+  /**
+   * Check whether any error flag is active.
+   * @returns {boolean} True if any error flag is set to true, false otherwise.
+   */
+  anyError() {
+    return Object.values(this._registry).some((error) => error);
+  }
+}
+
 // </nowiki>
 /**
  * This module defines global types and type-related functions.
@@ -834,6 +895,7 @@ export default {
   GrammaticalItem,
   Language,
   ArticleSection,
+  ValidationLock,
   wikis,
   definitionSectionsData,
   entrySectionsData,

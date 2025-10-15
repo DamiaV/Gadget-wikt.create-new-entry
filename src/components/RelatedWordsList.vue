@@ -511,16 +511,12 @@ export default defineComponent({
       Ajouter une variante orthographique
     </cdx-button>
 
-    <cdx-field>
+    <input-with-toolbar v-model="editedFormattedItem.annotation" clearable>
       <template #label>Annotation</template>
       <template #description>
         Le terme est-il familier, soutenu, plus rare, plus courant, etc.&nbsp;?
       </template>
-      <input-with-toolbar
-        v-model="editedFormattedItem.annotation"
-        clearable
-      ></input-with-toolbar>
-    </cdx-field>
+    </input-with-toolbar>
 
     <cdx-field>
       <cdx-checkbox v-model="editedFormattedItem.nonFormattedAnnotation">
@@ -552,14 +548,9 @@ export default defineComponent({
     "
     @default="openUnformattedItemEditDialog = false"
   >
-    <cdx-field>
+    <input-with-toolbar v-model="editedUnformattedItem.text" required clearable>
       <template #label>Texte</template>
-      <input-with-toolbar
-        v-model="editedUnformattedItem.text"
-        required
-        clearable
-      ></input-with-toolbar>
-    </cdx-field>
+    </input-with-toolbar>
   </cdx-dialog>
 
   <cdx-dialog

@@ -281,7 +281,7 @@ export default defineComponent({
 
 <template>
   <div class="cne-references">
-    <cdx-field>
+    <input-with-toolbar v-model="data.bibliography" text-area>
       <template #label>
         <cdx-icon :icon="cdxIconReferences"></cdx-icon>
         Bibliographie
@@ -300,11 +300,7 @@ export default defineComponent({
         associé, traductions, etc. Elle permet de réorienter les lecteur·ices
         vers les ouvrages majeurs décrivant le sujet.
       </template>
-      <input-with-toolbar
-        v-model="data.bibliography"
-        text-area
-      ></input-with-toolbar>
-    </cdx-field>
+    </input-with-toolbar>
 
     <hr class="cne-horizontal-separator" />
 
@@ -374,12 +370,15 @@ export default defineComponent({
         web libre de droits
       </cdx-toggle-switch>
     </cdx-field>
-    <cdx-field v-show="otherImportsEnabled">
+    <input-with-toolbar
+      v-show="otherImportsEnabled"
+      v-model="data.imports"
+      text-area
+    >
       <template #description>
         Listez les ouvrages dans le champ ci-dessous (un par ligne, chacun
         précédé d’une astérisque «&nbsp;*&nbsp;»).
       </template>
-      <input-with-toolbar v-model="data.imports" text-area></input-with-toolbar>
       <template #help-text>
         <strong>
           Rappel&nbsp;: Il est formellement interdit de recopier du texte de
@@ -389,7 +388,7 @@ export default defineComponent({
         vous avez un doute, considérez qu’il n’est pas libre et ne recopiez pas
         son contenu.
       </template>
-    </cdx-field>
+    </input-with-toolbar>
 
     <cdx-dialog
       v-model:open="openEditDialog"

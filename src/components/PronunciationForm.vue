@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, onUnmounted, ref } from "vue";
 import {
   CdxButton,
   CdxCheckbox,
@@ -21,6 +21,7 @@ import {
 } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
 import types from "../types.js";
+import wikitext from "../wikitext.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -146,8 +147,6 @@ export default defineComponent({
       ["\u202f", " "],
     ];
 
-    const invalidCharacters = "()[]{}";
-
     /**
      * @type {[string, string, string, string][]}
      */
@@ -169,22 +168,36 @@ export default defineComponent({
     }
 
     /**
+     * @type {import("../types.js").ValidationLock}
+     */
+    const validationLock = inject("validationLock");
+    const lockKey = validationLock.register("pronForm");
+    onUnmounted(() => {
+      validationLock.unregister(lockKey);
+    });
+
+    /**
      * Check that the given pronunciation does not contain any suspicious characters.
      * @param {string} text The text to check.
      * @returns {string | null} An error message if the argument contains any suspicious characters, false otherwise.
      */
     function pronunciationValidator(text) {
-      for (const char of invalidCharacters)
-        if (text.includes(char))
-          return `Caractère invalide détecté\u00a0: «\u00a0${char}\u00a0»`;
+      const invalidChar = wikitext.findWikitextSpecialChars(text, "|");
+      if (invalidChar) {
+        validationLock.setError(lockKey, true);
+        return `Caractère invalide détecté\u00a0: «\u00a0${invalidChar}\u00a0»`;
+      }
 
       for (const [char, repl, name1, name2] of suspiciousCharacters)
-        if (text.includes(char))
+        if (text.includes(char)) {
+          validationLock.setError(lockKey, true);
           return (
             `Caractère invalide détecté\u00a0: «\u00a0${char}\u00a0» (${name1}). ` +
             `Peut-être vouliez-vous plutôt écrire «\u00a0${repl}\u00a0» (${name2})\u00a0?`
           );
+        }
 
+      validationLock.setError(lockKey, false);
       return null;
     }
 

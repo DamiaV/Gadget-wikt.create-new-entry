@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { computed, defineComponent, inject, ref } from "vue";
+import { computed, defineComponent, inject, onUnmounted, ref } from "vue";
 import {
   CdxButton,
   CdxDialog,
@@ -20,6 +20,7 @@ import {
 } from "@wikimedia/codex-icons";
 import requests from "../requests.js";
 import strings from "../strings.js";
+import wikitext from "../wikitext.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";
@@ -203,9 +204,29 @@ export default defineComponent({
       videoSources.value = {};
       audioSources.value = [];
 
-      if (["image", "video", "audio"].includes(type.value)) onFileNameUpdate();
-      else fireUpdateEvent();
+      if (["image", "video", "audio"].includes(type.value)) {
+        fileNameValidator(fileName.value);
+        onFileNameUpdate();
+      } else {
+        validationLock.setError(fileNameLockKey, false);
+        fireUpdateEvent();
+      }
     }
+
+    /*
+     * File name
+     */
+
+    /**
+     * @type {import("../types.js").ValidationLock}
+     */
+    const validationLock = inject("validationLock");
+
+    const [fileNameValidator, fileNameLockKey] =
+      wikitext.createWikitextValidator(validationLock, "illustFileName");
+    onUnmounted(() => {
+      validationLock.unregister(fileNameLockKey);
+    });
 
     /**
      * Called when the file name is updated.
@@ -275,6 +296,7 @@ export default defineComponent({
       onInvalid,
       onTypeUpdate,
       onFileNameUpdate,
+      fileNameValidator,
       userGenderSwitch: strings.userGenderSwitch,
     };
   },
@@ -394,10 +416,17 @@ export default defineComponent({
         {{ type_.label }}
       </cdx-radio>
 
-      <cdx-field
+      <input-with-toolbar
         v-if="type === 'image' || type === 'video' || type === 'audio'"
-        :status="status"
-        :messages="messages"
+        v-model="rawFileName"
+        :show-format-buttons="false"
+        :special-characters="[]"
+        :validator="fileNameValidator"
+        clearable
+        required
+        @change="onFileNameUpdate"
+        @update:model-value="onInput"
+        @invalid="onInvalid"
       >
         <template #label>
           Nom du fichier sur Commons
@@ -410,15 +439,7 @@ export default defineComponent({
               <cdx-icon :icon="cdxIconSearch"></cdx-icon> </a
           ></span>
         </template>
-        <cdx-text-input
-          v-model.trim="rawFileName"
-          clearable
-          required
-          @change="onFileNameUpdate"
-          @update:model-value="onInput"
-          @invalid="onInvalid"
-        ></cdx-text-input>
-      </cdx-field>
+      </input-with-toolbar>
 
       <cdx-field
         v-else-if="type === 'text'"

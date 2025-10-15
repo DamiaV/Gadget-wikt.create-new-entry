@@ -4,6 +4,8 @@ import {
   computed,
   defineComponent,
   inject,
+  onUnmounted,
+  provide,
   reactive,
   ref,
   useTemplateRef,
@@ -16,7 +18,6 @@ import {
   CdxMessage,
   CdxTab,
   CdxTabs,
-  CdxTextInput,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -36,6 +37,7 @@ import langs from "./languages.js";
 import strings from "./strings.js";
 import types from "./types.js";
 import utils from "./utils.js";
+import wikitext from "./wikitext.js";
 import CategoriesSelector from "./components/CategoriesSelector.vue";
 import EntryForm from "./components/EntryForm.vue";
 import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
@@ -62,7 +64,6 @@ export default defineComponent({
     CdxMessage,
     CdxTab,
     CdxTabs,
-    CdxTextInput,
     CategoriesSelector,
     EntryForm,
     ExternalWikiLinks,
@@ -111,6 +112,9 @@ export default defineComponent({
      * @type {import("./types.js").AppConfig}
      */
     const config = inject("config");
+
+    const validationLock = new types.ValidationLock();
+    provide("validationLock", validationLock);
 
     /**
      * @type {Readonly<import("vue").ShallowRef<HTMLFormElement>>}
@@ -179,6 +183,7 @@ export default defineComponent({
      * @returns {boolean} True if it is invalid, false if it is valid.
      */
     function isFormInvalid() {
+      console.log(validationLock.anyError(), validationLock._registry); // DEBUG
       /**
        * Check whether the given entry is invalid.
        * @param {import("./types.js").Entry} entry The entry to check.
@@ -205,7 +210,9 @@ export default defineComponent({
       };
 
       return (
-        !form.value.checkValidity() || formData.entries.some(isEntryInvalid)
+        !form.value.checkValidity() ||
+        validationLock.anyError() ||
+        formData.entries.some(isEntryInvalid)
       );
     }
 
@@ -265,6 +272,18 @@ export default defineComponent({
       const entry = formData.entries.splice(entryIndex, 1)[0];
       formData.entries.splice(entryIndex + 1, 0, entry);
     }
+
+    /*
+     * Sort key
+     */
+
+    const [sortKeyValidator, sortKeyLockKey] = wikitext.createWikitextValidator(
+      validationLock,
+      "sortKey"
+    );
+    onUnmounted(() => {
+      validationLock.unregister(sortKeyLockKey);
+    });
 
     /*
      * Submit
@@ -334,6 +353,7 @@ export default defineComponent({
       onMoveEntryRight,
       onSubmit,
       onReport,
+      sortKeyValidator,
       capitalize: strings.capitalize,
     };
   },
@@ -449,14 +469,18 @@ export default defineComponent({
           </template>
         </cdx-checkbox>
 
-        <cdx-field>
+        <input-with-toolbar
+          v-model="formData.sortKey"
+          :show-format-buttons="false"
+          :special-characters="[]"
+          :validator="sortKeyValidator"
+        >
           <template #label>Clé de tri</template>
           <template #description>
             Cette valeur est utilisée pour trier correctement la page dans les
             catégories.
           </template>
-          <cdx-text-input v-model.trim="formData.sortKey"></cdx-text-input>
-        </cdx-field>
+        </input-with-toolbar>
 
         <hr class="cne-horizontal-separator" />
 

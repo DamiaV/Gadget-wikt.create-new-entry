@@ -28,6 +28,10 @@ export default defineComponent({
 
   props: {
     /**
+     * Whether this input is disabled.
+     */
+    disabled: { type: Boolean, default: false },
+    /**
      * Whether the wrapped text input should be required.
      */
     required: { type: Boolean, default: false },
@@ -83,6 +87,10 @@ export default defineComponent({
       default: () => [wikitext.specialCharacters],
     },
     /**
+     * The input’s placeholder text.
+     */
+    placeholder: { type: String, default: "" },
+    /**
      * The input’s text.
      */
     modelValue: { type: String, required: true },
@@ -95,7 +103,6 @@ export default defineComponent({
     const status = ref("default");
     const messages = ref({
       error: "",
-      warning: "",
     });
     const textInputType = props.textArea ? CdxTextArea : CdxTextInput;
 
@@ -113,8 +120,8 @@ export default defineComponent({
       if (props.transformer) value.value = props.transformer(value.value);
       let message;
       if (props.validator && (message = props.validator(value.value))) {
-        status.value = "warning";
-        messages.value.warning = message;
+        status.value = "error";
+        messages.value.error = message;
       } else {
         status.value = "default";
       }
@@ -170,6 +177,7 @@ export default defineComponent({
      * @param {string} char The character(s) to insert.
      */
     function onInsertChar(char) {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, _, afterSelection) =>
           `${beforeSelection}${char}${afterSelection}`
@@ -180,6 +188,7 @@ export default defineComponent({
      * Insert a wikilink around the current selection.
      */
     function onInsertLink() {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}[[${selection}]]${afterSelection}`,
@@ -191,6 +200,7 @@ export default defineComponent({
      * Insert quotes around the current selection.
      */
     function onInsertQuotes() {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}«\u00a0${selection}\u00a0»${afterSelection}`,
@@ -203,6 +213,7 @@ export default defineComponent({
      * @param {string} tagName The name of the tag to insert.
      */
     function onInsertTag(tagName) {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}<${tagName}>${selection}</${tagName}>${afterSelection}`,
@@ -214,6 +225,7 @@ export default defineComponent({
      * Wrap the input’s selected text with `''' '''` to make it bold.
      */
     function onBold() {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}'''${selection}'''${afterSelection}`,
@@ -225,6 +237,7 @@ export default defineComponent({
      * Wrap the input’s selected text with `'' ''` to make it italicized.
      */
     function onItalic() {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}''${selection}''${afterSelection}`,
@@ -237,6 +250,7 @@ export default defineComponent({
      * @param {(selectedText: string) => string} action The action to perform.
      */
     function onCustomAction(action) {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}${action(selection)}${afterSelection}`,
@@ -249,6 +263,7 @@ export default defineComponent({
      * @param {import("../templates.js").FilledTemplate} filledTemplate The filled template’s data.
      */
     function onInsertTemplate(filledTemplate) {
+      if (props.disabled) return;
       transformText(
         (beforeSelection, selection, afterSelection) =>
           `${beforeSelection}${templates.templateToString(filledTemplate)}${selection}${afterSelection}`
@@ -283,6 +298,7 @@ export default defineComponent({
   <div>
     <cdx-field :status="status" :messages="messages">
       <edit-tools
+        v-if="$props.showFormatButtons && $props.specialCharacters.length"
         :show-format-buttons="$props.showFormatButtons"
         :show-template-button="$props.showTemplateButton"
         :characters="$props.specialCharacters"
@@ -297,7 +313,7 @@ export default defineComponent({
         @insert:superscript="onInsertTag('sup')"
         @insert:code="onInsertTag('code')"
         @insert:ref="onInsertTag('ref')"
-        @insert:template="openTemplateDialog = true"
+        @insert:template="openTemplateDialog = !$props.disabled"
         @custom-action="onCustomAction"
       ></edit-tools>
       <component
@@ -306,7 +322,9 @@ export default defineComponent({
         v-model.trim="value"
         :required="$props.required"
         :clearable="$props.clearable"
+        :disabled="$props.disabled"
         :class="$props.inputClass || 'wikitext'"
+        :placeholder="$props.placeholder"
         @update:model-value="onInput"
         @change="$emit('change', value)"
         @invalid="onInvalid"
