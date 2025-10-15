@@ -2,7 +2,8 @@
     [ ] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
     [ ] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
     [ ] Option pour désactiver le warning de fermeture de l’onglet.
-[ ] Interdire les caractères wiki spéciaux là où nécessaire.
+[ ] Désactiver les traductions d’exemples pour le français.
+[x] Interdire les caractères wiki spéciaux là où nécessaire.
 [ ] Prévisualisation en temps réel ?
 [ ] Liens wikis propres à chaque entrée ?
 [ ] Champ pour la section prononciation ?
