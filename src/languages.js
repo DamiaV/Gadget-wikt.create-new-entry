@@ -6,6 +6,7 @@ import types from "./types.js";
  * All available grammatical genders.
  */
 const GENDERS = {
+  UNKNOWN: new types.GrammaticalProperty("je ne sais pas", "{{genre ?}}"),
   MASCULINE: new types.GrammaticalProperty("masculin", "{{m}}"),
   FEMININE: new types.GrammaticalProperty("féminin", "{{f}}"),
   FEMININE_MASCULINE_DIFF: new types.GrammaticalProperty(
@@ -21,6 +22,7 @@ const GENDERS = {
  * All available grammatical numbers.
  */
 const NUMBERS = {
+  UNKNOWN: new types.GrammaticalProperty("je ne sais pas", "{{nombre ?}}"),
   DIFF_SINGULAR_PLURAL: new types.GrammaticalProperty(
     "sing. et plur. différents"
   ),
@@ -51,6 +53,7 @@ const NUMBERS = {
 };
 
 const COMPARATIVES = {
+  UNKNOWN: new types.GrammaticalProperty("je ne sais pas"),
   COMPARABLE_MORE_MOST: new types.GrammaticalProperty(
     "comparable (more…/most…)"
   ),
@@ -158,9 +161,19 @@ function loadLanguages() {
    * French language definition.
    */
 
+  /**
+   * Generate the inflections template for French.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @param {boolean} simple If true, {{fr-rég}} will be returned instead of {{fr-accord-rég}}.
+   * @returns An inflections template.
+   */
   const getFrenchModel = (word, grammarClass, properties, pron, simple) => {
     const [gender, number] =
-      properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
+      properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
+
     if (number === NUMBERS.INVARIABLE.label)
       return `{{fr-inv|${pron}|inv_titre=${grammarClass}}}`;
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
@@ -169,6 +182,9 @@ function loadLanguages() {
       return `{{fr-inv|${pron}|inv_titre=Singulier}}`;
     if (number === NUMBERS.PLURAL_ONLY.label)
       return `{{fr-inv|${pron}|inv_titre=Pluriel}}`;
+
+    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|fr}}";
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
       return `{{fr-rég|${pron}|mf=oui}}`;
@@ -229,10 +245,12 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.FEMININE_MASCULINE_DIFF,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -248,11 +266,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -264,6 +284,7 @@ function loadLanguages() {
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.FEMININE,
             GENDERS.MASCULINE,
             GENDERS.FEMININE_MASCULINE,
@@ -278,11 +299,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -293,11 +316,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -308,11 +333,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -328,11 +355,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -345,11 +374,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -362,11 +393,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -417,11 +450,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -434,11 +469,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -452,11 +489,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -470,11 +509,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -488,11 +529,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -506,11 +549,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -524,11 +569,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -547,9 +594,25 @@ function loadLanguages() {
    * English language definition.
    */
 
+  /**
+   * Generate the inflections template for English.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @returns An inflections template.
+   */
   const getEnglishModel = (word, grammarClass, properties, pron) => {
     const grammarClass_ = grammarClass.toLowerCase();
-    const number = properties[0];
+    const [number, gender] = properties;
+
+    if (
+      number === NUMBERS.UNKNOWN.label ||
+      number === COMPARATIVES.UNKNOWN.label ||
+      gender === GENDERS.UNKNOWN.label
+    )
+      return "{{boite à flexions demandée|en}}";
+
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
       return `{{en-inv|${pron}|sp=oui}}`;
     if (number === NUMBERS.SINGULAR_ONLY.label)
@@ -641,6 +704,7 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             comparatif: [
+              COMPARATIVES.UNKNOWN,
               COMPARATIVES.COMPARABLE_MORE_MOST,
               COMPARATIVES.COMPARABLE_ER_EST,
               COMPARATIVES.UNCOMPARABLE,
@@ -657,6 +721,7 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -669,6 +734,7 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PROPER_NOUN,
           {
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -741,6 +807,7 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.LAST_NAME,
           {
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -761,14 +828,16 @@ function loadLanguages() {
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.FIRST_NAME,
           {
+            nombre: [
+              NUMBERS.UNKNOWN,
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.SAME_SINGULAR_PLURAL,
+            ],
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
-            ],
-            nombre: [
-              NUMBERS.DIFF_SINGULAR_PLURAL,
-              NUMBERS.SAME_SINGULAR_PLURAL,
             ],
           },
           getEnglishModel
@@ -822,9 +891,17 @@ function loadLanguages() {
    * Italian language definition.
    */
 
+  /**
+   * Generate the inflections template for Italian.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @returns An inflections template.
+   */
   const getItalianModel = (word, grammarClass, properties, pron) => {
     const [gender, number] =
-      properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
+      properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
     if (number === NUMBERS.INVARIABLE.label)
       return `{{it-inv|${pron}|inv_titre=${grammarClass}}}`;
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
@@ -833,6 +910,9 @@ function loadLanguages() {
       return `{{it-inv|${pron}|inv_titre=Singulier}}`;
     if (number === NUMBERS.PLURAL_ONLY.label)
       return `{{it-inv|${pron}|inv_titre=Pluriel}}`;
+
+    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|it}}";
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
       return `{{it-flexion|${pron}|mf=oui}}`;
@@ -881,10 +961,12 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.FEMININE_MASCULINE_DIFF,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -900,11 +982,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -915,6 +999,7 @@ function loadLanguages() {
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
@@ -929,11 +1014,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -944,11 +1031,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -959,11 +1048,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -979,11 +1070,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -996,11 +1089,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1013,11 +1108,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1060,6 +1157,7 @@ function loadLanguages() {
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
@@ -1074,11 +1172,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1091,11 +1191,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1108,11 +1210,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1125,11 +1229,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1142,11 +1248,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1159,11 +1267,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1176,11 +1286,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1198,9 +1310,17 @@ function loadLanguages() {
    * Spanish language definition.
    */
 
+  /**
+   * Generate the inflections template for Spanish.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @returns An inflections template.
+   */
   const getSpanishModel = (word, grammarClass, properties, pron) => {
     const [gender, number] =
-      properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
+      properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
     let mf = "";
     if (gender === GENDERS.FEMININE_MASCULINE.label) mf = "|mf=oui";
 
@@ -1212,6 +1332,9 @@ function loadLanguages() {
       return `{{es-inv|${pron}|inv_titre=Singulier${mf}}}`;
     if (number === NUMBERS.PLURAL_ONLY.label)
       return `{{es-inv|${pron}|inv_titre=Pluriel${mf}}}`;
+
+    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|es}}";
 
     if (!mf) {
       const grammarClass_ = grammarClass.toLowerCase();
@@ -1280,10 +1403,12 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.FEMININE_MASCULINE_DIFF,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1299,11 +1424,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1314,6 +1441,7 @@ function loadLanguages() {
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
@@ -1329,11 +1457,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1344,11 +1474,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1359,11 +1491,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1379,11 +1513,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1396,11 +1532,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1413,11 +1551,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1460,6 +1600,7 @@ function loadLanguages() {
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
@@ -1474,11 +1615,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1491,11 +1634,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1508,11 +1653,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1525,11 +1672,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1542,11 +1691,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1559,11 +1710,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1576,11 +1729,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1592,21 +1747,33 @@ function loadLanguages() {
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
     )
-  ); // it
+  ); // es
 
   /*
    * Portuguese language definition.
    */
 
+  /**
+   * Generate the inflections template for Portuguese.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @returns An inflections template.
+   */
   const getPortugueseModel = (word, grammarClass, properties, pron) => {
     const [gender, number] =
       properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
+
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
       return `{{pt-inv|${pron}|sp=oui}}`;
     if (number === NUMBERS.SINGULAR_ONLY.label)
       return `{{pt-inv|${pron}|inv_titre=Singulier}}`;
     if (number === NUMBERS.PLURAL_ONLY.label)
       return `{{pt-inv|${pron}|inv_titre=Pluriel}}`;
+
+    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|pt}}";
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
       return `{{pt-rég|${pron}|mf=oui}}`;
@@ -1657,10 +1824,12 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.FEMININE_MASCULINE_DIFF,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1676,11 +1845,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1699,11 +1870,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1714,11 +1887,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NUMERAL_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1729,11 +1904,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_ADJECTIVE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
             ],
@@ -1749,11 +1926,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1766,11 +1945,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1783,11 +1964,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PARTITIVE_ARTICLE,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1830,6 +2013,7 @@ function loadLanguages() {
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
           genre: [
+            GENDERS.UNKNOWN,
             GENDERS.MASCULINE,
             GENDERS.FEMININE,
             GENDERS.FEMININE_MASCULINE,
@@ -1844,11 +2028,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1861,11 +2047,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.DEMONSTRATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1878,11 +2066,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1895,11 +2085,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1912,11 +2104,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1929,11 +2123,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1946,11 +2142,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
               NUMBERS.SINGULAR_ONLY,
@@ -1968,6 +2166,14 @@ function loadLanguages() {
    * Esperanto language definition.
    */
 
+  /**
+   * Generate the inflections template for Esperanto.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string]} properties The selected grammatical properties.
+   * @param {string} pron The pronunciation.
+   * @returns An inflections template.
+   */
   const getEsperantoModel = (_, grammarClass, properties, pron) => {
     if (
       [
@@ -1977,7 +2183,7 @@ function loadLanguages() {
         GRAMMATICAL_CLASSES.LAST_NAME.label,
         GRAMMATICAL_CLASSES.PROPER_NOUN.label,
         GRAMMATICAL_CLASSES.CONJUNCTION.label,
-      ].includes(properties[0])
+      ].includes(grammarClass.toLowerCase())
     )
       return `{{eo-flexions|${pron}}}`;
     if (grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.VERB.label)
@@ -2096,8 +2302,17 @@ function loadLanguages() {
    * Breton language definition.
    */
 
+  /**
+   * Generate the inflections template for Breton.
+   * @param {string} word The word.
+   * @param {string} grammarClass The selected grammatical class.
+   * @param {[string] | [string, string]} properties The selected grammatical properties.
+   * @returns An inflections template.
+   */
   const getBretonModel = (word, grammarClass, properties) => {
     const number = properties[1];
+    if (number === NUMBERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|br}}";
     if (number === NUMBERS.DIFF_SINGULAR_PLURAL.label)
       return `{{br-nom|${word}}}`;
     if (number === NUMBERS.COLLECTIVE_SINGULATIVE.label)
@@ -2106,6 +2321,7 @@ function loadLanguages() {
       return `{{br-nom-csp|${word}}}`;
     if (number === NUMBERS.SINGULATIVE_DUAL_PLURAL.label)
       return `{{br-nom-duel|${word}|<!-- DUEL À COMPLÉTER -->}}`;
+
     const grammarClass_ = grammarClass.toLowerCase();
     if (grammarClass_ === GRAMMATICAL_CLASSES.PROPER_NOUN.label)
       return `{{br-nom-pr}}`;
@@ -2182,11 +2398,13 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.NOUN,
           {
             genre: [
+              GENDERS.UNKNOWN,
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
             ],
             nombre: [
+              NUMBERS.UNKNOWN,
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.COLLECTIVE_SINGULATIVE,
               NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL,
@@ -2348,7 +2566,7 @@ function getDefaultLanguage(code) {
   const langData = langs.getLanguage(code, true);
   if (!langData) return null;
   if (langData.aliasOf) code = langData.aliasOf; // We don’t want to use the alias
-  let name = langs.getLanguageName(code, true);
+  const name = langs.getLanguageName(code, true);
   if (!name) return null;
 
   // Add most common classes on top
