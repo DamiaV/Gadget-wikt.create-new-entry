@@ -94,20 +94,32 @@ export default defineComponent({
     }
 
     function onSavePreferences() {
+      /**
+       * @type {import("../types.js").UserPreferences}
+       */
+      const prefs = {
+        minimalMode: editingUserPrefs.minimalMode,
+        formValidityCheckingDisabled:
+          editingUserPrefs.formValidityCheckingDisabled,
+        tabClosingWarningDisabled: editingUserPrefs.tabClosingWarningDisabled,
+        introMessageHidden: editingUserPrefs.resetIntroMessages
+          ? false
+          : userPrefs.introMessageHidden,
+        warningIntroMessageHidden: editingUserPrefs.resetIntroMessages
+          ? false
+          : userPrefs.warningIntroMessageHidden,
+      };
       requests
-        .setUserPreferences(config.userName, editingUserPrefs, config.api)
+        .setUserPreferences(config.userName, prefs, config.api)
         .then(() => {
           openDialog.value = false;
 
-          userPrefs.minimalMode = editingUserPrefs.minimalMode;
+          userPrefs.minimalMode = prefs.minimalMode;
           userPrefs.formValidityCheckingDisabled =
-            editingUserPrefs.formValidityCheckingDisabled;
-          userPrefs.tabClosingWarningDisabled =
-            editingUserPrefs.tabClosingWarningDisabled;
-          if (editingUserPrefs.resetIntroMessages) {
-            userPrefs.introMessageHidden = false;
-            userPrefs.warningIntroMessageHidden = false;
-          }
+            prefs.formValidityCheckingDisabled;
+          userPrefs.tabClosingWarningDisabled = prefs.tabClosingWarningDisabled;
+          userPrefs.introMessageHidden = prefs.introMessageHidden;
+          userPrefs.warningIntroMessageHidden = prefs.warningIntroMessageHidden;
 
           if (typeof mw !== "undefined")
             mw.notify("Vos préférences ont été enregistrées.", {
