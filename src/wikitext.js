@@ -46,8 +46,12 @@ const specialCharacters = [
 const sectionsOrder = [
   "variantes orthographiques",
   "variantes",
+  "anciennes orthographes",
+  "écriture",
   "transcriptions",
+  "translittérations",
   "abréviations",
+  "noms vernaculaires",
   "augmentatifs",
   "diminutifs",
   "synonymes",
@@ -69,6 +73,7 @@ const sectionsOrder = [
   "traductions",
   "dérivés autres langues",
   "faux-amis",
+  "déclinaison",
   "notes",
 ];
 
