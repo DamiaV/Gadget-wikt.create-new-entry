@@ -136,6 +136,7 @@ import wikisData from "./wikis.json";
  *  pronunciations: Pronunciation[],
  *  homophones: RelatedWord[],
  *  nearHomophones: RelatedWord[],
+ *  phoneticMutations: string,
  *  notes: string,
  *  empty: boolean,
  * }} Entry
@@ -259,6 +260,7 @@ function createEmptyEntry(id) {
     pronunciations: [],
     homophones: [],
     nearHomophones: [],
+    phoneticMutations: "",
     notes: "",
     empty: true,
   };

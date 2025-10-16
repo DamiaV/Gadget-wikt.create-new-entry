@@ -102,6 +102,8 @@ function generateWikitext(formData, word) {
   const homophones = [];
   /** @type {[string, import("./types.js").RelatedWord[]][]} */
   const nearHomophones = [];
+  /** @type {[string, string][]} */
+  const phoneticMutations = [];
   const sectionNumbers = {};
   for (const entry of formData.entries) {
     const wordType = entry.wordType;
@@ -118,6 +120,8 @@ function generateWikitext(formData, word) {
     if (entry.homophones.length) homophones.push([label, entry.homophones]);
     if (entry.nearHomophones.length)
       nearHomophones.push([label, entry.nearHomophones]);
+    if (entry.phoneticMutations)
+      phoneticMutations.push([label, entry.phoneticMutations]);
   }
 
   if (langCode !== "conv") {
@@ -130,8 +134,7 @@ function generateWikitext(formData, word) {
 
     if (homophones.length) {
       wikitext += `\n==== {{S|homophones|${langCode}}} ====\n`;
-      for (let i = 0; i < homophones.length; i++) {
-        const [label, homophonesSubList] = homophones[i];
+      for (const [label, homophonesSubList] of homophones) {
         if (homophonesSubList.length === 0) continue;
         wikitext += `; ${label}\n`;
         wikitext += formatRelatedWords(homophonesSubList, langCode);
@@ -140,11 +143,18 @@ function generateWikitext(formData, word) {
 
     if (nearHomophones.length) {
       wikitext += "\n==== {{S|paronymes}} ====\n";
-      for (let i = 0; i < nearHomophones.length; i++) {
-        const [label, nearHomophonesSubList] = nearHomophones[i];
+      for (const [label, nearHomophonesSubList] of nearHomophones) {
         if (nearHomophonesSubList.length === 0) continue;
         wikitext += `; ${label}\n`;
         wikitext += formatRelatedWords(nearHomophonesSubList, langCode);
+      }
+    }
+
+    if (phoneticMutations.length) {
+      wikitext += "\n==== {{S|mutation phonétique}} ====\n";
+      for (const [label, phoneticMutationsSubList] of phoneticMutations) {
+        if (phoneticMutationsSubList.length === 0) continue;
+        wikitext += `; ${label}\n${phoneticMutationsSubList}`;
       }
     }
   }

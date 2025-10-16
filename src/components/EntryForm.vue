@@ -102,6 +102,7 @@ export default defineComponent({
     const pronunciations = ref(props.modelValue.pronunciations || []);
     const homophones = ref(props.modelValue.homophones);
     const nearHomophones = ref(props.modelValue.nearHomophones);
+    const phoneticMutations = ref(props.modelValue.phoneticMutations);
     const notes = ref(props.modelValue.notes);
 
     /**
@@ -129,6 +130,7 @@ export default defineComponent({
         nearHomophones.value.every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)
         ) &&
+        !phoneticMutations.value &&
         !notes.value
       );
     }
@@ -148,6 +150,7 @@ export default defineComponent({
           pronunciations: pronunciations.value,
           homophones: homophones.value,
           nearHomophones: nearHomophones.value,
+          phoneticMutations: phoneticMutations.value,
           notes: notes.value,
           empty: isEmpty(),
         },
@@ -312,6 +315,7 @@ export default defineComponent({
       pronunciations,
       homophones,
       nearHomophones,
+      phoneticMutations,
       notes,
       // Deletion dialog
       dialogPrimaryAction,
@@ -528,6 +532,16 @@ export default defineComponent({
         :section-data="otherSectionsData['paronymes']"
         disable-delete
       ></related-words-list>
+      <input-with-toolbar
+        v-model="phoneticMutations"
+        text-area
+        @update:model-value="fireUpdateEvent()"
+      >
+        <template #label>Modifications phonétiques</template>
+        <template #description>
+          Concerne principalement les langues gaéliques.
+        </template>
+      </input-with-toolbar>
     </cdx-tab>
   </cdx-tabs>
 
