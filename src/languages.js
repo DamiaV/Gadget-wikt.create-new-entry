@@ -16,6 +16,7 @@ const GENDERS = {
     "masc. et fém. identiques",
     "{{mf}}"
   ),
+  NEUTRAL: new types.GrammaticalProperty("neutre", "{{n}}"),
 };
 
 /**
@@ -248,6 +249,7 @@ function loadLanguages() {
               GENDERS.UNKNOWN,
               GENDERS.FEMININE_MASCULINE_DIFF,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -270,6 +272,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -288,6 +291,7 @@ function loadLanguages() {
             GENDERS.FEMININE,
             GENDERS.MASCULINE,
             GENDERS.FEMININE_MASCULINE,
+            GENDERS.NEUTRAL,
           ],
         }),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.VERB, {
@@ -303,6 +307,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -320,6 +325,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -337,6 +343,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -359,6 +366,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -378,6 +386,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -397,6 +406,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -454,6 +464,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -473,6 +484,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -493,6 +505,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -513,6 +526,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -533,6 +547,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -553,6 +568,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
@@ -573,6 +589,7 @@ function loadLanguages() {
               GENDERS.MASCULINE,
               GENDERS.FEMININE,
               GENDERS.FEMININE_MASCULINE,
+              GENDERS.NEUTRAL,
             ],
             nombre: [
               NUMBERS.UNKNOWN,
