@@ -435,7 +435,7 @@ async function fetchFavoriteTemplates(api) {
   const templateIDs = JSON.parse(
     json.query.userinfo.options["templatedata-favorite-templates"]
   );
-  return await searchTemplates(templateIDs, api);
+  return await searchTemplates(templateIDs, "fr", api);
 }
 
 /**
@@ -470,6 +470,7 @@ async function fetchFeaturedTemplates(api) {
   );
   return await searchTemplates(
     json.communityconfiguration.data.FeaturedTemplates[0].titles,
+    "fr",
     api
   );
 }
