@@ -422,6 +422,7 @@ export default defineComponent({
       <div class="cne-form-toolbar">
         <cdx-button
           type="button"
+          weight="quiet"
           :title="showFormFields ? 'Enrouler' : 'Dérouler'"
           :aria-label="showFormFields ? 'Enrouler' : 'Dérouler'"
           @click="showFormFields = !showFormFields"

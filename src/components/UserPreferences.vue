@@ -163,8 +163,9 @@ export default defineComponent({
 <template>
   <cdx-button
     title="Préférences"
-    aria-label="Préférences"
     type="button"
+    weight="quiet"
+    aria-label="Préférences"
     @click="onOpenDialog"
   >
     <cdx-icon :icon="cdxIconConfigure"></cdx-icon>
