@@ -266,7 +266,17 @@ async function setUserPreferences(username, prefs, api) {
   }
 
   const pageTitle = `User:${username}/${userPrefsPageTitle}`;
-  await api.edit(pageTitle, () => JSON.stringify(prefs));
+  const summary = "Sauvegarde des préférences";
+  try {
+    await api.edit(pageTitle, () => ({
+      text: JSON.stringify(prefs),
+      summary,
+    }));
+  } catch (e) {
+    if (e === "nocreate-missing")
+      await api.create(pageTitle, { summary }, JSON.stringify(prefs));
+    else throw e;
+  }
 }
 
 // </nowiki>
