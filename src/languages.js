@@ -2416,6 +2416,11 @@ function containsLanguage(codes, code) {
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/languages.js]]
  */
 export default {
+  GENDERS,
+  NUMBERS,
+  COMPARATIVES,
+  VERBS,
+  GRAMMATICAL_CLASSES,
   loadLanguages,
   getDefaultLanguage,
   containsLanguage,

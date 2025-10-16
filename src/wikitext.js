@@ -1,5 +1,6 @@
 // <nowiki>
 import langs from "./wiki_deps/wikt.core.languages.js";
+import langs2 from "./languages.js";
 import types from "./types.js";
 import strings from "./strings.js";
 import templates from "./templates.js";
@@ -247,9 +248,15 @@ function formatEntry(entry, word, language, number) {
     }
   }
 
-  wikitext += `'''${word}'''`;
+  if (
+    langCode === "conv" &&
+    entry.wordType === langs2.GRAMMATICAL_CLASSES.SCIENTIFIC_NAME.label
+  )
+    wikitext += `'''''${word}'''''`;
+  else wikitext += `'''${word}'''`;
   if (langCode !== "conv")
     wikitext += formatPronunciations(entry.pronunciations, langCode);
+
   if (wordPropertyTemplates.length)
     wikitext += " " + wordPropertyTemplates.join(" ");
   wikitext += "\n";
