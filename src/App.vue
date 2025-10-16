@@ -31,7 +31,6 @@ import {
   cdxIconLabFlask,
   cdxIconLanguage,
 } from "@wikimedia/codex-icons";
-import cookies from "./wiki_deps/wikt.core.cookies.js";
 import pages from "./wiki_deps/wikt.core.page.js";
 import langs from "./languages.js";
 import requests from "./requests.js";
@@ -48,7 +47,7 @@ import ReferencesForm from "./components/ReferencesForm.vue";
 import UserPreferences from "./components/UserPreferences.vue";
 import WikiLink from "./components/WikiLink.vue";
 
-const COOKIE_NAME = "cne_lang";
+const LAST_LANG_STORAGE_KEY = "cne-lang";
 
 // </nowiki>
 /**
@@ -93,7 +92,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     const languages = ref(langs.loadLanguages());
-    const previousLangCode = cookies.getCookie(COOKIE_NAME);
+    const previousLangCode = localStorage.getItem(LAST_LANG_STORAGE_KEY);
     let startLanguage;
     for (const lang of languages.value) {
       if (lang.code === previousLangCode) {
@@ -188,8 +187,7 @@ export default defineComponent({
     function onLanguageSelection(language) {
       if (!languages.value.some((lang) => lang.code === language.code))
         languages.value.push(language);
-      const newLocal = COOKIE_NAME;
-      cookies.setCookie(newLocal, language.code, 30);
+      localStorage.setItem(LAST_LANG_STORAGE_KEY, language.code);
     }
 
     /**

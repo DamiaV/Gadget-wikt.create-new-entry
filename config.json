@@ -5,7 +5,6 @@
         "@wikimedia/codex"
     ],
     "wikiDependencies": [
-        "wikt.core.cookies.js",
         "wikt.core.languages.js",
         "wikt.core.languages.json",
         "wikt.core.page.js",

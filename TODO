@@ -5,7 +5,7 @@
     [x] Permettre de fermer les messages d’en-tête, et avoir un paramètre pour les réafficher.
 [ ] Générer automatiquement une prononciation pour les entrées en espéranto.
 [x] Pour les noms scientifiques, mettre le mot-vedette en italique.
-[ ] Utiliser le localStorage au lieu d’un cookie pour la langue sélectionnée.
+[x] Utiliser le localStorage au lieu d’un cookie pour la langue sélectionnée.
 [ ] Ajouter une option « je ne connais pas le genre » qui insère {{genre ?}}.
 [x] Désactiver les traductions d’exemples pour le français.
 [x] Interdire les caractères wiki spéciaux là où nécessaire.
