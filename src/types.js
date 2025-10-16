@@ -31,9 +31,20 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  api?: mw.Api,
  *  word: string,
+ *  userName: string | null,
  *  userGender: string,
  *  namespaces: Namespace[],
  * }} AppConfig
+ */
+
+/**
+ * @typedef {{
+ *  minimalMode: boolean,
+ *  formValidityCheckingDisabled: boolean,
+ *  tabClosingWarningDisabled: boolean,
+ *  introMessageHidden: boolean,
+ *  warningIntroMessageHidden: boolean,
+ * }} UserPreferences
  */
 
 /*
@@ -217,6 +228,20 @@ import wikisData from "./wikis.json";
  *  empty: boolean,
  * }} ColorIllustration
  */
+
+/**
+ * Create ane empty UserPreferences object.
+ * @returns {UserPreferences} An empty UserPreferences object.
+ */
+function createEmptyUserPreferences() {
+  return {
+    minimalMode: false,
+    formValidityCheckingDisabled: false,
+    tabClosingWarningDisabled: false,
+    introMessageHidden: false,
+    warningIntroMessageHidden: false,
+  };
+}
 
 /**
  * Create an empty Entry object.
@@ -901,6 +926,7 @@ export default {
   entrySectionsData,
   otherSectionsData,
   getWikiUrl,
+  createEmptyUserPreferences,
   createEmptyEntry,
   createEmptyDefinition,
   createEmptyExample,

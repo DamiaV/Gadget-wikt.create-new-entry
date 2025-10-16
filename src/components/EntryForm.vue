@@ -53,6 +53,11 @@ export default defineComponent({
 
   props: {
     /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
+    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -336,7 +341,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cne-entry-action-btns">
+  <div
+    v-show="!$props.userPreferences.minimalMode"
+    class="cne-entry-action-btns"
+  >
     <cdx-button
       v-show="$props.enableDeleteBtn"
       type="button"
@@ -389,18 +397,29 @@ export default defineComponent({
         :can-move-after="i < definitions.length - 1"
         :model-value="definition"
         :language="$props.language"
+        :user-preferences="$props.userPreferences"
         @update:model-value="onDefinitionUpdate"
         @delete="onDeleteDefinition"
         @move:before="onMoveDefinitionUp"
         @move:after="onMoveDefinitionDown"
       ></definition-form>
-      <cdx-button type="button" action="progressive" @click="onAddDefinition">
+
+      <cdx-button
+        v-show="!$props.userPreferences.minimalMode"
+        type="button"
+        action="progressive"
+        @click="onAddDefinition"
+      >
         <cdx-icon :icon="cdxIconAdd"></cdx-icon>
         Ajouter une définition
       </cdx-button>
     </cdx-tab>
 
-    <cdx-tab name="other-sections" label="Notes, variantes, dérivés, etc.">
+    <cdx-tab
+      v-if="!$props.userPreferences.minimalMode"
+      name="other-sections"
+      label="Notes, variantes, dérivés, etc."
+    >
       <cdx-field class="cne-box" is-fieldset>
         <template #label>
           Notes
@@ -427,6 +446,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab
+      v-if="!$props.userPreferences.minimalMode"
       name="pronunciation"
       :disabled="$props.language.code === 'conv'"
       :label="
@@ -472,6 +492,7 @@ export default defineComponent({
         :can-move-before="i > 0"
         :can-move-after="i < pronunciations.length - 1"
         :model-value="pronunciation"
+        :user-preferences="$props.userPreferences"
         @update:model-value="onPronunciationUpdate"
         @delete="onDeletePronunciation"
         @move:before="onMovePronunciationUp"

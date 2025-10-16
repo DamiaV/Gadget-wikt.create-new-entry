@@ -1,10 +1,14 @@
-[ ] Système de préférences
-    [ ] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
-    [ ] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
-    [ ] Option pour désactiver le warning de fermeture de l’onglet.
+[~] Système de préférences
+    [~] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
+    [x] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
+    [x] Option pour désactiver le warning de fermeture de l’onglet.
+    [x] Permettre de fermer les messages d’en-tête, et avoir un paramètre pour les réafficher.
+[ ] Pour les noms scientifiques, mettre le mot-vedette en italique.
+[ ] Utiliser le localStorage au lieu d’un cookie pour la langue sélectionnée.
+[ ] Ajouter une option « je ne connais pas le genre » qui insère {{genre ?}}.
 [x] Désactiver les traductions d’exemples pour le français.
 [x] Interdire les caractères wiki spéciaux là où nécessaire.
-[ ] Prévisualisation en temps réel ?
+[ ] Prévisualisation en temps réel
 [ ] Liens wikis propres à chaque entrée ?
 [ ] Champ pour la section prononciation ?
 [x] Retirer les trailing whitespace du formatage gras/italique.
@@ -15,6 +19,7 @@
 [~] Génération du wikicode.
     [x] Utiliser le code de langue MediaWiki pour les modèles Source-w, etc.
     [x] Utiliser la clé de tri globale pour les catégories supplémentaires.
+    [ ] Pouvoir fonctionner avec des données incomplètes.
     [ ] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
     [ ] Insérer le code généré au bon endroit.
     [ ] Tests.

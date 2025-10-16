@@ -18,7 +18,7 @@ import {
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
 import strings from "../strings.js";
-import types from "../types";
+import types from "../types.js";
 import CollapsedPreview from "./CollapsedPreview.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 
@@ -42,6 +42,11 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
     /**
      * The currently selected language.
      */
@@ -67,7 +72,7 @@ export default defineComponent({
     canMoveAfter: { type: Boolean, default: true },
     /**
      * The Example object to manage.
-     * @type {import("vue").PropType<import("../types").Example>}
+     * @type {import("vue").PropType<import("../types.js").Example>}
      */
     modelValue: { type: Object, required: true },
   },
@@ -245,7 +250,7 @@ export default defineComponent({
     <div v-show="showFields">
       <input-with-toolbar
         v-model="text"
-        required
+        :required="!$props.userPreferences.formValidityCheckingDisabled"
         text-area
         @change="fireUpdateEvent"
       >

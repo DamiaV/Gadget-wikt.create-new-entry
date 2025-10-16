@@ -48,6 +48,11 @@ export default defineComponent({
 
   props: {
     /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
+    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -72,7 +77,7 @@ export default defineComponent({
     canMoveAfter: { type: Boolean, default: true },
     /**
      * The Definition object to manage.
-     * @type {import("vue").PropType<import("../types").Definition>}
+     * @type {import("vue").PropType<import("../types.js").Definition>}
      */
     modelValue: { type: Object, required: true },
   },
@@ -377,7 +382,7 @@ export default defineComponent({
       <div class="cne-definition-form-fields">
         <input-with-toolbar
           v-model="text"
-          required
+          :required="!$props.userPreferences.formValidityCheckingDisabled"
           text-area
           @change="fireUpdateEvent"
         >
@@ -398,7 +403,11 @@ export default defineComponent({
           </template>
         </input-with-toolbar>
 
-        <cdx-field class="cne-examples cne-box" is-fieldset>
+        <cdx-field
+          v-show="!$props.userPreferences.minimalMode"
+          class="cne-examples cne-box"
+          is-fieldset
+        >
           <template #label>
             <cdx-icon :icon="cdxIconQuotes"></cdx-icon>
             Exemples
@@ -435,6 +444,7 @@ export default defineComponent({
               :can-move-after="i < examples.length - 1"
               :model-value="example"
               :language="$props.language"
+              :user-preferences="$props.userPreferences"
               @update:model-value="onExampleUpdate"
               @delete="onDeleteExample"
               @move:before="onMoveExampleUp"
@@ -460,7 +470,11 @@ export default defineComponent({
           ></collapsed-preview>
         </cdx-field>
 
-        <cdx-field class="cne-related-words cne-box" is-fieldset>
+        <cdx-field
+          v-show="!$props.userPreferences.minimalMode"
+          class="cne-related-words cne-box"
+          is-fieldset
+        >
           <template #label>
             <cdx-icon :icon="cdxIconLink"></cdx-icon>
             Mots liés
@@ -494,7 +508,7 @@ export default defineComponent({
           ></collapsed-preview>
         </cdx-field>
 
-        <div v-if="!illustration">
+        <div v-show="!$props.userPreferences.minimalMode" v-if="!illustration">
           <cdx-button
             type="button"
             action="progressive"
@@ -505,8 +519,10 @@ export default defineComponent({
           </cdx-button>
         </div>
         <illustration-form
+          v-show="!$props.userPreferences.minimalMode"
           v-else
           v-model="illustration"
+          :user-preferences="$props.userPreferences"
           @update:model-value="onIllustrationUpdate"
           @delete="onDeleteIllustration"
         ></illustration-form>
@@ -535,7 +551,7 @@ export default defineComponent({
 </template>
 
 <style>
-.cne-definition-form {
+.cne:not(.minimal-ui) .cne-definition-form {
   margin-bottom: 4em;
 }
 

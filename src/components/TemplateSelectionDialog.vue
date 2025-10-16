@@ -238,7 +238,7 @@ export default defineComponent({
           lookupItems.value = items;
         })
         .catch((error) => {
-          console.warn(error);
+          console.warn("[CNE] Error:", error);
           lookupItems.value = [];
         });
     }
@@ -333,13 +333,13 @@ export default defineComponent({
         .fetchFavoriteTemplates(config.api)
         .then((favTemplates) => (favoriteTemplates.value = favTemplates))
         .catch((error) => {
-          console.warn(error);
+          console.warn("[CNE] Error:", error);
         });
       templates
         .fetchFeaturedTemplates(config.api)
         .then((featTemplates) => (featuredTemplates.value = featTemplates))
         .catch((error) => {
-          console.warn(error);
+          console.warn("[CNE] Error:", error);
         });
     }
 

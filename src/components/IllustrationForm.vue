@@ -47,6 +47,11 @@ export default defineComponent({
 
   props: {
     /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
+    /**
      * The Illustration object to manage.
      * @type {import("vue").PropType<import("../types.js").Illustration>}
      */
@@ -238,19 +243,19 @@ export default defineComponent({
             requests
               .getImageFileUrl(fileName.value, config.api)
               .then((url) => (imageUrl.value = url))
-              .catch((error) => console.warn(error));
+              .catch((error) => console.warn("[CNE] Error:", error));
             break;
           case "video":
             requests
               .getVideoFileUrls(fileName.value, config.api)
               .then((sources) => (videoSources.value = sources || {}))
-              .catch((error) => console.warn(error));
+              .catch((error) => console.warn("[CNE] Error:", error));
             break;
           case "audio":
             requests
               .getAudioFileUrls(fileName.value, config.api)
               .then((sources) => (audioSources.value = sources || []))
-              .catch((error) => console.warn(error));
+              .catch((error) => console.warn("[CNE] Error:", error));
             break;
         }
       }
@@ -423,7 +428,7 @@ export default defineComponent({
         :special-characters="[]"
         :validator="fileNameValidator"
         clearable
-        required
+        :required="!$props.userPreferences.formValidityCheckingDisabled"
         @change="onFileNameUpdate"
         @update:model-value="onInput"
         @invalid="onInvalid"
@@ -451,7 +456,7 @@ export default defineComponent({
           v-model.trim="text"
           class="wikitext"
           clearable
-          required
+          :required="!$props.userPreferences.formValidityCheckingDisabled"
           @change="fireUpdateEvent"
           @update:model-value="onInput"
           @invalid="onInvalid"
@@ -468,7 +473,7 @@ export default defineComponent({
         <cdx-text-input
           v-model.trim="color"
           clearable
-          required
+          :required="!$props.userPreferences.formValidityCheckingDisabled"
           @change="fireUpdateEvent"
           @update:model-value="onInput"
           @invalid="onInvalid"
@@ -478,7 +483,7 @@ export default defineComponent({
       <input-with-toolbar
         v-model="description"
         clearable
-        required
+        :required="!$props.userPreferences.formValidityCheckingDisabled"
         @change="fireUpdateEvent"
       >
         <template #label>Légende</template>

@@ -60,8 +60,8 @@
  * v5.9   2025-06-25 Refactor to enable by default.
  * v5.9.1 2025-07-10 Better handling of English adjectives.
  *
- * === v6.x (2025-09-?? -) ===
- * v6.0   2025-09-?? Full rewrite in Vue.js + Codex.
+ * === v6.x (2025-10-?? -) ===
+ * v6.0   2025-10-?? Full rewrite in Vue.js + Codex.
  *
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/main.js]]
  */
@@ -69,6 +69,8 @@
 import { createMwApp } from "vue";
 import user from "./wiki_deps/wikt.core.user.js";
 import pages from "./pages.js";
+import requests from "./requests.js";
+import types from "./types.js";
 import wtext from "./wikitext.js";
 import App from "./App.vue";
 
@@ -79,18 +81,40 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
   const api = new mw.Api({
     userAgent: `Gadget-wikt.create-new-entry/${version}`,
   });
+
+  const username = mw.config.get("wgUserName");
+
+  let prefs;
+  try {
+    prefs = await requests.getUserPreferences(username, api);
+  } catch (e) {
+    if (e.message !== "Missing page") {
+      console.warn("[CNE] Error:", e);
+      mw.notify(
+        "Vos préférences n’ont pas pu être chargées. Essayez de recharger la page.",
+        {
+          type: "error",
+          autoHide: true,
+        }
+      );
+    }
+    prefs = types.createEmptyUserPreferences();
+  }
+
   /**
    * @type {import("./types.js").AppConfig}
    */
   const config = {
     api,
     word: mw.config.get("wgPageName").replaceAll("_", " "),
+    userName: username,
     userGender: await user.getGender(api),
     namespaces: await pages.getNamespacesInfo(api),
   };
 
   const app = createMwApp(App, {
     existingLanguageSections: [], // TODO extract lang codes from edit form
+    userPreferences: prefs,
     /**
      * Called when the form is submitted.
      * @param {import("./types.js").FormData} formData The submitted form data.

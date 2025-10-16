@@ -34,6 +34,7 @@ import {
 import cookies from "./wiki_deps/wikt.core.cookies.js";
 import pages from "./wiki_deps/wikt.core.page.js";
 import langs from "./languages.js";
+import requests from "./requests.js";
 import strings from "./strings.js";
 import types from "./types.js";
 import utils from "./utils.js";
@@ -44,6 +45,7 @@ import ExternalWikiLinks from "./components/ExternalWikiLinks.vue";
 import InputWithToolbar from "./components/InputWithToolbar.vue";
 import LanguageSelector from "./components/LanguageSelector.vue";
 import ReferencesForm from "./components/ReferencesForm.vue";
+import UserPreferences from "./components/UserPreferences.vue";
 import WikiLink from "./components/WikiLink.vue";
 
 const COOKIE_NAME = "cne_lang";
@@ -70,6 +72,7 @@ export default defineComponent({
     LanguageSelector,
     InputWithToolbar,
     ReferencesForm,
+    UserPreferences,
     WikiLink,
   },
 
@@ -79,6 +82,11 @@ export default defineComponent({
      * @type {import("vue").PropType<string[]>}
      */
     existingLanguageSections: { type: Array, default: () => [] },
+    /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("./types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
   },
 
   emits: ["submit"],
@@ -107,6 +115,11 @@ export default defineComponent({
         formData.language.code
       )
     );
+
+    /**
+     * @type {import("vue").Reactive<import("./types.js").UserPreferences>}
+     */
+    const userPrefs = reactive(props.userPreferences);
 
     /**
      * @type {import("./types.js").AppConfig}
@@ -160,7 +173,8 @@ export default defineComponent({
     }
 
     window.addEventListener("beforeunload", (event) => {
-      if (!isEmpty()) event.preventDefault();
+      if (!userPrefs.tabClosingWarningDisabled && !isEmpty())
+        event.preventDefault();
     });
 
     /*
@@ -183,7 +197,6 @@ export default defineComponent({
      * @returns {boolean} True if it is invalid, false if it is valid.
      */
     function isFormInvalid() {
-      console.log(validationLock.anyError(), validationLock._registry); // DEBUG
       /**
        * Check whether the given entry is invalid.
        * @param {import("./types.js").Entry} entry The entry to check.
@@ -286,11 +299,34 @@ export default defineComponent({
     });
 
     /*
+     * Preferences
+     */
+
+    function onSavePreferences() {
+      requests
+        .setUserPreferences(config.userName, userPrefs, config.api)
+        .catch((reason) => {
+          console.warn("[CNE] Error:", reason);
+        });
+    }
+
+    /*
      * Submit
      */
 
     function onSubmit() {
-      if (isFormInvalid()) return;
+      if (!userPrefs.formValidityCheckingDisabled && isFormInvalid()) {
+        if (typeof mw !== "undefined")
+          mw.notify(
+            "Des erreurs sont présentes dans le formulaire. Veuillez les corriger avant d’insérer le code.",
+            {
+              type: "error",
+              title: "Insertion du code impossile",
+              autoHide: true,
+            }
+          );
+        return;
+      }
       ctx.emit("submit", formData);
     }
 
@@ -333,6 +369,9 @@ export default defineComponent({
       showForm,
       showFormFields,
       disableSubmitBtn,
+      // Other
+      config,
+      userPrefs,
       // Icons
       cdxIconCollapse,
       cdxIconExpand,
@@ -354,6 +393,7 @@ export default defineComponent({
       onSubmit,
       onReport,
       sortKeyValidator,
+      onSavePreferences,
       capitalize: strings.capitalize,
     };
   },
@@ -361,7 +401,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="cne">
+  <div :class="{ cne: true, 'minimal-ui': userPrefs.minimalMode }">
     <div v-if="!showForm" class="cne-start-btn">
       <cdx-button
         action="progressive"
@@ -388,6 +428,7 @@ export default defineComponent({
             :icon="showFormFields ? cdxIconCollapse : cdxIconExpand"
           ></cdx-icon>
         </cdx-button>
+        <user-preferences v-model="userPrefs"></user-preferences>
       </div>
 
       <h1>
@@ -395,7 +436,16 @@ export default defineComponent({
       </h1>
 
       <div v-show="showFormFields">
-        <cdx-message type="notice">
+        <cdx-message
+          v-if="!userPrefs.introMessageHidden"
+          type="notice"
+          allow-user-dismiss
+          dismiss-button-label="Fermer"
+          @user-dismissed="
+            userPrefs.introMessageHidden = true;
+            onSavePreferences();
+          "
+        >
           <p>
             Ce gadget permet de créer une section de langue complète en écrivant
             le moins de code possible.
@@ -413,7 +463,16 @@ export default defineComponent({
             en cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
           </p>
         </cdx-message>
-        <cdx-message type="warning">
+        <cdx-message
+          v-if="!userPrefs.warningIntroMessageHidden"
+          type="warning"
+          allow-user-dismiss
+          dismiss-button-label="Fermer"
+          @user-dismissed="
+            userPrefs.warningIntroMessageHidden = true;
+            onSavePreferences();
+          "
+        >
           <strong>
             Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
             code&nbsp;» avant de publier la page, sinon les informations que
@@ -460,7 +519,7 @@ export default defineComponent({
           @update:model-value="onLanguageSelection"
         ></language-selector>
 
-        <cdx-checkbox v-model="formData.stub">
+        <cdx-checkbox v-show="!userPrefs.minimalMode" v-model="formData.stub">
           Ébauche
           <template #description>
             Cochez cette case pour insérer un
@@ -470,6 +529,7 @@ export default defineComponent({
         </cdx-checkbox>
 
         <input-with-toolbar
+          v-show="!userPrefs.minimalMode"
           v-model="formData.sortKey"
           :show-format-buttons="false"
           :special-characters="[]"
@@ -485,6 +545,7 @@ export default defineComponent({
         <hr class="cne-horizontal-separator" />
 
         <cdx-button
+          v-show="!userPrefs.minimalMode"
           type="button"
           class="cne-add-entry-btn"
           action="progressive"
@@ -512,6 +573,7 @@ export default defineComponent({
             <entry-form
               :index="i"
               :language="formData.language"
+              :user-preferences="userPrefs"
               :model-value="entry"
               :enable-delete-btn="formData.entries.length > 1"
               :can-move-before="i > 0"
@@ -523,7 +585,12 @@ export default defineComponent({
             ></entry-form>
           </cdx-tab>
 
-          <cdx-tab name="etymology" label="Étymologie" class="cne-main-tab">
+          <cdx-tab
+            v-if="!userPrefs.minimalMode"
+            name="etymology"
+            label="Étymologie"
+            class="cne-main-tab"
+          >
             <cdx-field class="cne-box" is-fieldset>
               <template #label>
                 <cdx-icon :icon="cdxIconHistory"></cdx-icon>
@@ -545,7 +612,12 @@ export default defineComponent({
             </cdx-field>
           </cdx-tab>
 
-          <cdx-tab name="wiki-links" label="Liens wikis" class="cne-main-tab">
+          <cdx-tab
+            v-if="!userPrefs.minimalMode"
+            name="wiki-links"
+            label="Liens wikis"
+            class="cne-main-tab"
+          >
             <external-wiki-links
               v-model="formData.wikiLinks"
               :language="formData.language"
@@ -553,6 +625,7 @@ export default defineComponent({
           </cdx-tab>
 
           <cdx-tab
+            v-if="!userPrefs.minimalMode"
             name="references"
             label="Bibliographie & imports"
             class="cne-main-tab"
@@ -561,6 +634,7 @@ export default defineComponent({
           </cdx-tab>
 
           <cdx-tab
+            v-if="!userPrefs.minimalMode"
             name="categories"
             :label="
               formData.categories.length
@@ -632,7 +706,7 @@ export default defineComponent({
   align-items: center;
 }
 
-hr.cne-horizontal-separator {
+.cne:not(.minimal-ui) hr.cne-horizontal-separator {
   margin: 2em 0;
 }
 
@@ -648,6 +722,8 @@ a .cdx-icon svg {
 .cne-form-toolbar {
   float: left;
   margin-top: 1em;
+  display: flex;
+  gap: 0.5em;
 }
 
 .cne-language-selector {

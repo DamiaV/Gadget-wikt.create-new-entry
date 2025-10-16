@@ -47,6 +47,11 @@ export default defineComponent({
 
   props: {
     /**
+     * The current user’s preferences.
+     * @type {import("vue").PropType<import("./types.js").UserPreferences>}
+     */
+    userPreferences: { type: Object, required: true },
+    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -314,7 +319,7 @@ export default defineComponent({
       <input-with-toolbar
         v-model="pronunciation"
         input-class="API"
-        required
+        :required="!$props.userPreferences.formValidityCheckingDisabled"
         clearable
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"

@@ -136,7 +136,7 @@ export default defineComponent({
           }));
         })
         .catch((error) => {
-          console.warn(error);
+          console.warn("[CNE] Error:", error);
           lookupItems.value = [];
         });
     }

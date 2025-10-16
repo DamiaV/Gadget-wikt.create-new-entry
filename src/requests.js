@@ -175,6 +175,100 @@ async function getAudioFileUrls(pageName, api) {
   return derivatives;
 }
 
+const userPrefsPageTitle = "Gadget-wikt.create-new-entry.prefs.json";
+
+/**
+ * Fetch the preferences of the current user.
+ * @param {string?} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the browser’s local storage will be used instead.
+ * @returns {Promise<import("./types.js").UserPreferences>} The fetched preferences.
+ */
+async function getUserPreferences(username, api) {
+  if (!username || !api) {
+    const getFlag = (key) => localStorage.getItem(`cne-${key}`) === "true";
+    return {
+      minimalMode: getFlag("minimalMode"),
+      formValidityCheckingDisabled: getFlag("formValidityCheckingDisabled"),
+      tabClosingWarningDisabled: getFlag("tabClosingWarningDisabled"),
+      introMessageHidden: getFlag("introMessageHidden"),
+      warningIntroMessageHidden: getFlag("warningIntroMessageHidden"),
+    };
+  }
+
+  const pageTitle = `User:${username}/${userPrefsPageTitle}`;
+  /**
+   * @typedef {{
+   *  revisions: {
+   *    slots: {
+   *      main: {
+   *        contentmodel: string,
+   *        contentformat: string,
+   *        content: string,
+   *      }
+   *    }
+   *  }[],
+   * }} Page
+   */
+  /**
+   * @type {{
+   *  query: {
+   *    pages: (Page | { missing: true })[],
+   *  },
+   * }}
+   */
+  const json = await queryWikiApi(
+    {
+      action: "query",
+      titles: pageTitle,
+      prop: "revisions",
+      rvprop: "content",
+      rvslots: "*",
+      format: "json",
+      formatversion: "2",
+    },
+    api
+  );
+  const page = json.query.pages[0];
+  if ("missing" in page) throw new Error(`Missing page`);
+
+  const pageData = page.revisions[0].slots.main;
+  if (pageData.contentmodel !== "json")
+    throw new Error(
+      `Invalid contentmodel: expected "json", got "${pageData.contentmodel}"`
+    );
+
+  return JSON.parse(pageData.content);
+}
+
+/**
+ * Save the given user preferences to their user page.
+ * @param {string | null} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
+ * @param {import("./types.js").UserPreferences} prefs The preferences to save.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the browser’s local storage will be used instead.
+ */
+async function setUserPreferences(username, prefs, api) {
+  if (!username || !api) {
+    localStorage.setItem("cne-minimalMode", prefs.minimalMode);
+    localStorage.setItem(
+      "cne-formValidityCheckingDisabled",
+      prefs.formValidityCheckingDisabled
+    );
+    localStorage.setItem(
+      "cne-tabClosingWarningDisabled",
+      prefs.tabClosingWarningDisabled
+    );
+    localStorage.setItem("cne-introMessageHidden", prefs.introMessageHidden);
+    localStorage.setItem(
+      "cne-warningIntroMessageHidden",
+      prefs.warningIntroMessageHidden
+    );
+    return;
+  }
+
+  const pageTitle = `User:${username}/${userPrefsPageTitle}`;
+  await api.edit(pageTitle, () => JSON.stringify(prefs));
+}
+
 // </nowiki>
 /**
  * This module defines async functions to query data from the wiki’s HTTPS API.
@@ -186,4 +280,6 @@ export default {
   getImageFileUrl,
   getVideoFileUrls,
   getAudioFileUrls,
+  getUserPreferences,
+  setUserPreferences,
 };
