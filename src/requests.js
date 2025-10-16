@@ -237,7 +237,14 @@ async function getUserPreferences(username, api) {
       `Invalid contentmodel: expected "json", got "${pageData.contentmodel}"`
     );
 
-  return JSON.parse(pageData.content);
+  const rawPrefs = JSON.parse(pageData.content);
+  return {
+    minimalMode: !!rawPrefs.minimalMode,
+    formValidityCheckingDisabled: !!rawPrefs.formValidityCheckingDisabled,
+    tabClosingWarningDisabled: !!rawPrefs.tabClosingWarningDisabled,
+    introMessageHidden: !!rawPrefs.introMessageHidden,
+    warningIntroMessageHidden: !!rawPrefs.warningIntroMessageHidden,
+  };
 }
 
 /**
