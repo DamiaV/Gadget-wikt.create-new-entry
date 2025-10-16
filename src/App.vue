@@ -158,6 +158,10 @@ export default defineComponent({
     const showFormFields = ref(false);
     const formData = reactive(initialFormData);
 
+    config.generatedPronunciation = formData.language.generatePronunciation(
+      config.word
+    );
+
     function isEmpty() {
       return (
         formData.entries.every((entry) => entry.empty) &&

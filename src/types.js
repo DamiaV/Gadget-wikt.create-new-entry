@@ -31,6 +31,7 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  api?: mw.Api,
  *  word: string,
+ *  generatedPronunciation: string | null,
  *  userName: string | null,
  *  userGender: string,
  *  namespaces: Namespace[],
@@ -641,7 +642,7 @@ class Language {
      * @type {(word: string) => string}
      * @private
      */
-    this._pronGenerator = pronGenerator || (() => "");
+    this._pronGenerator = pronGenerator || (() => null);
     /**
      * @type {boolean}
      * @private
@@ -728,7 +729,7 @@ class Language {
   /**
    * Generates the pronunciation of the given word for this language.
    * @param {string} word The word.
-   * @returns {string} The pronunciation or an empty string if no function was defined in the constructor.
+   * @returns {string | null} The pronunciation or an empty string if no function was defined in the constructor.
    */
   generatePronunciation(word) {
     return this._pronGenerator(word);

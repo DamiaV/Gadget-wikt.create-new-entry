@@ -104,6 +104,18 @@ export default defineComponent({
     const nearHomophones = ref(props.modelValue.nearHomophones);
     const notes = ref(props.modelValue.notes);
 
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+
+    if (pronunciations.value.length === 0 && config.generatedPronunciation) {
+      const pron = types.createEmptyPronunciation();
+      pron.pronunciation = config.generatedPronunciation;
+      pron.empty = false;
+      pronunciations.value.push(pron);
+    }
+
     function isEmpty() {
       return (
         definitions.value.every((def) => def.empty) &&
@@ -291,11 +303,6 @@ export default defineComponent({
       pronunciations.value.splice(pronunciationIndex + 1, 0, pronunciation);
       fireUpdateEvent();
     }
-
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
 
     return {
       // Data
