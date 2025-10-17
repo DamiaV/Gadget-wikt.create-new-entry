@@ -109,6 +109,7 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
     word: mw.config.get("wgPageName").replaceAll("_", " "),
     userName: username,
     userGender: await user.getGender(api),
+    skin: mw.config.get("skin"),
     namespaces: await pages.getNamespacesInfo(api),
   };
 

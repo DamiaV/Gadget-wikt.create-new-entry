@@ -12,7 +12,7 @@
 [x] Ajouter une option « je ne sais pas » pour le genre (insérer {{genre ?}}) et nombre (insérer {{nombre ?}}), et insérer {{boite à flexions demandée}} si nécessaire.
 [x] Désactiver les traductions d’exemples pour le français.
 [x] Interdire les caractères wiki spéciaux là où nécessaire.
-[ ] Prévisualisation en temps réel
+[x] Prévisualisation du formulaire, sans avoir à insérer le code.
 [ ] Liens wikis propres à chaque entrée ?
 [ ] Champ pour la section prononciation ?
 [x] Retirer les trailing whitespace du formatage gras/italique.

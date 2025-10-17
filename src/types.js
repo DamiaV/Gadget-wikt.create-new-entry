@@ -34,6 +34,7 @@ import wikisData from "./wikis.json";
  *  generatedPronunciation: string | null,
  *  userName: string | null,
  *  userGender: string,
+ *  skin: string,
  *  namespaces: Namespace[],
  * }} AppConfig
  */

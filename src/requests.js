@@ -175,6 +175,43 @@ async function getAudioFileUrls(pageName, api) {
   return derivatives;
 }
 
+/**
+ * Render the given wikitext through the wiki’s API.
+ * @param {string} wikitext The wikitext to render.
+ * @param {string} word The current page’s title.
+ * @param {string} skin The internal name of the skin to use.
+ * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @returns The rendered wikitext.
+ */
+async function renderWikitext(wikitext, word, skin, api) {
+  /**
+   * @type {{
+   *  parse: {
+   *    text: string,
+   *  }
+   * }}
+   */
+  const json = await queryWikiApi(
+    {
+      action: "parse",
+      title: word,
+      text: wikitext,
+      contentformat: "text/x-wiki",
+      contentmodel: "wikitext",
+      useskin: skin,
+      disabletoc: true,
+      disablelimitreport: true,
+      disableeditsection: true,
+      preview: true,
+      format: "json",
+      formatversion: 2,
+    },
+    api
+  );
+
+  return json.parse.text;
+}
+
 const userPrefsPageTitle = "Gadget-wikt.create-new-entry.prefs.json";
 
 /**
@@ -297,6 +334,7 @@ export default {
   getImageFileUrl,
   getVideoFileUrls,
   getAudioFileUrls,
+  renderWikitext,
   getUserPreferences,
   setUserPreferences,
 };

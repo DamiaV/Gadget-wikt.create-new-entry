@@ -217,7 +217,7 @@ function escape(wikitext) {
 function formatEntry(entry, word, language, number) {
   const langCode = language.code;
 
-  let wikitext = `\n=== {{${entry.wordType}|${langCode}`;
+  let wikitext = `\n=== {{S|${entry.wordType}|${langCode}`;
   if (number) wikitext += `|num=${number}`;
   wikitext += "}} ===\n";
 
@@ -364,8 +364,10 @@ function formatIllustration(illustration) {
  */
 function formatDefinition(definition, langCode) {
   let wikitext = `# ${definition.text}\n`;
-  for (const example of definition.examples)
-    wikitext += formatExample(example, langCode);
+  if (definition.examples.length)
+    for (const example of definition.examples)
+      wikitext += formatExample(example, langCode);
+  else wikitext += formatExample(types.createEmptyExample(), langCode);
   return wikitext;
 }
 

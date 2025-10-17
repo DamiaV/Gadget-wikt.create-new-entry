@@ -24,6 +24,7 @@ import App from "./App.vue";
     word: "test",
     userName: null,
     userGender: "unknown",
+    skin: "vector-2022",
     namespaces: await pages.getNamespacesInfo(),
   };
 

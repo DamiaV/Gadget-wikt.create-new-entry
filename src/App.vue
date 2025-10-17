@@ -16,11 +16,14 @@ import {
   CdxField,
   CdxIcon,
   CdxMessage,
+  CdxProgressIndicator,
   CdxTab,
   CdxTabs,
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
+  cdxIconArticle,
+  cdxIconClose,
   cdxIconCollapse,
   cdxIconDownload,
   cdxIconError,
@@ -63,6 +66,7 @@ export default defineComponent({
     CdxField,
     CdxIcon,
     CdxMessage,
+    CdxProgressIndicator,
     CdxTab,
     CdxTabs,
     CategoriesSelector,
@@ -114,6 +118,8 @@ export default defineComponent({
         formData.language.code
       )
     );
+    const showPrevisualization = ref(false);
+    const disablePreviewBtn = ref(false);
 
     /**
      * @type {import("vue").Reactive<import("./types.js").UserPreferences>}
@@ -329,7 +335,30 @@ export default defineComponent({
           );
         return;
       }
+      // Hide preview to avoid clutter
+      showPrevisualization.value = false;
       ctx.emit("submit", formData);
+    }
+
+    /**
+     * @type {Readonly<import("vue").ShallowRef<HTMLDivElement>>}
+     */
+    const previewArea = useTemplateRef("previewArea");
+
+    async function onPreview() {
+      disablePreviewBtn.value = true;
+
+      const html = await requests.renderWikitext(
+        wikitext.generateWikitext(formData, config.word),
+        config.word,
+        config.skin,
+        config.api
+      );
+
+      showPrevisualization.value = true;
+      previewArea.value.innerHTML = html;
+
+      disablePreviewBtn.value = false;
     }
 
     /**
@@ -370,11 +399,15 @@ export default defineComponent({
       // Visual
       showForm,
       showFormFields,
+      showPrevisualization,
       disableSubmitBtn,
+      disablePreviewBtn,
       // Other
       config,
       userPrefs,
       // Icons
+      cdxIconArticle,
+      cdxIconClose,
       cdxIconCollapse,
       cdxIconExpand,
       cdxIconDownload,
@@ -393,6 +426,7 @@ export default defineComponent({
       onMoveEntryLeft,
       onMoveEntryRight,
       onSubmit,
+      onPreview,
       onReport,
       sortKeyValidator,
       onSavePreferences,
@@ -418,278 +452,313 @@ export default defineComponent({
       </cdx-button>
     </div>
 
-    <form v-else ref="form" class="cne-box" @submit.prevent="onSubmit">
-      <div class="cne-form-toolbar">
-        <cdx-button
-          type="button"
-          weight="quiet"
-          :title="showFormFields ? 'Enrouler' : 'Dérouler'"
-          :aria-label="showFormFields ? 'Enrouler' : 'Dérouler'"
-          @click="showFormFields = !showFormFields"
-        >
-          <cdx-icon
-            :icon="showFormFields ? cdxIconCollapse : cdxIconExpand"
-          ></cdx-icon>
-        </cdx-button>
-        <user-preferences v-model="userPrefs"></user-preferences>
+    <template v-else>
+      <div v-show="showPrevisualization" class="cne-previsualization cne-box">
+        <div class="cne-form-toolbar">
+          <cdx-button
+            type="button"
+            weight="quiet"
+            title="Fermer cette prévisualisation"
+            aria-label="Fermer cette prévisualisation"
+            @click="showPrevisualization = false"
+          >
+            <cdx-icon :icon="cdxIconClose"></cdx-icon>
+          </cdx-button>
+        </div>
+
+        <h1>Prévisualisation du formulaire</h1>
+        <div ref="previewArea"></div>
       </div>
 
-      <h1>
-        Création d’une section en <em>{{ formData.language.name }}</em>
-      </h1>
+      <form ref="form" class="cne-box" @submit.prevent="onSubmit">
+        <div class="cne-form-toolbar">
+          <cdx-button
+            type="button"
+            weight="quiet"
+            :title="showFormFields ? 'Enrouler' : 'Dérouler'"
+            :aria-label="showFormFields ? 'Enrouler' : 'Dérouler'"
+            @click="showFormFields = !showFormFields"
+          >
+            <cdx-icon
+              :icon="showFormFields ? cdxIconCollapse : cdxIconExpand"
+            ></cdx-icon>
+          </cdx-button>
+          <user-preferences v-model="userPrefs"></user-preferences>
+        </div>
 
-      <div v-show="showFormFields">
-        <cdx-message
-          v-if="!userPrefs.introMessageHidden"
-          type="notice"
-          allow-user-dismiss
-          dismiss-button-label="Fermer"
-          @user-dismissed="
-            userPrefs.introMessageHidden = true;
-            onSavePreferences();
-          "
-        >
-          <p>
-            Ce gadget permet de créer une section de langue complète en écrivant
-            le moins de code possible.
-          </p>
-          <p>
-            Le code sera directement inséré au bon endroit dans la zone
-            d’édition.
+        <h1>
+          Création d’une section en <em>{{ formData.language.name }}</em>
+        </h1>
+
+        <div v-show="showFormFields">
+          <cdx-message
+            v-if="!userPrefs.introMessageHidden"
+            type="notice"
+            allow-user-dismiss
+            dismiss-button-label="Fermer"
+            @user-dismissed="
+              userPrefs.introMessageHidden = true;
+              onSavePreferences();
+            "
+          >
+            <p>
+              Ce gadget permet de créer une section de langue complète en
+              écrivant le moins de code possible.
+            </p>
+            <p>
+              Le code sera directement inséré au bon endroit dans la zone
+              d’édition.
+              <strong>
+                Vérifiez bien que le code généré est correct avant de publier
+                votre modification.
+              </strong>
+            </p>
+            <p>
+              Vous pouvez créer plusieurs sections de types de mots en même
+              temps en cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
+            </p>
+          </cdx-message>
+          <cdx-message
+            v-if="!userPrefs.warningIntroMessageHidden"
+            type="warning"
+            allow-user-dismiss
+            dismiss-button-label="Fermer"
+            @user-dismissed="
+              userPrefs.warningIntroMessageHidden = true;
+              onSavePreferences();
+            "
+          >
             <strong>
-              Vérifiez bien que le code généré est correct avant de publier
-              votre modification.
+              Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
+              code&nbsp;» avant de publier la page, sinon les informations que
+              vous avez entrées seront perdues.
             </strong>
-          </p>
-          <p>
-            Vous pouvez créer plusieurs sections de types de mots en même temps
-            en cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
-          </p>
-        </cdx-message>
-        <cdx-message
-          v-if="!userPrefs.warningIntroMessageHidden"
-          type="warning"
-          allow-user-dismiss
-          dismiss-button-label="Fermer"
-          @user-dismissed="
-            userPrefs.warningIntroMessageHidden = true;
-            onSavePreferences();
-          "
-        >
-          <strong>
-            Assurez-vous de bien cliquer sur le bouton «&nbsp;Insérer le
-            code&nbsp;» avant de publier la page, sinon les informations que
-            vous avez entrées seront perdues.
-          </strong>
-        </cdx-message>
+          </cdx-message>
 
-        <div class="cne-report-bug">
-          <cdx-button
-            type="button"
-            weight="quiet"
-            action="progressive"
-            @click="onReport('bug')"
+          <div class="cne-report-bug">
+            <cdx-button
+              type="button"
+              weight="quiet"
+              action="progressive"
+              @click="onReport('bug')"
+            >
+              <cdx-icon :icon="cdxIconError"></cdx-icon>
+              Signaler un bug
+            </cdx-button>
+            <cdx-button
+              type="button"
+              weight="quiet"
+              action="progressive"
+              @click="onReport('language')"
+            >
+              <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
+              Demander l’ajout d’une langue
+            </cdx-button>
+            <cdx-button
+              type="button"
+              weight="quiet"
+              action="progressive"
+              @click="onReport('feature')"
+            >
+              <cdx-icon :icon="cdxIconLabFlask"></cdx-icon>
+              Suggérer une amélioration
+            </cdx-button>
+          </div>
+
+          <hr class="cne-horizontal-separator" />
+
+          <language-selector
+            v-model="formData.language"
+            :languages="languages"
+            :existing-language-sections="$props.existingLanguageSections"
+            @update:model-value="onLanguageSelection"
+          ></language-selector>
+
+          <cdx-checkbox v-show="!userPrefs.minimalMode" v-model="formData.stub">
+            Ébauche
+            <template #description>
+              Cochez cette case pour insérer un
+              <wiki-link page-title="Modèle:ébauche"
+                >bandeau d’ébauche</wiki-link
+              >.
+            </template>
+          </cdx-checkbox>
+
+          <input-with-toolbar
+            v-show="!userPrefs.minimalMode"
+            v-model="formData.sortKey"
+            :show-format-buttons="false"
+            :special-characters="[]"
+            :validator="sortKeyValidator"
           >
-            <cdx-icon :icon="cdxIconError"></cdx-icon>
-            Signaler un bug
-          </cdx-button>
+            <template #label>Clé de tri</template>
+            <template #description>
+              Cette valeur est utilisée pour trier correctement la page dans les
+              catégories.
+            </template>
+          </input-with-toolbar>
+
+          <hr class="cne-horizontal-separator" />
+
           <cdx-button
+            v-show="!userPrefs.minimalMode"
             type="button"
-            weight="quiet"
+            class="cne-add-entry-btn"
             action="progressive"
-            @click="onReport('language')"
+            @click="onAddEntry"
           >
-            <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
-            Demander l’ajout d’une langue
+            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+            Ajouter une entrée
           </cdx-button>
-          <cdx-button
-            type="button"
-            weight="quiet"
-            action="progressive"
-            @click="onReport('feature')"
+
+          <cdx-tabs v-model:active="activeTab">
+            <cdx-tab
+              v-for="(entry, i) in formData.entries"
+              :key="entry.id"
+              :name="`tab-${entry.id}`"
+              :label="
+                entry.wordType &&
+                formData.language.getGrammarItem(entry.wordType)
+                  ? capitalize(
+                      formData.language.getGrammarItem(entry.wordType)
+                        .grammaticalClass.label
+                    )
+                  : `Entrée ${entry.id}`
+              "
+              class="cne-main-tab"
+            >
+              <entry-form
+                :index="i"
+                :language="formData.language"
+                :user-preferences="userPrefs"
+                :model-value="entry"
+                :enable-delete-btn="formData.entries.length > 1"
+                :can-move-before="i > 0"
+                :can-move-after="i < formData.entries.length - 1"
+                @update:model-value="onEntryUpdate"
+                @delete="onDeleteEntry"
+                @move:before="onMoveEntryLeft"
+                @move:after="onMoveEntryRight"
+              ></entry-form>
+            </cdx-tab>
+
+            <cdx-tab
+              v-if="!userPrefs.minimalMode"
+              name="etymology"
+              label="Étymologie"
+              class="cne-main-tab"
+            >
+              <cdx-field class="cne-box" is-fieldset>
+                <template #label>
+                  <cdx-icon :icon="cdxIconHistory"></cdx-icon>
+                  Étymologie des entrées
+                  <span class="cne-fieldset-btns">
+                    <wiki-link page-title="Aide:Étymologies">
+                      <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+                    </wiki-link>
+
+                    <wiki-link page-title="Convention:Étymologie">
+                      <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+                    </wiki-link>
+                  </span>
+                </template>
+                <input-with-toolbar
+                  v-model="formData.etymology"
+                  text-area
+                ></input-with-toolbar>
+              </cdx-field>
+            </cdx-tab>
+
+            <cdx-tab
+              v-if="!userPrefs.minimalMode"
+              name="wiki-links"
+              label="Liens wikis"
+              class="cne-main-tab"
+            >
+              <external-wiki-links
+                v-model="formData.wikiLinks"
+                :language="formData.language"
+              ></external-wiki-links>
+            </cdx-tab>
+
+            <cdx-tab
+              v-if="!userPrefs.minimalMode"
+              name="references"
+              label="Bibliographie & imports"
+              class="cne-main-tab"
+            >
+              <references-form v-model="formData.references"></references-form>
+            </cdx-tab>
+
+            <cdx-tab
+              v-if="!userPrefs.minimalMode"
+              name="categories"
+              :label="
+                formData.categories.length
+                  ? `Catégories (${formData.categories.length})`
+                  : 'Catégories'
+              "
+              class="cne-main-tab"
+            >
+              <p>
+                Vous pouvez ajouter ci-dessous des catégories pertinentes qui ne
+                sont pas ajoutées par les modèles déjà présents.
+              </p>
+              <p>
+                Par exemple, il est inutile d’ajouter ici les catégories du type
+                «&nbsp;Noms communs en {{ formData.language.name }}&nbsp;» car
+                elles seront ajoutées par le modèle
+                <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
+                automatiquement.
+              </p>
+              <categories-selector
+                v-model="formData.categories"
+              ></categories-selector>
+            </cdx-tab>
+          </cdx-tabs>
+
+          <hr class="cne-horizontal-separator" />
+
+          <!-- Secwet :3 -->
+          <a
+            id=":3"
+            href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
+            target="_blank"
+            title="Boo :3"
           >
-            <cdx-icon :icon="cdxIconLabFlask"></cdx-icon>
-            Suggérer une amélioration
-          </cdx-button>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
+            />
+          </a>
+
+          <div class="bottom-btns">
+            <cdx-button
+              type="submit"
+              action="progressive"
+              weight="primary"
+              :disabled="disableSubmitBtn"
+            >
+              <cdx-icon :icon="cdxIconDownload"></cdx-icon>
+              Insérer le code
+            </cdx-button>
+
+            <cdx-button
+              type="button"
+              :disabled="disablePreviewBtn"
+              @click="onPreview"
+            >
+              <cdx-icon :icon="cdxIconArticle"></cdx-icon>
+              Prévisualiser
+            </cdx-button>
+
+            <cdx-progress-indicator
+              v-show="disablePreviewBtn"
+              aria-label="Chargement en cours…"
+            ></cdx-progress-indicator>
+          </div>
         </div>
-
-        <hr class="cne-horizontal-separator" />
-
-        <language-selector
-          v-model="formData.language"
-          :languages="languages"
-          :existing-language-sections="$props.existingLanguageSections"
-          @update:model-value="onLanguageSelection"
-        ></language-selector>
-
-        <cdx-checkbox v-show="!userPrefs.minimalMode" v-model="formData.stub">
-          Ébauche
-          <template #description>
-            Cochez cette case pour insérer un
-            <wiki-link page-title="Modèle:ébauche">bandeau d’ébauche</wiki-link
-            >.
-          </template>
-        </cdx-checkbox>
-
-        <input-with-toolbar
-          v-show="!userPrefs.minimalMode"
-          v-model="formData.sortKey"
-          :show-format-buttons="false"
-          :special-characters="[]"
-          :validator="sortKeyValidator"
-        >
-          <template #label>Clé de tri</template>
-          <template #description>
-            Cette valeur est utilisée pour trier correctement la page dans les
-            catégories.
-          </template>
-        </input-with-toolbar>
-
-        <hr class="cne-horizontal-separator" />
-
-        <cdx-button
-          v-show="!userPrefs.minimalMode"
-          type="button"
-          class="cne-add-entry-btn"
-          action="progressive"
-          @click="onAddEntry"
-        >
-          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-          Ajouter une entrée
-        </cdx-button>
-
-        <cdx-tabs v-model:active="activeTab">
-          <cdx-tab
-            v-for="(entry, i) in formData.entries"
-            :key="entry.id"
-            :name="`tab-${entry.id}`"
-            :label="
-              entry.wordType && formData.language.getGrammarItem(entry.wordType)
-                ? capitalize(
-                    formData.language.getGrammarItem(entry.wordType)
-                      .grammaticalClass.label
-                  )
-                : `Entrée ${entry.id}`
-            "
-            class="cne-main-tab"
-          >
-            <entry-form
-              :index="i"
-              :language="formData.language"
-              :user-preferences="userPrefs"
-              :model-value="entry"
-              :enable-delete-btn="formData.entries.length > 1"
-              :can-move-before="i > 0"
-              :can-move-after="i < formData.entries.length - 1"
-              @update:model-value="onEntryUpdate"
-              @delete="onDeleteEntry"
-              @move:before="onMoveEntryLeft"
-              @move:after="onMoveEntryRight"
-            ></entry-form>
-          </cdx-tab>
-
-          <cdx-tab
-            v-if="!userPrefs.minimalMode"
-            name="etymology"
-            label="Étymologie"
-            class="cne-main-tab"
-          >
-            <cdx-field class="cne-box" is-fieldset>
-              <template #label>
-                <cdx-icon :icon="cdxIconHistory"></cdx-icon>
-                Étymologie des entrées
-                <span class="cne-fieldset-btns">
-                  <wiki-link page-title="Aide:Étymologies">
-                    <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-                  </wiki-link>
-
-                  <wiki-link page-title="Convention:Étymologie">
-                    <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-                  </wiki-link>
-                </span>
-              </template>
-              <input-with-toolbar
-                v-model="formData.etymology"
-                text-area
-              ></input-with-toolbar>
-            </cdx-field>
-          </cdx-tab>
-
-          <cdx-tab
-            v-if="!userPrefs.minimalMode"
-            name="wiki-links"
-            label="Liens wikis"
-            class="cne-main-tab"
-          >
-            <external-wiki-links
-              v-model="formData.wikiLinks"
-              :language="formData.language"
-            ></external-wiki-links>
-          </cdx-tab>
-
-          <cdx-tab
-            v-if="!userPrefs.minimalMode"
-            name="references"
-            label="Bibliographie & imports"
-            class="cne-main-tab"
-          >
-            <references-form v-model="formData.references"></references-form>
-          </cdx-tab>
-
-          <cdx-tab
-            v-if="!userPrefs.minimalMode"
-            name="categories"
-            :label="
-              formData.categories.length
-                ? `Catégories (${formData.categories.length})`
-                : 'Catégories'
-            "
-            class="cne-main-tab"
-          >
-            <p>
-              Vous pouvez ajouter ci-dessous des catégories pertinentes qui ne
-              sont pas ajoutées par les modèles déjà présents.
-            </p>
-            <p>
-              Par exemple, il est inutile d’ajouter ici les catégories du type
-              «&nbsp;Noms communs en {{ formData.language.name }}&nbsp;» car
-              elles seront ajoutées par le modèle
-              <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
-              automatiquement.
-            </p>
-            <categories-selector
-              v-model="formData.categories"
-            ></categories-selector>
-          </cdx-tab>
-        </cdx-tabs>
-
-        <hr class="cne-horizontal-separator" />
-
-        <!-- Secwet :3 -->
-        <a
-          id=":3"
-          href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
-          target="_blank"
-          title="Boo :3"
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
-          />
-        </a>
-
-        <div class="bottom-btns">
-          <cdx-button
-            type="submit"
-            action="progressive"
-            weight="primary"
-            :disabled="disableSubmitBtn"
-          >
-            <cdx-icon :icon="cdxIconDownload"></cdx-icon>
-            Insérer le code
-          </cdx-button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </template>
   </div>
 </template>
 
@@ -722,6 +791,10 @@ a .cdx-icon svg {
   text-align: center;
 }
 
+.cne-previsualization {
+  margin-bottom: 1em;
+}
+
 .cne-form-toolbar {
   float: left;
   margin-top: 1em;
@@ -751,6 +824,7 @@ a .cdx-icon svg {
 
 .cne .bottom-btns {
   display: flex;
+  gap: 0.5em;
   justify-content: center;
   margin: 1em 0;
 }
