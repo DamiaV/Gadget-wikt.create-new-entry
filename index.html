@@ -10,6 +10,14 @@
 </head>
 
 <body>
+  <header>
+    <a href="/?logged_in" class="cdx-button cdx-button--action-normal cdx-button--weight-quiet cdx-button--size-medium">Switch to logged-in mode</a>
+    <a href="/" class="cdx-button cdx-button--action-normal cdx-button--weight-quiet cdx-button--size-medium">Switch to logged-out mode</a>
+  </header>
+  <script>
+    if (new URLSearchParams(location.search).has("logged_in")) document.querySelector("header > a:first-child").remove()
+    else document.querySelector("header > a:nth-child(2)").remove()
+  </script>
   <div id="gadget-create-new-entry"></div>
   <textarea id="edit-area" rows="30"></textarea>
   <script type="module" src="/src/mocks.js"></script>

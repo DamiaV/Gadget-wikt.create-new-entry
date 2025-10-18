@@ -8,6 +8,14 @@ body {
     margin: 0 auto;
 }
 
+header {
+    margin: 1em 0;
+}
+
+header a.cdx-button {
+    text-decoration: none;
+}
+
 #edit-area {
     width: 100%;
 }
