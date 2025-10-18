@@ -583,7 +583,7 @@ class GrammaticalItem {
  *  readonly grammarItems: Record<string, GrammaticalItem>,
  *  readonly isSupported: boolean,
  *  readonly hasPronunciationAppendix: boolean,
- *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem,
+ *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem | undefined,
  *  readonly generatePronunciation: (word: string) => string,
  * }} Language
  */

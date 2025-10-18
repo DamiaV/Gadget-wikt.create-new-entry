@@ -114,9 +114,11 @@ function generateWikitext(formData, word) {
     wikitext += formatEntry(entry, word, language, number);
 
     const label =
-      strings.capitalize(
-        formData.language.getGrammarItem(wordType).grammaticalClass.label
-      ) + ` ${number}`;
+      (wordType
+        ? strings.capitalize(
+            formData.language.getGrammarItem(wordType).grammaticalClass.label
+          )
+        : "Entrée") + ` ${number}`;
     if (entry.homophones.length) homophones.push([label, entry.homophones]);
     if (entry.nearHomophones.length)
       nearHomophones.push([label, entry.nearHomophones]);
@@ -224,19 +226,25 @@ function formatEntry(entry, word, language, number) {
   const grammarItem = language.getGrammarItem(entry.wordType);
   const wordPropertyTemplates = [];
   const wordPropertyLabels = [];
-  for (const [propertyType, property] of Object.entries(entry.wordProperties)) {
-    const wordProperty = grammarItem.getProperty(propertyType, property);
-    if (wordProperty.template)
-      wordPropertyTemplates.push(
-        interpolateString(wordProperty.template, langCode)
-      );
-    wordPropertyLabels.push(wordProperty.label);
+  if (grammarItem) {
+    for (const [propertyType, property] of Object.entries(
+      entry.wordProperties
+    )) {
+      const wordProperty = grammarItem.getProperty(propertyType, property);
+      if (wordProperty.template)
+        wordPropertyTemplates.push(
+          interpolateString(wordProperty.template, langCode)
+        );
+      wordPropertyLabels.push(wordProperty.label);
+    }
   }
-  const inflectionsTemplate = grammarItem.getInflectionsTemplate(
-    word,
-    wordPropertyLabels,
-    entry.pronunciations.length ? entry.pronunciations[0].pronunciation : ""
-  );
+  const inflectionsTemplate = grammarItem
+    ? grammarItem.getInflectionsTemplate(
+        word,
+        wordPropertyLabels,
+        entry.pronunciations.length ? entry.pronunciations[0].pronunciation : ""
+      )
+    : "";
   if (inflectionsTemplate) wikitext += inflectionsTemplate + "\n";
 
   /** @type {string[]} */
