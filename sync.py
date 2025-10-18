@@ -96,6 +96,7 @@ def commonjs_to_esm(commonjs_code: str, path: pathlib.Path, config: w.Config) ->
         'from "@wikimedia/codex-icons"',
         esm_code,
     )
+    esm_code = re.sub(r"(?<=\b)createMwApp(?=\b)", "createApp", esm_code)
     if "wiki_deps" not in path.parts:
         for dep in config.wiki_deps:
             esm_code = re.sub(
@@ -125,6 +126,7 @@ def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
             rf'from "{prefix}\1";',
             commonjs_code,
         )
+    commonjs_code = re.sub(r"(?<=\b)createApp(?=\b)", "createMwApp", commonjs_to_esm)
     commonjs_code = re.sub(
         r"import (.+?) from (.+?);",
         r"const \1 = require(\2);",

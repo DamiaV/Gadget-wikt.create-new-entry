@@ -1,6 +1,5 @@
 // <nowiki>
 import pages from "./pages.js";
-import requests from "./requests.js";
 
 /**
  * @typedef {{
@@ -300,7 +299,7 @@ function parseTemplateFormat(formatString) {
  * Search for templates matching the given search query or list of page titles or page IDs.
  * @param {string | string[] | number[]} query A query or list of page titles or page IDs.
  * @param {string} langCode The language code for the labels.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<TemplateData[]>} A list of matching template’s data.
  */
 async function searchTemplates(query, langCode, api) {
@@ -324,7 +323,7 @@ async function searchTemplates(query, langCode, api) {
   /**
    * @type {{pages: Record<string, ApiTemplateData | ApiNoTemplateData>}}}
    */
-  const json = await requests.queryWikiApi(params, api);
+  const json = await api.get(params);
 
   /**
    * @type {TemplateData[]}
@@ -405,7 +404,7 @@ async function searchTemplates(query, langCode, api) {
 
 /**
  * Fetch the list of the current user’s favorite templates.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<TemplateData[]>} An array containing the page IDs of each favorite template.
  */
 async function fetchFavoriteTemplates(api) {
@@ -420,15 +419,12 @@ async function fetchFavoriteTemplates(api) {
    *  }
    * }}
    */
-  const json = await requests.queryWikiApi(
-    {
-      action: "query",
-      meta: "userinfo",
-      uiprop: "options",
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    meta: "userinfo",
+    uiprop: "options",
+    format: "json",
+  });
   /**
    * @type {number[]}
    */
@@ -440,7 +436,7 @@ async function fetchFavoriteTemplates(api) {
 
 /**
  * Fetch the list of the wiki’s featured templates.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<TemplateData[]>} An array containing the page IDs of each featured template.
  */
 async function fetchFeaturedTemplates(api) {
@@ -457,17 +453,14 @@ async function fetchFeaturedTemplates(api) {
    *  }
    * }}
    */
-  const json = await requests.queryWikiApi(
-    {
-      action: "query",
-      meta: "communityconfiguration",
-      ccrprovider: "TemplateData-FeaturedTemplates",
-      ccrassertversion: "1.0.0",
-      formatversion: 2,
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    meta: "communityconfiguration",
+    ccrprovider: "TemplateData-FeaturedTemplates",
+    ccrassertversion: "1.0.0",
+    formatversion: 2,
+    format: "json",
+  });
   return await searchTemplates(
     json.communityconfiguration.data.FeaturedTemplates[0].titles,
     "fr",

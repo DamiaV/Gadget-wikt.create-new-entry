@@ -14,6 +14,8 @@
         "wikt.core.word-types.json"
     ],
     "ignoredFiles": [
-        "main-dev.js"
+        "mocks.js",
+        "mw.config.values.logged-in.json",
+        "mw.config.values.logged-out.json"
     ]
 }

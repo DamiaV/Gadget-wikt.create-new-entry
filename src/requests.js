@@ -1,23 +1,8 @@
 // <nowiki>
 /**
- * Send a GET query to the wiki’s API.
- * @param {Record<string, any>} params The request’s GET parameters.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
- * @returns {Promise<Record<string, any>>}
- */
-async function queryWikiApi(params, api) {
-  if (api) return await api.get(params);
-  // For local testing
-  const args = new URLSearchParams();
-  for (const [name, value] of Object.entries(params)) args.append(name, value);
-  const response = await fetch(`https://fr.wiktionary.org/w/api.php?${args}`);
-  return await response.json();
-}
-
-/**
  * Get the static URL for the given image file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<string | null>} The corresponding static URl or null if the file does not exist.
  */
 async function getImageFileUrl(pageName, api) {
@@ -35,16 +20,13 @@ async function getImageFileUrl(pageName, api) {
    *  }
    * }}
    */
-  const json = await queryWikiApi(
-    {
-      action: "query",
-      titles: `File:${pageName}`,
-      prop: "imageinfo",
-      iiprop: "url|mediatype",
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    titles: `File:${pageName}`,
+    prop: "imageinfo",
+    iiprop: "url|mediatype",
+    format: "json",
+  });
   const { imageinfo } = json.query.pages["-1"];
   if (!imageinfo) return null;
 
@@ -69,7 +51,7 @@ async function getImageFileUrl(pageName, api) {
 /**
  * Get the static URLs for the given video file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<VideoFileSources | null>} The corresponding static URls or null if the file does not exist.
  */
 async function getVideoFileUrls(pageName, api) {
@@ -89,16 +71,13 @@ async function getVideoFileUrls(pageName, api) {
    *  }
    * }}
    */
-  const json = await queryWikiApi(
-    {
-      action: "query",
-      titles: fileName,
-      prop: "videoinfo",
-      viprop: "derivatives|size|mediatype",
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    titles: fileName,
+    prop: "videoinfo",
+    viprop: "derivatives|size|mediatype",
+    format: "json",
+  });
   const { videoinfo } = json.query.pages["-1"];
   if (!videoinfo) return null;
 
@@ -116,17 +95,14 @@ async function getVideoFileUrls(pageName, api) {
    *  }
    * }}
    */
-  const json2 = await queryWikiApi(
-    {
-      action: "query",
-      titles: fileName,
-      prop: "videoinfo",
-      viprop: "url",
-      viurlwidth: width,
-      format: "json",
-    },
-    api
-  );
+  const json2 = await api.get({
+    action: "query",
+    titles: fileName,
+    prop: "videoinfo",
+    viprop: "url",
+    viurlwidth: width,
+    format: "json",
+  });
   const { videoinfo: thumbVideoInfo } = json2.query.pages["-1"];
 
   return {
@@ -138,7 +114,7 @@ async function getVideoFileUrls(pageName, api) {
 /**
  * Get the static URLs for the given audio file page on Commons.
  * @param {string} pageName The wiki page name on Commons.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<MediaFileSource[] | null>} The corresponding static URls or null if the file does not exist.
  */
 async function getAudioFileUrls(pageName, api) {
@@ -156,16 +132,13 @@ async function getAudioFileUrls(pageName, api) {
    *  }
    * }}
    */
-  const json = await queryWikiApi(
-    {
-      action: "query",
-      titles: `File:${pageName}`,
-      prop: "videoinfo",
-      viprop: "derivatives|mediatype",
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    titles: `File:${pageName}`,
+    prop: "videoinfo",
+    viprop: "derivatives|mediatype",
+    format: "json",
+  });
   const { videoinfo } = json.query.pages["-1"];
   if (!videoinfo) return null;
 
@@ -180,7 +153,7 @@ async function getAudioFileUrls(pageName, api) {
  * @param {string} wikitext The wikitext to render.
  * @param {string} word The current page’s title.
  * @param {string} skin The internal name of the skin to use.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns The rendered wikitext.
  */
 async function renderWikitext(wikitext, word, skin, api) {
@@ -191,23 +164,20 @@ async function renderWikitext(wikitext, word, skin, api) {
    *  }
    * }}
    */
-  const json = await queryWikiApi(
-    {
-      action: "parse",
-      title: word,
-      text: wikitext,
-      contentformat: "text/x-wiki",
-      contentmodel: "wikitext",
-      useskin: skin,
-      disabletoc: true,
-      disablelimitreport: true,
-      disableeditsection: true,
-      preview: true,
-      format: "json",
-      formatversion: 2,
-    },
-    api
-  );
+  const json = await api.get({
+    action: "parse",
+    title: word,
+    text: wikitext,
+    contentformat: "text/x-wiki",
+    contentmodel: "wikitext",
+    useskin: skin,
+    disabletoc: true,
+    disablelimitreport: true,
+    disableeditsection: true,
+    preview: true,
+    format: "json",
+    formatversion: 2,
+  });
 
   return json.parse.text;
 }
@@ -217,11 +187,11 @@ const userPrefsPageTitle = "Gadget-wikt.create-new-entry.prefs.json";
 /**
  * Fetch the preferences of the current user.
  * @param {string?} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the browser’s local storage will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<import("./types.js").UserPreferences>} The fetched preferences.
  */
 async function getUserPreferences(username, api) {
-  if (!username || !api) {
+  if (!username) {
     const getFlag = (key) => localStorage.getItem(`cne-${key}`) === "true";
     return {
       minimalMode: getFlag("minimalMode"),
@@ -253,18 +223,15 @@ async function getUserPreferences(username, api) {
    *  },
    * }}
    */
-  const json = await queryWikiApi(
-    {
-      action: "query",
-      titles: pageTitle,
-      prop: "revisions",
-      rvprop: "content",
-      rvslots: "*",
-      format: "json",
-      formatversion: "2",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    titles: pageTitle,
+    prop: "revisions",
+    rvprop: "content",
+    rvslots: "*",
+    format: "json",
+    formatversion: "2",
+  });
   const page = json.query.pages[0];
   if ("missing" in page) throw new Error(`Missing page`);
 
@@ -288,10 +255,10 @@ async function getUserPreferences(username, api) {
  * Save the given user preferences to their user page.
  * @param {string | null} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
  * @param {import("./types.js").UserPreferences} prefs The preferences to save.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the browser’s local storage will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  */
 async function setUserPreferences(username, prefs, api) {
-  if (!username || !api) {
+  if (!username) {
     localStorage.setItem("cne-minimalMode", prefs.minimalMode);
     localStorage.setItem(
       "cne-formValidityCheckingDisabled",
@@ -330,7 +297,6 @@ async function setUserPreferences(username, prefs, api) {
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/requests.js]]
  */
 export default {
-  queryWikiApi,
   getImageFileUrl,
   getVideoFileUrls,
   getAudioFileUrls,

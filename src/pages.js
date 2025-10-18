@@ -1,6 +1,4 @@
 // <nowiki>
-import requests from "./requests.js";
-
 const specialQueryChars = '~*\\?-"!';
 
 /**
@@ -18,7 +16,7 @@ function escapeQuery(query) {
  * Search for pages that match the given query.
  * @param {string} query A query.
  * @param {number[]?} namespaces A list of namespaces IDs to search into. If null or empty, all namespaces will be searched.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<string[]>} The list of matching page titles.
  */
 async function searchPages(query, namespaces, api) {
@@ -29,18 +27,14 @@ async function searchPages(query, namespaces, api) {
    *  }
    * }}
    */
-  const json = await requests.queryWikiApi(
-    {
-      action: "query",
-      generator: "search",
-      gsrsearch: escapeQuery(query) + "*",
-      gsrnamespace:
-        namespaces && namespaces.length ? namespaces.join("|") : "*",
-      gsrlimit: 50,
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    generator: "search",
+    gsrsearch: escapeQuery(query) + "*",
+    gsrnamespace: namespaces && namespaces.length ? namespaces.join("|") : "*",
+    gsrlimit: 50,
+    format: "json",
+  });
 
   const results = [];
   if (json.query)
@@ -52,7 +46,7 @@ async function searchPages(query, namespaces, api) {
 
 /**
  * Fetch information about the wiki’s namespaces.
- * @param {mw.Api?} api The MediaWiki API to use. If no value is provided, the builtin `fetch()` function will be used instead.
+ * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<import("./types.js").Namespace[]>}
  */
 async function getNamespacesInfo(api) {
@@ -75,16 +69,13 @@ async function getNamespacesInfo(api) {
    *  }
    * }}
    */
-  const json = await requests.queryWikiApi(
-    {
-      action: "query",
-      meta: "siteinfo",
-      siprop: "namespaces|namespacealiases",
-      formatversion: 2,
-      format: "json",
-    },
-    api
-  );
+  const json = await api.get({
+    action: "query",
+    meta: "siteinfo",
+    siprop: "namespaces|namespacealiases",
+    formatversion: 2,
+    format: "json",
+  });
 
   const { namespacealiases: namespaceAliases, namespaces } = json.query;
   /**
