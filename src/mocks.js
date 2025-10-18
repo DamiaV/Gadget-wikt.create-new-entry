@@ -6,6 +6,14 @@ import mw_config_logged_in from "./mw.config.values.logged-in.json";
 
 class Api {
   /**
+   * @param {mw.Api.Options} [options] See {@link mw.Api.Options}. This can also be overridden for
+   *  each request by passing them to {@link get()} or {@link post()} (or directly to {@link ajax()}) later on.
+   */
+  constructor(options) {
+    this._options = options;
+  }
+
+  /**
    * @param {string | mw.Title} title Page title (True type: TitleLike)
    * @param {Record<string, string | number | boolean | File | string[] | number[] | undefined>} params Edit API parameters (True type: ApiEditPageParams)
    * @param {string} content Page content
@@ -33,7 +41,14 @@ class Api {
     const args = new URLSearchParams();
     for (const [name, value] of Object.entries(parameters))
       args.append(name, value);
-    const response = await fetch(`https://fr.wiktionary.org/w/api.php?${args}`);
+    const response = await fetch(
+      `https://fr.wiktionary.org/w/api.php?${args}`,
+      {
+        headers: {
+          "Api-User-Agent": this._options.userAgent,
+        },
+      }
+    );
     return await response.json();
   }
 }
