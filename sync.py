@@ -126,7 +126,7 @@ def esm_to_commonjs(esm_code: str, path: pathlib.Path) -> str:
             rf'from "{prefix}\1";',
             commonjs_code,
         )
-    commonjs_code = re.sub(r"(?<=\b)createApp(?=\b)", "createMwApp", commonjs_to_esm)
+    commonjs_code = re.sub(r"(?<=\b)createApp(?=\b)", "createMwApp", commonjs_code)
     commonjs_code = re.sub(
         r"import (.+?) from (.+?);",
         r"const \1 = require(\2);",
