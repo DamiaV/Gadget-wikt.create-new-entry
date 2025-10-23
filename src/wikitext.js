@@ -104,13 +104,26 @@ function generateWikitext(formData, word) {
   const nearHomophones = [];
   /** @type {[string, string][]} */
   const phoneticMutations = [];
-  const sectionNumbers = {};
+
+  // Count the occurences of each word type
+  /** @type {Record<string, number>} */
+  const wordTypeCounts = {};
   for (const entry of formData.entries) {
     const wordType = entry.wordType;
-    let number;
-    // FIXME only show number for word type if total is > 1
-    if (sectionNumbers[wordType]) number = ++sectionNumbers[wordType];
-    else number = sectionNumbers[wordType] = 1;
+    if (wordTypeCounts[wordType]) wordTypeCounts[wordType]++;
+    else wordTypeCounts[wordType] = 1;
+  }
+
+  /** @type {Record<string, number>} */
+  const wordTypeCounters = {};
+  for (const entry of formData.entries) {
+    const wordType = entry.wordType;
+    let number = 0;
+    // Only add a number to word types that appear more than once
+    if (wordTypeCounts[wordType] > 1) {
+      if (wordTypeCounters[wordType]) number = ++wordTypeCounters[wordType];
+      else number = wordTypeCounters[wordType] = 1;
+    }
     wikitext += formatEntry(entry, word, language, number);
 
     const label =
@@ -118,7 +131,7 @@ function generateWikitext(formData, word) {
         ? strings.capitalize(
             formData.language.getGrammarItem(wordType).grammaticalClass.label
           )
-        : "Entrée") + ` ${number}`;
+        : "Entrée") + (number ? ` ${number}` : "");
     if (entry.homophones.length) homophones.push([label, entry.homophones]);
     if (entry.nearHomophones.length)
       nearHomophones.push([label, entry.nearHomophones]);
