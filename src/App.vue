@@ -187,7 +187,7 @@ export default defineComponent({
       console.log(submitted.value);
       if (
         !userPrefs.tabClosingWarningDisabled &&
-        !submitted.value && // FIXME ignored?
+        !submitted.value &&
         !isEmpty()
       )
         event.preventDefault();
