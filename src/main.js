@@ -68,10 +68,11 @@
 // <nowiki>
 import { createApp } from "vue";
 import user from "./wiki_deps/wikt.core.user.js";
+import editor from "./editor.js";
 import pages from "./pages.js";
 import requests from "./requests.js";
 import types from "./types.js";
-import wtext from "./wikitext.js";
+import wikitext from "./wikitext.js";
 import App from "./App.vue";
 
 const version = "6.0";
@@ -114,17 +115,15 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
   };
 
   const app = createApp(App, {
-    existingLanguageSections: [], // TODO extract lang codes from edit form
+    existingLanguageSections: editor.extractLanguageCodes(),
     userPreferences: prefs,
     /**
      * Called when the form is submitted.
      * @param {import("./types.js").FormData} formData The submitted form data.
      */
     onSubmit(formData) {
-      console.log(formData);
-      const wikitext = wtext.generateWikitext(formData, config.word);
-      console.log(wikitext);
-      // TODO insert wikitext
+      const text = wikitext.generateWikitext(formData, config.word);
+      editor.insertWikitext(text, formData.language.code);
     },
   });
   app.provide("config", config);

@@ -168,6 +168,8 @@ export default defineComponent({
       config.word
     );
 
+    const submitted = ref(false);
+
     function isEmpty() {
       return (
         formData.entries.every((entry) => entry.empty) &&
@@ -182,7 +184,11 @@ export default defineComponent({
     }
 
     window.addEventListener("beforeunload", (event) => {
-      if (!userPrefs.tabClosingWarningDisabled && !isEmpty())
+      if (
+        !userPrefs.tabClosingWarningDisabled &&
+        !submitted.value &&
+        !isEmpty()
+      )
         event.preventDefault();
     });
 
@@ -337,6 +343,7 @@ export default defineComponent({
       }
       // Hide preview to avoid clutter
       showPrevisualization.value = false;
+      submitted.value = true;
       ctx.emit("submit", formData);
     }
 
