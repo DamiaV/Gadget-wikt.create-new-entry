@@ -161,6 +161,8 @@ function selectLines(start, end) {
 /**
  * This module exports function to interact with the wikitext editor.
  * It is compatible with CodeMirror.
+ *
+ * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/editor.js]]
  */
 export default {
   insertWikitext,
