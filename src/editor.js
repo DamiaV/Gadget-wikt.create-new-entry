@@ -108,7 +108,7 @@ let codeMirrorEditor = null;
 function getCodeMirrorEditor() {
   if (!codeMirrorEditor) {
     const codeMirrorElement = document.querySelector(".CodeMirror");
-    codeMirrorEditor = codeMirrorElement && codeMirrorEditor.CodeMirror;
+    codeMirrorEditor = codeMirrorElement && codeMirrorElement.CodeMirror;
   }
   return codeMirrorEditor;
 }
