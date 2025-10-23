@@ -184,9 +184,10 @@ export default defineComponent({
     }
 
     window.addEventListener("beforeunload", (event) => {
+      console.log(submitted.value);
       if (
         !userPrefs.tabClosingWarningDisabled &&
-        !submitted.value &&
+        !submitted.value && // FIXME ignored?
         !isEmpty()
       )
         event.preventDefault();

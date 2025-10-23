@@ -10,8 +10,9 @@ const sectionRegexp = /==\s*{{langue\s*\|([^|{}]+?)}}\s*==/;
  * @throws If the given language code is invalid.
  */
 function insertWikitext(wikitext, langCode) {
-  const languageName = languages.getLanguageName(langCode);
-  if (!languageName) throw new Error(`Invalid language code: ${langCode}`);
+  const language = languages.getLanguage(langCode);
+  if (!language) throw new Error(`Invalid language code: ${langCode}`);
+  const languageName = language.sortKey || language.name;
 
   const text = getText() || "";
 
@@ -25,14 +26,20 @@ function insertWikitext(wikitext, langCode) {
     const line = lines[i];
     const match = sectionRegexp.exec(line);
     if (!match) continue;
-    const sectionLangName = languages.getLanguageName(match[1].trim(), true);
+    const sectionLang = languages.getLanguage(match[1].trim(), true);
+    const sectionLangName = sectionLang.sortKey || sectionLang.name;
     if (!sectionLangName || compareNames(languageName, sectionLangName) > 0)
       continue;
-    lines.splice(i - 1, 0, wikitext.trim().split("\n"));
-    break;
+
+    if (i > 0 && lines[i - 1].trim() !== "") wikitext = "\n" + wikitext;
+    lines.splice(i, 0, ...wikitext.split("\n"));
+    setText(lines.join("\n"));
+    selectLines(i);
+    return;
   }
 
-  setText(lines.join("\n"));
+  setText(text.trim() + "\n\n" + wikitext);
+  selectLines(lines.length);
 }
 
 const conv = languages.getLanguageName("conv");
@@ -42,7 +49,7 @@ const french = languages.getLanguageName("fr");
  * Compare two language names.
  * @param {string} name1 A language name.
  * @param {string} name2 Another language name.
- * @returns A positive value if name1 is after name2, a negative value if name1 is before name2, 0 if both names are equal.
+ * @returns A positive value if `name1` is after `name2`, a negative value if `name1` is before `name2`, 0 if both names are equal.
  */
 function compareNames(name1, name2) {
   if (name1 === name2) return 0;
@@ -111,6 +118,35 @@ function getCodeMirrorEditor() {
     codeMirrorEditor = codeMirrorElement && codeMirrorElement.CodeMirror;
   }
   return codeMirrorEditor;
+}
+
+/**
+ * Select the given line(s).
+ * @param {number} start The index of the first line to select.
+ * @param {number?} end The index of the last line to select.
+ */
+function selectLines(start, end) {
+  if (!end) end = start;
+
+  const codeMirror = getCodeMirrorEditor();
+  if (codeMirror) {
+    codeMirror.setSelection(
+      { line: start, ch: 0 },
+      {
+        line: end,
+        ch: codeMirror.getLine(end).length,
+      }
+    );
+  } else {
+    const editor = getDefaultEditor();
+    const text = editor.value;
+    editor.selectionStart =
+      text.split("\n").slice(0, start).join("\n").length + 1;
+    editor.selectionEnd = text
+      .split("\n")
+      .slice(0, end + 1)
+      .join("\n").length;
+  }
 }
 
 // </nowiki>

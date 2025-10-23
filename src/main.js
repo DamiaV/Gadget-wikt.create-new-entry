@@ -124,6 +124,14 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
     onSubmit(formData) {
       const text = wikitext.generateWikitext(formData, config.word);
       editor.insertWikitext(text, formData.language.code);
+      mw.notify(
+        "Le wikicode a été inséré dans le champ de texte ci-dessous. Veuillez vérifier que celui-ci est correct avant de publier vos modifications.",
+        {
+          type: "success",
+          title: "Wikicode inséré",
+          autoHide: true,
+        }
+      );
     },
   });
   app.provide("config", config);

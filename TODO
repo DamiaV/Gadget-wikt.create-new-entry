@@ -7,6 +7,7 @@
 [ ] Sauvegarde du formulaire.
     [ ] Sauvegarde intégrale ?
     [ ] Sauvegarder les données d’une section de mots liés.
+[ ] Formater {{exemple}} vide sur une seule ligne.
 [x] Pour les noms scientifiques, mettre le mot-vedette en italique.
 [x] Utiliser le localStorage au lieu d’un cookie pour la langue sélectionnée.
 [x] Ajouter une option « je ne sais pas » pour le genre (insérer {{genre ?}}) et nombre (insérer {{nombre ?}}), et insérer {{boite à flexions demandée}} si nécessaire.
@@ -24,6 +25,6 @@
     [x] Utiliser le code de langue MediaWiki pour les modèles Source-w, etc.
     [x] Utiliser la clé de tri globale pour les catégories supplémentaires.
     [x] Pouvoir fonctionner avec des données incomplètes.
-    [~] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
-    [~] Insérer le code généré au bon endroit.
+    [ ] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
+    [x] Insérer le code généré au bon endroit.
     [ ] Tests.
