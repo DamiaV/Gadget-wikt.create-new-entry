@@ -25,6 +25,6 @@
     [x] Utiliser le code de langue MediaWiki pour les modèles Source-w, etc.
     [x] Utiliser la clé de tri globale pour les catégories supplémentaires.
     [x] Pouvoir fonctionner avec des données incomplètes.
-    [ ] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
+    [x] Insérer le modèle {{clé de tri}} seulement s’il n’est pas déjà présent dans la page.
     [x] Insérer le code généré au bon endroit.
     [ ] Tests.
