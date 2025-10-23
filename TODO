@@ -7,7 +7,7 @@
 [ ] Sauvegarde du formulaire.
     [ ] Sauvegarde intégrale ?
     [ ] Sauvegarder les données d’une section de mots liés.
-[ ] Formater {{exemple}} vide sur une seule ligne.
+[x] Formater {{exemple}} vide sur une seule ligne.
 [x] Pour les noms scientifiques, mettre le mot-vedette en italique.
 [x] Utiliser le localStorage au lieu d’un cookie pour la langue sélectionnée.
 [x] Ajouter une option « je ne sais pas » pour le genre (insérer {{genre ?}}) et nombre (insérer {{nombre ?}}), et insérer {{boite à flexions demandée}} si nécessaire.

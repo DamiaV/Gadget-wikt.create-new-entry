@@ -379,7 +379,8 @@ function formatDefinition(definition, langCode) {
   return wikitext;
 }
 
-const exempleTemplateFormatString =
+const inlineTemplateFormat2 = templates.parseTemplateFormat("{{_|_=_}}\n");
+const exempleTemplateFormat =
   templates.parseTemplateFormat("{{_\n | _=_\n}}\n");
 
 /**
@@ -393,7 +394,7 @@ function formatExample(example, langCode) {
     "#* " +
     templates.templateToString({
       name: "exemple",
-      format: exempleTemplateFormatString,
+      format: example.empty ? inlineTemplateFormat2 : exempleTemplateFormat,
       paramOrder: ["1", "2", "3", "source", "lien", "pas-trad", "lang"],
       params: {
         1: example.text,
