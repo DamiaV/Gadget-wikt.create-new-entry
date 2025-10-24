@@ -298,7 +298,7 @@ export default defineComponent({
   <div>
     <cdx-field :status="status" :messages="messages">
       <edit-tools
-        v-if="$props.showFormatButtons && $props.specialCharacters.length"
+        v-if="$props.showFormatButtons || $props.specialCharacters.length"
         :show-format-buttons="$props.showFormatButtons"
         :show-template-button="$props.showTemplateButton"
         :characters="$props.specialCharacters"
