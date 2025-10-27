@@ -178,18 +178,31 @@ function generateWikitext(formData, word) {
   const wikiLinks = [];
   for (const [wikiName, wikiLink] of Object.entries(formData.wikiLinks)) {
     if (!wikiLink.enabled) continue;
-    wikiLinks.push(
-      templates.templateToString({
-        name: types.wikis[wikiName].templateName,
-        format: inlineTemplateFormat,
-        paramOrder: ["1", "2", "lang"],
-        params: {
-          1: wikiLink.pageTitle,
-          2: wikiLink.text,
-          lang: language.wikimediaCode || language.code,
-        },
-      })
-    );
+    if (wikiName === "wikidata")
+      wikiLinks.push(
+        templates.templateToString({
+          name: types.wikis[wikiName].templateName,
+          format: inlineTemplateFormat,
+          paramOrder: ["1", "2"],
+          params: {
+            1: language.code,
+            2: wikiLink.pageTitle,
+          },
+        })
+      );
+    else
+      wikiLinks.push(
+        templates.templateToString({
+          name: types.wikis[wikiName].templateName,
+          format: inlineTemplateFormat,
+          paramOrder: ["1", "2", "lang"],
+          params: {
+            1: wikiLink.pageTitle,
+            2: wikiLink.text,
+            lang: language.wikimediaCode || language.code,
+          },
+        })
+      );
   }
 
   if (wikiLinks.length) {
@@ -362,7 +375,7 @@ function formatIllustration(illustration) {
     case "image":
     case "video":
     case "audio":
-      wikitext = `[[Fichier:${illustration.fileName}|${escape(illustration.description)}`;
+      wikitext = `[[Fichier:${illustration.fileName}|vignette|${escape(illustration.description)}`;
       if (illustration.alt) wikitext += `|alt=${illustration.alt}`;
       wikitext += "]]";
       break;
