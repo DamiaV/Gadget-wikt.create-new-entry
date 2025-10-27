@@ -184,7 +184,6 @@ export default defineComponent({
     }
 
     window.addEventListener("beforeunload", (event) => {
-      console.log(submitted.value);
       if (
         !userPrefs.tabClosingWarningDisabled &&
         !submitted.value &&

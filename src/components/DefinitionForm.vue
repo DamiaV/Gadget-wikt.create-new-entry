@@ -497,6 +497,7 @@ export default defineComponent({
             v-show="showRelatedWords"
             v-model="relatedWords"
             :sections="sectionsData"
+            @update:model-value="fireUpdateEvent()"
           ></related-words-lists>
           <collapsed-preview
             v-show="!showRelatedWords"
