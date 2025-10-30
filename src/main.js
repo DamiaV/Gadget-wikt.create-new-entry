@@ -126,7 +126,12 @@ console.log(`Chargement de ${NAME} (v${VERSION})…`);
      */
     onSubmit(formData) {
       const text = wikitext.generateWikitext(formData, config.word);
-      editor.insertWikitext(text, formData.language.code, formData.sortKey);
+      editor.insertWikitext(
+        text,
+        config.word,
+        formData.language.code,
+        formData.sortKey
+      );
       editor.setEditSummary(
         EDIT_SUMMARY.replaceAll("{lang}", formData.language.name)
       );

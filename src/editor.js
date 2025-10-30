@@ -10,7 +10,7 @@ const sectionRegexp = /==\s*{{langue\s*\|([^|{}]+?)}}\s*==/;
  * @param {string} sortKey The sort key. Used to insert the {{clé de tri}} template.
  * @throws If the given language code is invalid.
  */
-function insertWikitext(wikitext, langCode, sortKey) {
+function insertWikitext(wikitext, word, langCode, sortKey) {
   const language = languages.getLanguage(langCode);
   if (!language) throw new Error(`Invalid language code: ${langCode}`);
   const languageName = language.sortKey || language.name;
@@ -24,7 +24,7 @@ function insertWikitext(wikitext, langCode, sortKey) {
     return;
   }
 
-  const isSortKeyTemplatePresent = text.includes("{{clé de tri");
+  const noSortKeyTemplate = sortKey !== word && !text.includes("{{clé de tri");
 
   const lines = text.split("\n");
   for (let i = 0; i < lines.length; i++) {
@@ -39,13 +39,13 @@ function insertWikitext(wikitext, langCode, sortKey) {
     if (i > 0 && lines[i - 1].trim() !== "") wikitext = "\n" + wikitext;
     lines.splice(i, 0, ...wikitext.split("\n"));
     let result = lines.join("\n").trim();
-    if (!isSortKeyTemplatePresent) result += "\n" + sortKeyTemplate;
+    if (noSortKeyTemplate) result += "\n" + sortKeyTemplate;
     setText(result);
     selectLines(i);
     return;
   }
 
-  if (!isSortKeyTemplatePresent) wikitext += sortKeyTemplate;
+  if (noSortKeyTemplate) wikitext += sortKeyTemplate;
   setText(text.trim() + "\n\n" + wikitext);
   selectLines(lines.length);
 }
