@@ -44,11 +44,7 @@ export default defineComponent({
     const userPrefs = reactive(props.modelValue);
 
     function fireEvent() {
-      /**
-       * @type {import("../types.js").UserPreferences}
-       */
-      const firedEvent = Object.assign({}, userPrefs);
-      ctx.emit("update:model-value", firedEvent);
+      ctx.emit("update:model-value", userPrefs); // Do not send a copy, as it would break reactivity.
     }
 
     /**
