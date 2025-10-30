@@ -57,7 +57,6 @@ function insertWikitext(wikitext, langCode, sortKey) {
 function setEditSummary(editSummary) {
   /** @type {HTMLInputElement} */
   const summaryInput = document.getElementById("wpSummary");
-  console.log(editSummary);
   summaryInput.value = editSummary;
 }
 
