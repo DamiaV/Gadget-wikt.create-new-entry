@@ -6,6 +6,7 @@ const sectionRegexp = /==\s*{{langue\s*\|([^|{}]+?)}}\s*==/;
 /**
  * Insert the given wikitext into the editor’s box.
  * @param {string} wikitext The wikitext to insert.
+ * @param {string} word The word (current page title).
  * @param {string} langCode The code of the selected language. Used to know where to insert the code.
  * @param {string} sortKey The sort key. Used to insert the {{clé de tri}} template.
  * @throws If the given language code is invalid.
