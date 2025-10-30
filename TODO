@@ -1,3 +1,5 @@
+[ ] Essayer de rendre compatible avec l’éditeur visuel.
+[ ] Pouvoir afficher par défaut certaines sections de niveau 4.
 [ ] Écraser/supprimer la prononciation générée automatiquement à chaque changement de langue.
 [ ] Générer un message de diff.
 [ ] Faire en sorte que la touche Tab ne focus pas les boutons de formatage.
