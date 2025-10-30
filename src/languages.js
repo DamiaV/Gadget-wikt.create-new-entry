@@ -1782,20 +1782,24 @@ function loadLanguages() {
     const [gender, number] =
       properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
 
+    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
+      return "{{boite à flexions demandée|pt}}";
+
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
       return `{{pt-inv|${pron}|sp=oui}}`;
     if (number === NUMBERS.SINGULAR_ONLY.label)
       return `{{pt-inv|${pron}|inv_titre=Singulier}}`;
     if (number === NUMBERS.PLURAL_ONLY.label)
       return `{{pt-inv|${pron}|inv_titre=Pluriel}}`;
-
-    if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
-      return "{{boite à flexions demandée|pt}}";
+    if (number === NUMBERS.INVARIABLE.label)
+      return `{{pt-inv|${pron}|inv_titre=${grammarClass}}}`;
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
-      return `{{pt-rég|${pron}|mf=oui}}`;
+      return `{{pt-accord-mf|${pron}|mf=oui}}`;
 
-    return `{{pt-inv|${pron}|inv_titre=${grammarClass}}}`;
+    if (grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.NOUN.label)
+      return `{{pt-rég|${pron}}}`;
+    return `{{pt-accord-mixte|${pron.slice(0, -1)}}}`;
   };
 
   languages.push(
