@@ -146,7 +146,8 @@ export default defineComponent({
      * @param {string | null} selectedValue The selected value.
      */
     function onSelect(selectedValue) {
-      if (props.eraseOnSelection) selection.value = ""; // FIXME does nothing
+      if (!selectedValue) return;
+      if (props.eraseOnSelection) selection.value = "";
       ctx.emit("update:model-value", selectedValue || "");
     }
 

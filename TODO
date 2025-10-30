@@ -14,7 +14,7 @@
 [ ] Sauvegarde du formulaire.
     [ ] Sauvegarde intégrale ?
     [ ] Sauvegarder les données d’une section de mots liés.
-[ ] Réparer le champ de PageLookup qui ne se vide pas après sélection d’une option.
+[x] Réparer le champ de PageLookup qui ne se vide pas après sélection d’une option.
 [x] Afficher le numéro d’entrée seulement pour les doublons.
 [x] Formater {{exemple}} vide sur une seule ligne.
 [x] Pour les noms scientifiques, mettre le mot-vedette en italique.
