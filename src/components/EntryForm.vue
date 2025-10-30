@@ -138,8 +138,11 @@ export default defineComponent({
       return (
         definitions.value.every((def) => def.empty) &&
         pronunciations.value.every((p) => p.empty || p.isGenerated) &&
-        Object.values(relatedWords.value).every((relatedWords) =>
-          relatedWords.every((relatedWord) => relatedWord.empty)
+        Object.values(relatedWords.value).every(
+          (relatedWords) =>
+            (typeof relatedWords === "object" &&
+              relatedWords.every((relatedWord) => relatedWord.empty)) ||
+            !relatedWords
         ) &&
         homophones.value.every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)

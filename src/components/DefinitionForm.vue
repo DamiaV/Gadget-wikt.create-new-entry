@@ -90,16 +90,18 @@ export default defineComponent({
     const illustration = ref(props.modelValue.illustration);
     const relatedWords = ref(props.modelValue.relatedWords);
     const relatedWordsNumber = computed(() =>
-      Object.values(relatedWords.value).reduce(
-        (acc, relatedWords) =>
+      Object.values(relatedWords.value).reduce((acc, relatedWords) => {
+        if (typeof relatedWords === "string")
+          return relatedWords ? acc + 1 : acc;
+        return (
           acc +
           relatedWords.reduce(
             (acc2, relatedWord) =>
               acc2 + ("words" in relatedWord ? relatedWord.words.length : 1),
             0
-          ),
-        0
-      )
+          )
+        );
+      }, 0)
     );
 
     const showFields = ref(true);
@@ -111,8 +113,11 @@ export default defineComponent({
         !text.value &&
         examples.value.every((ex) => ex.empty) &&
         (!illustration.value || illustration.value.empty) &&
-        Object.values(relatedWords.value).every((relatedWords) =>
-          relatedWords.every((relatedWord) => relatedWord.empty)
+        Object.values(relatedWords.value).every(
+          (relatedWords) =>
+            (relatedWords instanceof Array &&
+              relatedWords.every((relatedWord) => relatedWord.empty)) ||
+            !relatedWords
         )
       );
     }

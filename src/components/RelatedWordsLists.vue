@@ -1,8 +1,16 @@
 <script>
 // <nowiki>
 import { computed, defineComponent, inject, reactive, ref } from "vue";
-import { CdxSelect } from "@wikimedia/codex";
+import { CdxButton, CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
+import {
+  cdxIconHelpNotice,
+  cdxIconInfoFilled,
+  cdxIconTrash,
+} from "@wikimedia/codex-icons";
+import strings from "../strings.js";
+import InputWithToolbar from "./InputWithToolbar.vue";
 import RelatedWordsList from "./RelatedWordsList.vue";
+import WikiLink from "./WikiLink.vue";
 
 // </nowiki>
 /**
@@ -14,8 +22,13 @@ import RelatedWordsList from "./RelatedWordsList.vue";
 // <nowiki>
 export default defineComponent({
   components: {
+    CdxButton,
+    CdxField,
+    CdxIcon,
     CdxSelect,
+    InputWithToolbar,
     RelatedWordsList,
+    WikiLink,
   },
 
   props: {
@@ -26,7 +39,7 @@ export default defineComponent({
     sections: { type: Object, required: true },
     /**
      * The arrays of RelatedWord objects to manage.
-     * @type {import("vue").PropType<Record<string, import("../types.js").RelatedWord[]>>}
+     * @type {import("vue").PropType<Record<string, import("../types.js").RelatedWord[] | string>>}
      */
     modelValue: { type: Object, required: true },
   },
@@ -35,7 +48,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     /**
-     * @type {import("vue").Reactive<Record<string, import("../types.js").RelatedWord[]>>}
+     * @type {import("vue").Reactive<Record<string, import("../types.js").RelatedWord[] | string>>}
      */
     const relatedWords = reactive(props.modelValue);
 
@@ -62,7 +75,7 @@ export default defineComponent({
     /**
      * Update the list of related words for the given relation type.
      * @param {string} relationType The type of the update relation.
-     * @param {import("../types.js").RelatedWord[]} newRelatedWords The new list of related words for that section.
+     * @param {import("../types.js").RelatedWord[] | string} newRelatedWords The new list of related words for that section.
      */
     function onRelatedWordsUpdate(relationType, newRelatedWords) {
       relatedWords[relationType] = newRelatedWords;
@@ -84,7 +97,9 @@ export default defineComponent({
      */
     function onSelection(selectedSection) {
       if (!selectedSection) return;
-      relatedWords[selectedSection] = [];
+      if (props.sections[selectedSection].isText)
+        relatedWords[selectedSection] = "";
+      else relatedWords[selectedSection] = [];
       fireUpdateEvent();
     }
 
@@ -100,10 +115,15 @@ export default defineComponent({
       selectedItem,
       // Other
       config,
+      // Icons
+      cdxIconHelpNotice,
+      cdxIconInfoFilled,
+      cdxIconTrash,
       // Callbacks
       onRelatedWordsUpdate,
       onDeleteRelatedWords,
       onSelection,
+      capitalize: strings.capitalize,
     };
   },
 });
@@ -118,21 +138,79 @@ export default defineComponent({
       class="cne-section-selector"
       @update:selected="onSelection"
     ></cdx-select>
-    <related-words-list
+
+    <template
       v-for="(relatedWordsList, sectionName) in relatedWords"
       :key="sectionName"
-      :model-value="relatedWordsList"
-      :section-data="$props.sections[sectionName]"
-      :section-type="sectionName"
-      :description="
-        $props.sections[sectionName].title
-          ? $props.sections[sectionName].title.replace('{mot}', config.word) +
-            '.'
-          : ''
-      "
-      @update:model-value="onRelatedWordsUpdate(sectionName, $event)"
-      @delete="onDeleteRelatedWords"
-    ></related-words-list>
+    >
+      <cdx-field
+        v-if="$props.sections[sectionName].isText"
+        is-fieldset
+        class="cne-box cne-related-words-list"
+        style="margin-top: 0"
+      >
+        <template #label>
+          {{ capitalize($props.sections[sectionName].name) }}
+          <span class="cne-fieldset-btns">
+            <wiki-link
+              v-if="$props.sections[sectionName].helpPage"
+              :page-title="$props.sections[sectionName].helpPage"
+            >
+              <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
+            </wiki-link>
+
+            <wiki-link
+              v-if="$props.sections[sectionName].conventionPage"
+              :page-title="$props.sections[sectionName].conventionPage"
+            >
+              <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
+            </wiki-link>
+
+            <cdx-button
+              v-if="!$props.disableDelete"
+              type="button"
+              size="small"
+              action="destructive"
+              aria-label="Supprimer"
+              title="Supprimer"
+              @click="onDeleteRelatedWords(sectionName)"
+            >
+              <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+            </cdx-button>
+          </span>
+        </template>
+
+        <template #help-text>{{
+          $props.sections[sectionName].title
+            ? $props.sections[sectionName].title.replace("{mot}", config.word) +
+              "."
+            : ""
+        }}</template>
+
+        <input-with-toolbar
+          :model-value="relatedWordsList"
+          text-area
+          @update:model-value="onRelatedWordsUpdate(sectionName, $event)"
+          @delete="onDeleteRelatedWords"
+        >
+        </input-with-toolbar>
+      </cdx-field>
+
+      <related-words-list
+        v-else
+        :model-value="relatedWordsList"
+        :section-data="$props.sections[sectionName]"
+        :section-type="sectionName"
+        :description="
+          $props.sections[sectionName].title
+            ? $props.sections[sectionName].title.replace('{mot}', config.word) +
+              '.'
+            : ''
+        "
+        @update:model-value="onRelatedWordsUpdate(sectionName, $event)"
+        @delete="onDeleteRelatedWords"
+      ></related-words-list>
+    </template>
   </div>
 </template>
 

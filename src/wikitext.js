@@ -440,11 +440,12 @@ function formatExample(example, langCode) {
 
 /**
  * Format an array of RelatedWord objects.
- * @param {import("./types.js").RelatedWord[]} relatedWords An array of RelatedWord objects.
+ * @param {import("./types.js").RelatedWord[] | string} relatedWords An array of RelatedWord objects or a string.
  * @param {string} langCode The entry’s language code.
  * @returns {string} The formatted wikitext.
  */
 function formatRelatedWords(relatedWords, langCode) {
+  if (typeof relatedWords === "string") return relatedWords.trim() + "\n";
   /**
    * @type {string[]}
    */

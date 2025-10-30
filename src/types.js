@@ -132,7 +132,7 @@ import wikisData from "./wikis.json";
  *  wordType: string,
  *  wordProperties: Record<string, string>,
  *  definitions: Definition[],
- *  relatedWords: Record<string, RelatedWord[]>,
+ *  relatedWords: Record<string, RelatedWord[] | string>,
  *  pronunciations: Pronunciation[],
  *  homophones: RelatedWord[],
  *  nearHomophones: RelatedWord[],
@@ -148,7 +148,7 @@ import wikisData from "./wikis.json";
  *  id: number,
  *  text: string,
  *  examples: Example[],
- *  relatedWords: Record<string, RelatedWord[]>,
+ *  relatedWords: Record<string, RelatedWord[] | string>,
  *  illustration?: Illustration,
  *  empty: boolean,
  * }} Definition
@@ -368,6 +368,7 @@ function createEmptyUnformattedRelatedWord(id) {
  *  definitionSpecific: boolean,
  *  helpPage?: string,
  *  conventionPage?: string,
+ *  isText?: boolean,
  * }} SectionData
  */
 
@@ -391,21 +392,42 @@ for (const code of sections.getSectionCodes()) {
    *  definitionSpecific?: boolean,
    *  helpPage?: string,
    *  conventionPage?: string,
+   *  isText?: boolean,
    * }}
    */
   const additionalData = additionalSectionsData[code];
-  if (code === "traductions" || sectionData.level !== 4 || !additionalData)
+  if (
+    code === "traductions" ||
+    !sectionData ||
+    sectionData.level !== 4 ||
+    !additionalData
+  )
     continue;
 
-  if (additionalData.helpPage) sectionData.helpPage = additionalData.helpPage;
+  /**
+   * @type {{
+   *  helpPage?: string,
+   *  conventionPage?: string,
+   *  isText?: boolean,
+   * }}
+   */
+  const extendedData = {};
+  if (additionalData.isText) extendedData.isText = additionalData.isText;
+  if (additionalData.helpPage) extendedData.helpPage = additionalData.helpPage;
   if (additionalData.conventionPage)
-    sectionData.conventionPage = additionalData.conventionPage;
-  if (sectionData.parent === "type de mot") {
+    extendedData.conventionPage = additionalData.conventionPage;
+
+  /**
+   * @type {SectionData}
+   */
+  const extendedSectionData = Object.assign(extendedData, sectionData);
+
+  if (extendedSectionData.parent === "type de mot") {
     if (additionalData.definitionSpecific)
-      definitionSectionsData[code] = sectionData;
-    else entrySectionsData[code] = sectionData;
-  } else if (sectionData.parent === "pron")
-    otherSectionsData[code] = sectionData;
+      definitionSectionsData[code] = extendedSectionData;
+    else entrySectionsData[code] = extendedSectionData;
+  } else if (extendedSectionData.parent === "pron")
+    otherSectionsData[code] = extendedSectionData;
 }
 
 /**

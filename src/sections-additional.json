@@ -19,6 +19,7 @@
     "composés": {
     },
     "déclinaison": {
+        "isText": true
     },
     "dérivés": {
         "helpPage": "Aide:Mots et locutions dérivés"
@@ -57,7 +58,8 @@
         "helpPage": "Aide:Méronymes et holonymes"
     },
     "noms vernaculaires": {
-        "definitionSpecific": true
+        "definitionSpecific": true,
+        "isText": true
     },
     "phrases": {
         "helpPage": "Aide:Mots et locutions dérivés"
