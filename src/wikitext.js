@@ -499,7 +499,7 @@ function formatReferences(references, anyReference) {
             format: inlineTemplateFormat,
             paramOrder: ["1", "2", "3"],
             params: {
-              1: language.wikimediaCode || language.code,
+              1: language.wikimediaCode || langCode,
               2: title,
               3: oldId,
             },
