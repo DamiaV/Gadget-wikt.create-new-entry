@@ -107,6 +107,7 @@ export default defineComponent({
         aria-label="Mettre en gras"
         title="Mettre en gras"
         size="small"
+        tabindex="-1"
         @click="$emit('style:bold')"
       >
         <cdx-icon :icon="cdxIconBold"></cdx-icon>
@@ -117,6 +118,7 @@ export default defineComponent({
         aria-label="Mettre en italique"
         title="Mettre en italique"
         size="small"
+        tabindex="-1"
         @click="$emit('style:italic')"
       >
         <cdx-icon :icon="cdxIconItalic"></cdx-icon>
@@ -128,6 +130,7 @@ export default defineComponent({
         aria-label="Mettre en exposant"
         title="Mettre en exposant"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:superscript')"
       >
         <cdx-icon :icon="cdxIconSuperscript"></cdx-icon>
@@ -138,6 +141,7 @@ export default defineComponent({
         aria-label="Mettre en indice"
         title="Mettre en indice"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:subscript')"
       >
         <cdx-icon :icon="cdxIconSubscript"></cdx-icon>
@@ -149,6 +153,7 @@ export default defineComponent({
         aria-label="Insérer un lien"
         title="Insérer un lien"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:link')"
       >
         <cdx-icon :icon="cdxIconWikitext"></cdx-icon>
@@ -159,6 +164,7 @@ export default defineComponent({
         aria-label="Insérer des balises <nowiki>"
         title="Insérer des balises <nowiki>"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:nowiki')"
       >
         <cdx-icon :icon="cdxIconNoWikitext"></cdx-icon>
@@ -169,6 +175,7 @@ export default defineComponent({
         aria-label="Insérer des balises <code>"
         title="Insérer des balises <code>"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:code')"
       >
         <cdx-icon :icon="cdxIconCode"></cdx-icon>
@@ -179,6 +186,7 @@ export default defineComponent({
         aria-label="Insérer des guillemets"
         title="Insérer des guillemets"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:quotes')"
       >
         <cdx-icon :icon="cdxIconQuotes"></cdx-icon>
@@ -190,6 +198,7 @@ export default defineComponent({
         aria-label="Insérer une référence"
         title="Insérer une référence"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:ref')"
       >
         <cdx-icon :icon="cdxIconReference"></cdx-icon>
@@ -201,6 +210,7 @@ export default defineComponent({
         aria-label="Insérer un modèle"
         title="Insérer un modèle"
         size="small"
+        tabindex="-1"
         @click="$emit('insert:template')"
       >
         <cdx-icon :icon="cdxIconPuzzle"></cdx-icon>
@@ -213,6 +223,7 @@ export default defineComponent({
         class="format-btn"
         type="button"
         size="small"
+        tabindex="-1"
         @click="$emit('custom-action', customAction.action)"
       >
         <cdx-icon v-if="customAction.icon" :icon="customAction.icon"></cdx-icon>
@@ -228,6 +239,7 @@ export default defineComponent({
         href="#"
         :aria-label="`Insérer un ${char}`"
         title="Cliquer pour insérer le caractère"
+        tabindex="-1"
         @click.prevent="$emit('insert:char', char)"
       >
         {{ char }}
