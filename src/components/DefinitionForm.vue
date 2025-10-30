@@ -48,11 +48,6 @@ export default defineComponent({
 
   props: {
     /**
-     * The current user’s preferences.
-     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
-     */
-    userPreferences: { type: Object, required: true },
-    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -268,6 +263,10 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
 
     return {
       // Data
@@ -287,6 +286,7 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
+      userPrefs,
       sectionsData: types.definitionSectionsData,
       // Icons
       cdxIconHelpNotice,
@@ -387,7 +387,7 @@ export default defineComponent({
       <div class="cne-definition-form-fields">
         <input-with-toolbar
           v-model="text"
-          :required="!$props.userPreferences.formValidityCheckingDisabled"
+          :required="!userPrefs.formValidityCheckingDisabled"
           text-area
           @change="fireUpdateEvent"
         >
@@ -409,7 +409,7 @@ export default defineComponent({
         </input-with-toolbar>
 
         <cdx-field
-          v-show="!$props.userPreferences.minimalMode"
+          v-show="!userPrefs.minimalMode"
           class="cne-examples cne-box"
           is-fieldset
         >
@@ -449,7 +449,6 @@ export default defineComponent({
               :can-move-after="i < examples.length - 1"
               :model-value="example"
               :language="$props.language"
-              :user-preferences="$props.userPreferences"
               @update:model-value="onExampleUpdate"
               @delete="onDeleteExample"
               @move:before="onMoveExampleUp"
@@ -476,7 +475,7 @@ export default defineComponent({
         </cdx-field>
 
         <cdx-field
-          v-show="!$props.userPreferences.minimalMode"
+          v-show="!userPrefs.minimalMode"
           class="cne-related-words cne-box"
           is-fieldset
         >
@@ -514,7 +513,7 @@ export default defineComponent({
           ></collapsed-preview>
         </cdx-field>
 
-        <div v-show="!$props.userPreferences.minimalMode" v-if="!illustration">
+        <div v-show="!userPrefs.minimalMode" v-if="!illustration">
           <cdx-button
             type="button"
             action="progressive"
@@ -525,10 +524,9 @@ export default defineComponent({
           </cdx-button>
         </div>
         <illustration-form
-          v-show="!$props.userPreferences.minimalMode"
+          v-show="!userPrefs.minimalMode"
           v-else
           v-model="illustration"
-          :user-preferences="$props.userPreferences"
           @update:model-value="onIllustrationUpdate"
           @delete="onDeleteIllustration"
         ></illustration-form>

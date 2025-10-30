@@ -199,6 +199,8 @@ async function getUserPreferences(username, api) {
       tabClosingWarningDisabled: getFlag("tabClosingWarningDisabled"),
       introMessageHidden: getFlag("introMessageHidden"),
       warningIntroMessageHidden: getFlag("warningIntroMessageHidden"),
+      favoritedSections:
+        JSON.parse(localStorage.getItem("cne-favoritedSections")) || [],
     };
   }
 
@@ -272,6 +274,10 @@ async function setUserPreferences(username, prefs, api) {
     localStorage.setItem(
       "cne-warningIntroMessageHidden",
       prefs.warningIntroMessageHidden
+    );
+    localStorage.setItem(
+      "cne-favoritedSections",
+      JSON.stringify(prefs.favoritedSections)
     );
     return;
   }

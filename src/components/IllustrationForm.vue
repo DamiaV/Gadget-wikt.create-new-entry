@@ -47,11 +47,6 @@ export default defineComponent({
 
   props: {
     /**
-     * The current user’s preferences.
-     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
-     */
-    userPreferences: { type: Object, required: true },
-    /**
      * The Illustration object to manage.
      * @type {import("vue").PropType<import("../types.js").Illustration>}
      */
@@ -117,6 +112,10 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
 
     function isEmpty() {
       return (
@@ -285,6 +284,7 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
+      userPrefs,
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
@@ -429,7 +429,7 @@ export default defineComponent({
           :special-characters="[]"
           :validator="fileNameValidator"
           clearable
-          :required="!$props.userPreferences.formValidityCheckingDisabled"
+          :required="!userPrefs.formValidityCheckingDisabled"
           @change="onFileNameUpdate"
           @update:model-value="onInput"
           @invalid="onInvalid"
@@ -457,7 +457,7 @@ export default defineComponent({
             v-model.trim="text"
             class="wikitext"
             clearable
-            :required="!$props.userPreferences.formValidityCheckingDisabled"
+            :required="!userPrefs.formValidityCheckingDisabled"
             @change="fireUpdateEvent"
             @update:model-value="onInput"
             @invalid="onInvalid"
@@ -474,7 +474,7 @@ export default defineComponent({
           <cdx-text-input
             v-model.trim="color"
             clearable
-            :required="!$props.userPreferences.formValidityCheckingDisabled"
+            :required="!userPrefs.formValidityCheckingDisabled"
             @change="fireUpdateEvent"
             @update:model-value="onInput"
             @invalid="onInvalid"
@@ -484,7 +484,7 @@ export default defineComponent({
         <input-with-toolbar
           v-model="description"
           clearable
-          :required="!$props.userPreferences.formValidityCheckingDisabled"
+          :required="!userPrefs.formValidityCheckingDisabled"
           @change="fireUpdateEvent"
         >
           <template #label>Légende</template>

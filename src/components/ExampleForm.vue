@@ -43,11 +43,6 @@ export default defineComponent({
 
   props: {
     /**
-     * The current user’s preferences.
-     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
-     */
-    userPreferences: { type: Object, required: true },
-    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -155,6 +150,10 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
 
     return {
       // Data
@@ -173,6 +172,7 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
+      userPrefs,
       // Icons
       cdxIconArrowDown,
       cdxIconArrowUp,
@@ -250,7 +250,7 @@ export default defineComponent({
     <div v-show="showFields">
       <input-with-toolbar
         v-model="text"
-        :required="!$props.userPreferences.formValidityCheckingDisabled"
+        :required="!userPrefs.formValidityCheckingDisabled"
         text-area
         @change="fireUpdateEvent"
       >

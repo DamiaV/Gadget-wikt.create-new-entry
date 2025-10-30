@@ -125,6 +125,7 @@ export default defineComponent({
      * @type {import("vue").Reactive<import("./types.js").UserPreferences>}
      */
     const userPrefs = reactive(props.userPreferences);
+    provide("userPrefs", userPrefs);
 
     /**
      * @type {import("./types.js").AppConfig}
@@ -633,7 +634,6 @@ export default defineComponent({
               <entry-form
                 :index="i"
                 :language="formData.language"
-                :user-preferences="userPrefs"
                 :model-value="entry"
                 :enable-delete-btn="formData.entries.length > 1"
                 :can-move-before="i > 0"

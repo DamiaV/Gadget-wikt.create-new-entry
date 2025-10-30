@@ -47,11 +47,6 @@ export default defineComponent({
 
   props: {
     /**
-     * The current user’s preferences.
-     * @type {import("vue").PropType<import("./types.js").UserPreferences>}
-     */
-    userPreferences: { type: Object, required: true },
-    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -94,6 +89,10 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
 
     watch(
       () => props.language,
@@ -241,6 +240,7 @@ export default defineComponent({
       dialogDefaultAction,
       // Other
       config,
+      userPrefs,
       // Icons
       cdxIconHelp,
       cdxIconHelpNotice,
@@ -337,7 +337,7 @@ export default defineComponent({
       <input-with-toolbar
         v-model="pronunciation"
         input-class="API"
-        :required="!$props.userPreferences.formValidityCheckingDisabled"
+        :required="!userPrefs.formValidityCheckingDisabled"
         clearable
         :show-format-buttons="false"
         :special-characters="$props.language.ipaSymbols"

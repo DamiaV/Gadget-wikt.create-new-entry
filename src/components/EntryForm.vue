@@ -53,11 +53,6 @@ export default defineComponent({
 
   props: {
     /**
-     * The current user’s preferences.
-     * @type {import("vue").PropType<import("../types.js").UserPreferences>}
-     */
-    userPreferences: { type: Object, required: true },
-    /**
      * The currently selected language.
      */
     language: { type: types.Language, required: true },
@@ -109,6 +104,10 @@ export default defineComponent({
      * @type {import("../types.js").AppConfig}
      */
     const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
 
     watch(
       () => props.language,
@@ -343,6 +342,7 @@ export default defineComponent({
       openDeletionDialog,
       // Other
       config,
+      userPrefs,
       sectionsData: types.entrySectionsData,
       otherSectionsData: types.otherSectionsData,
       // Icons
@@ -372,10 +372,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    v-show="!$props.userPreferences.minimalMode"
-    class="cne-entry-action-btns"
-  >
+  <div v-show="!userPrefs.minimalMode" class="cne-entry-action-btns">
     <cdx-button
       v-show="$props.enableDeleteBtn"
       type="button"
@@ -428,7 +425,6 @@ export default defineComponent({
         :can-move-after="i < definitions.length - 1"
         :model-value="definition"
         :language="$props.language"
-        :user-preferences="$props.userPreferences"
         @update:model-value="onDefinitionUpdate"
         @delete="onDeleteDefinition"
         @move:before="onMoveDefinitionUp"
@@ -436,7 +432,7 @@ export default defineComponent({
       ></definition-form>
 
       <cdx-button
-        v-show="!$props.userPreferences.minimalMode"
+        v-show="!userPrefs.minimalMode"
         type="button"
         action="progressive"
         @click="onAddDefinition"
@@ -447,7 +443,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab
-      v-if="!$props.userPreferences.minimalMode"
+      v-if="!userPrefs.minimalMode"
       name="other-sections"
       label="Notes, variantes, dérivés, etc."
     >
@@ -477,7 +473,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab
-      v-if="!$props.userPreferences.minimalMode"
+      v-if="!userPrefs.minimalMode"
       name="pronunciation"
       :disabled="$props.language.code === 'conv'"
       :label="
@@ -523,7 +519,6 @@ export default defineComponent({
         :can-move-before="i > 0"
         :can-move-after="i < pronunciations.length - 1"
         :model-value="pronunciation"
-        :user-preferences="$props.userPreferences"
         @update:model-value="onPronunciationUpdate"
         @delete="onDeletePronunciation"
         @move:before="onMovePronunciationUp"
