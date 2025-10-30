@@ -4,7 +4,7 @@
 [ ] Écraser/supprimer la prononciation générée automatiquement à chaque changement de langue.
 [x] Générer un message de diff.
 [x] Faire en sorte que la touche Tab ne focus pas les boutons de formatage.
-[ ] Inventorier quelles sous-sections ont besoin d’un champ de texte plutot qu’une liste de mots.
+[x] Inventorier quelles sous-sections ont besoin d’un champ de texte plutot qu’une liste de mots.
 [x] Système de préférences
     [x] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
     [x] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
