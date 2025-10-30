@@ -75,12 +75,15 @@ import types from "./types.js";
 import wikitext from "./wikitext.js";
 import App from "./App.vue";
 
-const version = "6.0";
-console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
+const NAME = "Gadget-wikt.create-new-entry";
+const VERSION = "6.0";
+const EDIT_SUMMARY = `Ajout d’une section en {lang} assisté par [[Aide:Gadget de création d’entrée|${NAME}]] (v${VERSION})`;
+
+console.log(`Chargement de ${NAME} (v${VERSION})…`);
 
 (async () => {
   const api = new mw.Api({
-    userAgent: `Gadget-wikt.create-new-entry/${version}`,
+    userAgent: `Gadget-wikt.create-new-entry/${VERSION}`,
   });
 
   const username = mw.config.get("wgUserName");
@@ -124,6 +127,9 @@ console.log(`Chargement de Gadget-wikt.create-new-entry (v${version})…`);
     onSubmit(formData) {
       const text = wikitext.generateWikitext(formData, config.word);
       editor.insertWikitext(text, formData.language.code, formData.sortKey);
+      editor.setEditSummary(
+        EDIT_SUMMARY.replaceAll("{lang}", formData.language.name)
+      );
       mw.notify(
         "Le wikicode a été inséré dans le champ de texte ci-dessous. Veuillez vérifier que celui-ci est correct avant de publier vos modifications.",
         {

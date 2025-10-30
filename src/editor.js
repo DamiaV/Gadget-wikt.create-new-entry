@@ -50,6 +50,17 @@ function insertWikitext(wikitext, langCode, sortKey) {
   selectLines(lines.length);
 }
 
+/**
+ * Set the value of the edit summary input.
+ * @param {string} editSummary The edit summary to use.
+ */
+function setEditSummary(editSummary) {
+  /** @type {HTMLInputElement} */
+  const summaryInput = document.getElementById("wpSummary");
+  console.log(editSummary);
+  summaryInput.value = editSummary;
+}
+
 const conv = languages.getLanguageName("conv");
 const french = languages.getLanguageName("fr");
 
@@ -166,5 +177,6 @@ function selectLines(start, end) {
  */
 export default {
   insertWikitext,
+  setEditSummary,
   extractLanguageCodes,
 };
