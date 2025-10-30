@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { defineComponent, ref, useTemplateRef } from "vue";
+import { defineComponent, ref, useTemplateRef, watch } from "vue";
 import { CdxField, CdxTextArea, CdxTextInput } from "@wikimedia/codex";
 import strings from "../strings.js";
 import templates from "../templates.js";
@@ -105,6 +105,12 @@ export default defineComponent({
       error: "",
     });
     const textInputType = props.textArea ? CdxTextArea : CdxTextInput;
+
+    // Necessary in some cases, I don’t know why…
+    watch(
+      () => props.modelValue,
+      (newValue) => (value.value = newValue)
+    );
 
     /**
      * @type {Readonly<import("vue").ShallowRef<import("@wikimedia/codex").CdxTextArea | import("@wikimedia/codex").CdxTextInput>>}

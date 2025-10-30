@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { defineComponent, inject, onUnmounted, ref } from "vue";
+import { defineComponent, inject, onUnmounted, ref, watch } from "vue";
 import {
   CdxButton,
   CdxCheckbox,
@@ -86,14 +86,36 @@ export default defineComponent({
   setup(props, ctx) {
     const pronunciation = ref(props.modelValue.pronunciation);
     const isReconstructed = ref(props.modelValue.isReconstructed);
+    const isGenerated = ref(props.modelValue.isGenerated);
 
     const showFields = ref(true);
+
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+
+    watch(
+      () => props.language,
+      (newLanguage) => {
+        console.log(newLanguage, isGenerated.value);
+        if (isGenerated.value) {
+          const generatedPron = newLanguage.generatePronunciation(config.word);
+          if (generatedPron) {
+            pronunciation.value = generatedPron;
+            console.log(pronunciation.value);
+            fireUpdateEvent(false);
+          } else deletePronunciation();
+        }
+      }
+    );
 
     function isEmpty() {
       return !pronunciation.value;
     }
 
-    function fireUpdateEvent() {
+    function fireUpdateEvent(removeGeneratedFlag = true) {
+      if (removeGeneratedFlag && isGenerated.value) isGenerated.value = false;
       /**
        * @type {import("../types.js").PronunciationUpdateEvent}
        */
@@ -103,6 +125,7 @@ export default defineComponent({
           id: props.modelValue.id,
           pronunciation: pronunciation.value,
           isReconstructed: isReconstructed.value,
+          isGenerated: isGenerated.value,
           empty: isEmpty(),
         },
       };
@@ -130,7 +153,7 @@ export default defineComponent({
     };
 
     function onDelete() {
-      if (isEmpty()) deletePronunciation();
+      if (isEmpty() || isGenerated.value) deletePronunciation();
       else openDeletionDialog.value = true;
     }
 
@@ -205,11 +228,6 @@ export default defineComponent({
       validationLock.setError(lockKey, false);
       return null;
     }
-
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
 
     return {
       // Data

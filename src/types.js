@@ -31,7 +31,6 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  api?: mw.Api,
  *  word: string,
- *  generatedPronunciation: string | null,
  *  userName: string | null,
  *  userGender: string,
  *  skin: string,
@@ -174,6 +173,7 @@ import wikisData from "./wikis.json";
  *  id: number,
  *  pronunciation: string,
  *  isReconstructed: boolean,
+ *  isGenerated: boolean,
  *  empty: boolean,
  * }} Pronunciation
  */
@@ -317,6 +317,7 @@ function createEmptyPronunciation(id) {
     id: id || 1,
     pronunciation: "",
     isReconstructed: false,
+    isGenerated: false,
     empty: true,
   };
 }
@@ -584,7 +585,7 @@ class GrammaticalItem {
  *  readonly isSupported: boolean,
  *  readonly hasPronunciationAppendix: boolean,
  *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem | undefined,
- *  readonly generatePronunciation: (word: string) => string,
+ *  readonly generatePronunciation: (word: string) => string | null,
  * }} Language
  */
 /**
@@ -598,7 +599,7 @@ class Language {
    * @param {string} name Language’s name (in French).
    * @param {string[][]?} ipaSymbols An optional list of common IPA symbols for the language.
    * @param {GrammaticalItem[]?} grammarItems An optional list of grammatical items.
-   * @param {((word: string) => string)?} pronGenerator An optional function that generates an approximate pronunciation based on the word.
+   * @param {((word: string) => string | null)?} pronGenerator An optional function that generates an approximate pronunciation based on the word.
    * @param {boolean?} isSupported Indicate whether this language is officialy supported by this gadget.
    */
   constructor(

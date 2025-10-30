@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, ref, watch } from "vue";
 import {
   CdxButton,
   CdxDialog,
@@ -110,17 +110,34 @@ export default defineComponent({
      */
     const config = inject("config");
 
-    if (pronunciations.value.length === 0 && config.generatedPronunciation) {
-      const pron = types.createEmptyPronunciation();
-      pron.pronunciation = config.generatedPronunciation;
+    watch(
+      () => props.language,
+      (newLanguage) => tryGeneratingPron(newLanguage)
+    );
+
+    /**
+     * Try to generate a pronunciation for the given language.
+     * If some pronunciations already exist in the form or the generation function returns an empty value, nothing happens.
+     * @param {import("../types.js").Language} language The language to use.
+     */
+    function tryGeneratingPron(language) {
+      const generatedPron = language.generatePronunciation(config.word);
+      if (pronunciations.value.length !== 0 || !generatedPron) return;
+
+      onAddPronunciation();
+      const pron = pronunciations.value[pronunciations.value.length - 1];
+      pron.pronunciation = generatedPron;
       pron.empty = false;
-      pronunciations.value.push(pron);
+      pron.isGenerated = true;
+      fireUpdateEvent();
     }
+
+    tryGeneratingPron(props.language);
 
     function isEmpty() {
       return (
         definitions.value.every((def) => def.empty) &&
-        pronunciations.value.every((p) => p.empty) &&
+        pronunciations.value.every((p) => p.empty || p.isGenerated) &&
         Object.values(relatedWords.value).every((relatedWords) =>
           relatedWords.every((relatedWord) => relatedWord.empty)
         ) &&

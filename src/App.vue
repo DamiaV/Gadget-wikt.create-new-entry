@@ -164,10 +164,6 @@ export default defineComponent({
     const showFormFields = ref(false);
     const formData = reactive(initialFormData);
 
-    config.generatedPronunciation = formData.language.generatePronunciation(
-      config.word
-    );
-
     const submitted = ref(false);
 
     function isEmpty() {
