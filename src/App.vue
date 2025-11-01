@@ -723,6 +723,7 @@ export default defineComponent({
             href="https://commons.wikimedia.org/wiki/File:Barba_trans.png"
             target="_blank"
             title="Boo :3"
+            tabindex="-1"
           >
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Barba_trans.png/20px-Barba_trans.png"
