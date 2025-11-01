@@ -10,8 +10,7 @@
         "helpPage": "Aide:Synonymes et antonymes"
     },
     "apparentés": {
-        "helpPage": "Aide:Mots apparentés",
-        "definitionSpecific": true
+        "helpPage": "Aide:Mots apparentés"
     },
     "augmentatifs": {
         "definitionSpecific": true
