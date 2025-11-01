@@ -95,8 +95,7 @@ function generateWikitext(formData, word) {
   if (formData.stub) wikitext += `{{ébauche|${langCode}}}\n`;
 
   wikitext += "=== {{S|étymologie}} ===\n";
-  if (formData.etymology) wikitext += formData.etymology + "\n";
-  else wikitext += `{{ébauche-étym|${langCode}}}\n`;
+  wikitext += formatEtymology(formData.etymology, langCode);
 
   /** @type {[string, import("./types.js").RelatedWord[]][]} */
   const homophones = [];
@@ -232,6 +231,24 @@ function generateWikitext(formData, word) {
  */
 function escape(wikitext) {
   return wikitext.replaceAll("|", "{{!}}");
+}
+
+/**
+ * Format an Etymology object into wikitext.
+ * @param {import("./types.js").Definition} etymology The Etymology object to format.
+ * @param {string} langCode The language code of the entry.
+ * @returns {string} The formatted etymology with its examples.
+ */
+function formatEtymology(etymology, langCode) {
+  if (etymology.empty) return `: {{ébauche-étym|${langCode}}}\n`;
+
+  let wikitext = etymology.text + "\n";
+  if (etymology.examples.length) {
+    wikitext += "\n==== {{S|attestations}} ====\n";
+    for (const example of etymology.examples)
+      wikitext += formatExample(example, langCode).substring(1);
+  }
+  return wikitext;
 }
 
 /**

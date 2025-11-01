@@ -13,7 +13,6 @@ import {
 import {
   CdxButton,
   CdxCheckbox,
-  CdxField,
   CdxIcon,
   CdxMessage,
   CdxProgressIndicator,
@@ -28,9 +27,6 @@ import {
   cdxIconDownload,
   cdxIconError,
   cdxIconExpand,
-  cdxIconHelpNotice,
-  cdxIconHistory,
-  cdxIconInfoFilled,
   cdxIconLabFlask,
   cdxIconLanguage,
 } from "@wikimedia/codex-icons";
@@ -49,6 +45,7 @@ import LanguageSelector from "./components/LanguageSelector.vue";
 import ReferencesForm from "./components/ReferencesForm.vue";
 import UserPreferences from "./components/UserPreferences.vue";
 import WikiLink from "./components/WikiLink.vue";
+import EtymologyForm from "./components/EtymologyForm.vue";
 
 const LAST_LANG_STORAGE_KEY = "cne-lang";
 
@@ -63,7 +60,6 @@ export default defineComponent({
   components: {
     CdxButton,
     CdxCheckbox,
-    CdxField,
     CdxIcon,
     CdxMessage,
     CdxProgressIndicator,
@@ -71,6 +67,7 @@ export default defineComponent({
     CdxTabs,
     CategoriesSelector,
     EntryForm,
+    EtymologyForm,
     ExternalWikiLinks,
     LanguageSelector,
     InputWithToolbar,
@@ -147,7 +144,7 @@ export default defineComponent({
       language: startLanguage,
       stub: false,
       entries: [types.createEmptyEntry()],
-      etymology: "",
+      etymology: types.createEmptyEtymology(),
       wikiLinks: {},
       categories: [],
       pronunciationInfo: "",
@@ -170,7 +167,7 @@ export default defineComponent({
     function isEmpty() {
       return (
         formData.entries.every((entry) => entry.empty) &&
-        !formData.etymology &&
+        formData.etymology.empty &&
         Object.values(formData.wikiLinks).every(
           (wikiLink) => !wikiLink.enabled
         ) &&
@@ -407,7 +404,6 @@ export default defineComponent({
       disableSubmitBtn,
       disablePreviewBtn,
       // Other
-      config,
       userPrefs,
       // Icons
       cdxIconArticle,
@@ -416,9 +412,6 @@ export default defineComponent({
       cdxIconExpand,
       cdxIconDownload,
       cdxIconAdd,
-      cdxIconHelpNotice,
-      cdxIconInfoFilled,
-      cdxIconHistory,
       cdxIconError,
       cdxIconLabFlask,
       cdxIconLanguage,
@@ -651,25 +644,10 @@ export default defineComponent({
               label="Étymologie"
               class="cne-main-tab"
             >
-              <cdx-field class="cne-box" is-fieldset>
-                <template #label>
-                  <cdx-icon :icon="cdxIconHistory"></cdx-icon>
-                  Étymologie des entrées
-                  <span class="cne-fieldset-btns">
-                    <wiki-link page-title="Aide:Étymologies">
-                      <cdx-icon :icon="cdxIconHelpNotice"></cdx-icon>
-                    </wiki-link>
-
-                    <wiki-link page-title="Convention:Étymologie">
-                      <cdx-icon :icon="cdxIconInfoFilled"></cdx-icon>
-                    </wiki-link>
-                  </span>
-                </template>
-                <input-with-toolbar
-                  v-model="formData.etymology"
-                  text-area
-                ></input-with-toolbar>
-              </cdx-field>
+              <etymology-form
+                v-model="formData.etymology"
+                :language="formData.language"
+              ></etymology-form>
             </cdx-tab>
 
             <cdx-tab

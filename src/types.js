@@ -99,13 +99,22 @@ import wikisData from "./wikis.json";
  *  language: Language,
  *  stub: boolean,
  *  entries: Entry[],
- *  etymology: string,
+ *  etymology: Etymology,
  *  wikiLinks: Record<string, ExternalWikiLink>,
  *  categories: string[],
  *  pronunciationInfo: string,
  *  references: References,
  *  sortKey: string,
  * }} FormData
+ */
+
+/**
+ * Type for an etymology and its historical examples.
+ * @typedef {{
+ *  text: string,
+ *  examples: Example[],
+ *  empty: boolean,
+ * }} Etymology
  */
 
 /**
@@ -254,6 +263,18 @@ function createEmptyUserPreferences() {
     introMessageHidden: false,
     warningIntroMessageHidden: false,
     favoritedSections: [],
+  };
+}
+
+/**
+ * Create an empty Etymology object.
+ * @returns {Etymology} An empty Etymology object.
+ */
+function createEmptyEtymology() {
+  return {
+    text: "",
+    examples: [],
+    empty: true,
   };
 }
 
@@ -965,6 +986,7 @@ export default {
   otherSectionsData,
   getWikiUrl,
   createEmptyUserPreferences,
+  createEmptyEtymology,
   createEmptyEntry,
   createEmptyDefinition,
   createEmptyExample,

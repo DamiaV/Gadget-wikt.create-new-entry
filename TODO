@@ -1,6 +1,6 @@
 [x] Réparer la mise à jour de l’UI après modif de la config.
 [ ] Option pour réduire la quantité de texte de l’UI.
-[ ] Ajouter un champ pour les attestations historiques.
+[x] Ajouter un champ pour les attestations historiques.
 [ ] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
 [ ] Essayer de rendre compatible avec l’éditeur visuel.
 [x] Pouvoir afficher par défaut certaines sections de niveau 4.

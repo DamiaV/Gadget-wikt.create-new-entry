@@ -559,10 +559,6 @@ export default defineComponent({
   margin-bottom: 4em;
 }
 
-.cne-definition-form-fields {
-  flex-grow: 1;
-}
-
 .cne-examples,
 .cne-related-words {
   margin-top: 2em;
