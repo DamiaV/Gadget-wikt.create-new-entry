@@ -1,3 +1,4 @@
+[ ] Boutons/menus pour ajouter des lexiques aux définitions.
 [x] Réparer la mise à jour de l’UI après modif de la config.
 [ ] Option pour réduire la quantité de texte de l’UI.
 [x] Ajouter un champ pour les attestations historiques.
@@ -8,7 +9,7 @@
 [x] Générer un message de diff.
 [x] Faire en sorte que la touche Tab ne focus pas les boutons de formatage.
 [x] Inventorier quelles sous-sections ont besoin d’un champ de texte plutot qu’une liste de mots.
-[x] Système de préférences
+[x] Système de préférences.
     [x] Mode minimal avec juste sélection de la langue, des props grammaticales et de la définition, et sans les bandeaux.
     [x] Option pour désactiver la vérification de formulaire incomplet à l’insertion.
     [x] Option pour désactiver le warning de fermeture de l’onglet.
