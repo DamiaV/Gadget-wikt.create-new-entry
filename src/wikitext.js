@@ -433,7 +433,6 @@ const exempleTemplateFormat =
  * @returns {string} The formatted example.
  */
 function formatExample(example, langCode, listBullet = "#*") {
-  console.log(listBullet);
   return (
     listBullet +
     " " +
