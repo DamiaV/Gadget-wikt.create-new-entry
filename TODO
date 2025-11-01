@@ -2,6 +2,8 @@
 [ ] Boutons/menus pour ajouter des lexiques aux définitions.
 [x] Réparer la mise à jour de l’UI après modif de la config.
 [ ] Option pour réduire la quantité de texte de l’UI.
+    [ ] Cacher les descriptions et help-texts, retirer marges <hr>.
+    [ ] Déplacer les boutons de feedback dans le titre.
 [x] Ajouter un champ pour les attestations historiques.
 [ ] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
 [ ] Essayer de rendre compatible avec l’éditeur visuel.
