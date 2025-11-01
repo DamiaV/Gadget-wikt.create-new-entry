@@ -377,6 +377,12 @@ export default defineComponent({
       previewArea.value.innerHTML = html;
 
       disablePreviewBtn.value = false;
+      setTimeout(() => {
+        document.getElementById("cne-preview-box").scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
     }
 
     /**
@@ -467,7 +473,11 @@ export default defineComponent({
     </div>
 
     <template v-else>
-      <div v-show="showPrevisualization" class="cne-previsualization cne-box">
+      <div
+        v-show="showPrevisualization"
+        id="cne-preview-box"
+        class="cne-previsualization cne-box"
+      >
         <div class="cne-form-toolbar">
           <cdx-button
             type="button"
