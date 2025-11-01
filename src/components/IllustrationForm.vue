@@ -200,7 +200,14 @@ export default defineComponent({
      */
     function onInvalid(event) {
       status.value = "error";
-      if (event.target) messages.value.error = event.target.validationMessage;
+      if (event.target) {
+        messages.value.error = event.target.validationMessage;
+        event.target.dispatchEvent(
+          new Event("empty-field", {
+            bubbles: true,
+          })
+        );
+      }
     }
 
     function onTypeUpdate() {

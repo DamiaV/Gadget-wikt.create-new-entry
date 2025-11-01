@@ -9,6 +9,7 @@ import {
   reactive,
   ref,
   useTemplateRef,
+  watch,
 } from "vue";
 import {
   CdxButton,
@@ -163,6 +164,22 @@ export default defineComponent({
     const formData = reactive(initialFormData);
 
     const submitted = ref(false);
+
+    watch(
+      form,
+      () => {
+        form.value.addEventListener("empty-field", () => {
+          mw.notify(
+            "Certains champs requis du formulaire sont vides. Veuillez les remplir avant d’insérer le code.",
+            {
+              type: "error",
+              autoHide: true,
+            }
+          );
+        });
+      },
+      { once: true }
+    );
 
     function isEmpty() {
       return (
