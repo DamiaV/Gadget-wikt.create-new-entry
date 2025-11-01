@@ -14,9 +14,9 @@
     [x] Option pour désactiver le warning de fermeture de l’onglet.
     [x] Permettre de fermer les messages d’en-tête, et avoir un paramètre pour les réafficher.
 [x] Générer automatiquement une prononciation pour les entrées en espéranto.
-[ ] Sauvegarde du formulaire.
+[~] Sauvegarde du formulaire.
     [ ] Sauvegarde intégrale ?
-    [ ] Sauvegarder les données d’une section de mots liés.
+    [x] Sauvegarder les données d’une section de mots liés.
 [x] Réparer le champ de PageLookup qui ne se vide pas après sélection d’une option.
 [x] Afficher le numéro d’entrée seulement pour les doublons.
 [x] Formater {{exemple}} vide sur une seule ligne.
