@@ -545,16 +545,13 @@ export default defineComponent({
         disable-delete
         @update:model-value="fireUpdateEvent()"
       ></related-words-list>
-      <input-with-toolbar
+      <related-words-list
         v-model="phoneticMutations"
-        text-area
+        section-type="modification phonétique"
+        :section-data="otherSectionsData['modification phonétique']"
+        disable-delete
         @update:model-value="fireUpdateEvent()"
-      >
-        <template #label>Modifications phonétiques</template>
-        <template #description>
-          Concerne principalement les langues gaéliques.
-        </template>
-      </input-with-toolbar>
+      ></related-words-list>
     </cdx-tab>
   </cdx-tabs>
 

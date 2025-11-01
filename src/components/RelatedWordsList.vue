@@ -75,18 +75,21 @@ export default defineComponent({
     disableDelete: { type: Boolean, default: false },
     /**
      * The array of RelatedWord objects to manage.
-     * @type {import("vue").PropType<import("../types.js").RelatedWord[]>}
+     * @type {import("vue").PropType<import("../types.js").RelatedWord[] | string>}
      */
-    modelValue: { type: Array, required: true },
+    modelValue: { type: [Array, String], required: true },
   },
 
   emits: ["update:model-value", "delete"],
 
   setup(props, ctx) {
+    const isTextual = !!props.sectionData.isText;
+
+    const text = ref(isTextual ? props.modelValue : "");
     /**
      * @type {import("vue").Ref<import("../types.js").RelatedWord[]>}
      */
-    const items = shallowRef(props.modelValue);
+    const items = shallowRef(!isTextual ? props.modelValue : []);
 
     /**
      * @type {import("../types.js").AppConfig}
@@ -113,6 +116,11 @@ export default defineComponent({
     }
 
     function fireEvent() {
+      if (isTextual) {
+        ctx.emit("update:model-value", text.value);
+        return;
+      }
+
       /**
        * @type {import("../types.js").RelatedWord[]}
        */
@@ -365,7 +373,7 @@ export default defineComponent({
       const state = userPrefs.favoritedSections[props.sectionType];
       userPrefs.favoritedSections[props.sectionType] = {
         status: "locked",
-        content: structuredClone(toRaw(items.value)),
+        content: isTextual ? text.value : structuredClone(toRaw(items.value)),
       };
       requests
         .setUserPreferences(config.userName, userPrefs, config.api)
@@ -414,14 +422,19 @@ export default defineComponent({
 
     const sectionStatusObject = userPrefs.favoritedSections[props.sectionType];
     if (sectionStatusObject && sectionStatusObject.status === "locked") {
-      for (const element of sectionStatusObject.content)
-        items.value.push(element);
-      sortItems();
+      if (isTextual) text.value = sectionStatusObject.content;
+      else {
+        for (const element of sectionStatusObject.content)
+          items.value.push(element);
+        sortItems();
+      }
       fireEvent();
     }
 
     return {
       // Data
+      isTextual,
+      text,
       items,
       sectionStatus,
       // Other
@@ -450,6 +463,7 @@ export default defineComponent({
       cdxIconTrash,
       cdxIconUnStar,
       // Callbacks
+      fireEvent,
       onOpenItemEditDialog,
       onOpenFormattedItemEditDialog,
       onFormattedItemEditDialogSubmit,
@@ -525,9 +539,7 @@ export default defineComponent({
           </template>
 
           <cdx-button
-            v-if="
-              (!sectionStatus || sectionStatus === 'locked') && items.length
-            "
+            v-if="items.length || text"
             type="button"
             size="small"
             aria-label="Sauvegarder le contenu de cette section"
@@ -552,72 +564,82 @@ export default defineComponent({
 
       <template #help-text>{{ $props.description }}</template>
 
-      <div class="cne-related-words-buttons">
-        <cdx-button
-          type="button"
-          action="progressive"
-          @click="onOpenFormattedItemEditDialog(-1)"
-        >
-          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-          Ajouter un mot
-        </cdx-button>
-        <cdx-button
-          type="button"
-          action="progressive"
-          @click="onOpenUnformattedItemEditDialog(-1)"
-        >
-          <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-          Ajouter du texte libre
-        </cdx-button>
-      </div>
+      <input-with-toolbar
+        v-if="isTextual"
+        v-model="text"
+        text-area
+        @update:model-value="fireEvent()"
+      >
+      </input-with-toolbar>
 
-      <ul v-if="items.length">
-        <li v-for="(item, i) in items" :key="item.id">
+      <template v-else>
+        <div class="cne-related-words-buttons">
           <cdx-button
             type="button"
-            size="small"
-            action="destructive"
-            aria-label="Supprimer"
-            title="Supprimer"
-            @click="onDeleteItem(i)"
+            action="progressive"
+            @click="onOpenFormattedItemEditDialog(-1)"
           >
-            <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+            Ajouter un mot
           </cdx-button>
           <cdx-button
             type="button"
-            size="small"
-            aria-label="Modifier"
-            title="Modifier"
-            @click="onOpenItemEditDialog(i)"
+            action="progressive"
+            @click="onOpenUnformattedItemEditDialog(-1)"
           >
-            <cdx-icon :icon="cdxIconEdit"></cdx-icon>
+            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+            Ajouter du texte libre
           </cdx-button>
+        </div>
 
-          <span v-if="'words' in item">
-            <template v-for="(word, j) in item.words" :key="j">
-              <wiki-link :page-title="word"></wiki-link
-              >{{ j < item.words.length - 1 ? ", " : " " }}
-            </template>
-            <template v-if="item.annotation">
-              <span
-                :class="{
-                  'cne-words-annotation': true,
-                  'cne-words-annotation-formatted':
-                    !item.nonFormattedAnnotation,
-                }"
-              >
-                <template v-if="item.nonFormattedAnnotation">
-                  {{ item.annotation }}
-                </template>
-                <template v-else>({{ item.annotation }})</template>
-              </span>
-            </template>
-          </span>
-          <span v-else>
-            {{ item.text }}
-          </span>
-        </li>
-      </ul>
+        <ul v-if="items.length">
+          <li v-for="(item, i) in items" :key="item.id">
+            <cdx-button
+              type="button"
+              size="small"
+              action="destructive"
+              aria-label="Supprimer"
+              title="Supprimer"
+              @click="onDeleteItem(i)"
+            >
+              <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+            </cdx-button>
+            <cdx-button
+              type="button"
+              size="small"
+              aria-label="Modifier"
+              title="Modifier"
+              @click="onOpenItemEditDialog(i)"
+            >
+              <cdx-icon :icon="cdxIconEdit"></cdx-icon>
+            </cdx-button>
+
+            <span v-if="'words' in item">
+              <template v-for="(word, j) in item.words" :key="j">
+                <wiki-link :page-title="word"></wiki-link
+                >{{ j < item.words.length - 1 ? ", " : " " }}
+              </template>
+              <template v-if="item.annotation">
+                <span
+                  :class="{
+                    'cne-words-annotation': true,
+                    'cne-words-annotation-formatted':
+                      !item.nonFormattedAnnotation,
+                  }"
+                >
+                  <template v-if="item.nonFormattedAnnotation">
+                    {{ item.annotation }}
+                  </template>
+                  <template v-else>({{ item.annotation }})</template>
+                </span>
+              </template>
+            </span>
+            <span v-else>
+              {{ item.text }}
+            </span>
+          </li>
+        </ul>
+      </template>
     </cdx-field>
   </div>
 

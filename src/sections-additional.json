@@ -57,6 +57,9 @@
         "definitionSpecific": true,
         "helpPage": "Aide:Méronymes et holonymes"
     },
+    "modification phonétique": {
+        "isText": true
+    },
     "noms vernaculaires": {
         "definitionSpecific": true,
         "isText": true
