@@ -20,6 +20,11 @@ header a.cdx-button {
     width: 100%;
 }
 
+#wpSummary {
+    display: block;
+    width: 100%;
+}
+
 a {
     text-decoration: none;
 }
