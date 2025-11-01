@@ -357,14 +357,20 @@ export default defineComponent({
         .then(() => {
           mw.notify(
             `La section «\u00a0${props.sectionData.name}\u00a0» a été épinglée.`,
-            { type: "success", autoHide: true }
+            {
+              type: "success",
+              autoHide: true,
+            }
           );
         })
         .catch(() => {
           if (state) userPrefs.favoritedSections[props.sectionType] = state;
           mw.notify(
             `La section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être épinglée.`,
-            { type: "errro", autoHide: true }
+            {
+              type: "error",
+              autoHide: true,
+            }
           );
         });
     }
@@ -380,14 +386,20 @@ export default defineComponent({
         .then(() => {
           mw.notify(
             `Le contenu de la section «\u00a0${props.sectionData.name}\u00a0» a été sauvegardé.`,
-            { type: "success", autoHide: true }
+            {
+              type: "success",
+              autoHide: true,
+            }
           );
         })
         .catch(() => {
           if (state) userPrefs.favoritedSections[props.sectionType] = state;
           mw.notify(
             `Le contenu de la section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être sauvegardé.`,
-            { type: "errro", autoHide: true }
+            {
+              type: "error",
+              autoHide: true,
+            }
           );
         });
     }
@@ -406,7 +418,10 @@ export default defineComponent({
             sectionStatus === "locked"
               ? `La sauvegarde de l’état de la section «\u00a0${props.sectionData.name}\u00a0» a été supprimée.`
               : `La section «\u00a0${props.sectionData.name}\u00a0» a été désépinglée.`,
-            { type: "success", autoHide: true }
+            {
+              type: "success",
+              autoHide: true,
+            }
           );
         })
         .catch(() => {
@@ -415,7 +430,10 @@ export default defineComponent({
             sectionStatus === "locked"
               ? `La sauvegarde de l’état de la section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être supprimée.`
               : `La section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être désépinglée.`,
-            { type: "errro", autoHide: true }
+            {
+              type: "error",
+              autoHide: true,
+            }
           );
         });
     }
