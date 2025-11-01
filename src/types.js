@@ -40,11 +40,21 @@ import wikisData from "./wikis.json";
 
 /**
  * @typedef {{
+ *  status: "pinned",
+ * } | {
+ *  status: "locked",
+ *  content: RelatedWord[] | string,
+ * }} SectionStatus
+ */
+
+/**
+ * @typedef {{
  *  minimalMode: boolean,
  *  formValidityCheckingDisabled: boolean,
  *  tabClosingWarningDisabled: boolean,
  *  introMessageHidden: boolean,
  *  warningIntroMessageHidden: boolean,
+ *  favoritedSections: Record<string, SectionStatus | null>,
  * }} UserPreferences
  */
 
@@ -243,6 +253,7 @@ function createEmptyUserPreferences() {
     tabClosingWarningDisabled: false,
     introMessageHidden: false,
     warningIntroMessageHidden: false,
+    favoritedSections: [],
   };
 }
 

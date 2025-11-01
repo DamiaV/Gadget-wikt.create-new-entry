@@ -97,12 +97,10 @@ export default defineComponent({
     watch(
       () => props.language,
       (newLanguage) => {
-        console.log(newLanguage, isGenerated.value);
         if (isGenerated.value) {
           const generatedPron = newLanguage.generatePronunciation(config.word);
           if (generatedPron) {
             pronunciation.value = generatedPron;
-            console.log(pronunciation.value);
             fireUpdateEvent(false);
           } else deletePronunciation();
         }

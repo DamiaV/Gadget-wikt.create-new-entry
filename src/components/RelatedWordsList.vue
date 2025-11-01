@@ -1,6 +1,14 @@
 <script>
 // <nowiki>
-import { computed, defineComponent, inject, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  reactive,
+  ref,
+  shallowRef,
+  toRaw,
+} from "vue";
 import {
   CdxButton,
   CdxCheckbox,
@@ -11,11 +19,16 @@ import {
 } from "@wikimedia/codex";
 import {
   cdxIconAdd,
+  cdxIconCancel,
+  cdxIconCheck,
   cdxIconEdit,
   cdxIconHelpNotice,
   cdxIconInfoFilled,
+  cdxIconStar,
   cdxIconTrash,
+  cdxIconUnStar,
 } from "@wikimedia/codex-icons";
+import requests from "../requests.js";
 import strings from "../strings.js";
 import types from "../types.js";
 import utils from "../utils.js";
@@ -73,7 +86,22 @@ export default defineComponent({
     /**
      * @type {import("vue").Ref<import("../types.js").RelatedWord[]>}
      */
-    const items = ref(props.modelValue);
+    const items = shallowRef(props.modelValue);
+
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
+
+    const sectionStatus = computed(() => {
+      const sectionStatus = userPrefs.favoritedSections[props.sectionType];
+      if (!sectionStatus) return null;
+      return sectionStatus.status;
+    });
 
     /**
      * Check whether the given item is empty.
@@ -309,16 +337,96 @@ export default defineComponent({
       fireEvent();
     }
 
-    /**
-     * @type {import("../types.js").AppConfig}
+    /*
+     * Pinning and locking
      */
-    const config = inject("config");
+
+    function onPin() {
+      const state = userPrefs.favoritedSections[props.sectionType];
+      userPrefs.favoritedSections[props.sectionType] = { status: "pinned" };
+      requests
+        .setUserPreferences(config.userName, userPrefs, config.api)
+        .then(() => {
+          mw.notify(
+            `La section «\u00a0${props.sectionData.name}\u00a0» a été épinglée.`,
+            { type: "success", autoHide: true }
+          );
+        })
+        .catch(() => {
+          if (state) userPrefs.favoritedSections[props.sectionType] = state;
+          mw.notify(
+            `La section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être épinglée.`,
+            { type: "errro", autoHide: true }
+          );
+        });
+    }
+
+    function onLock() {
+      const state = userPrefs.favoritedSections[props.sectionType];
+      userPrefs.favoritedSections[props.sectionType] = {
+        status: "locked",
+        content: structuredClone(toRaw(items.value)),
+      };
+      requests
+        .setUserPreferences(config.userName, userPrefs, config.api)
+        .then(() => {
+          mw.notify(
+            `Le contenu de la section «\u00a0${props.sectionData.name}\u00a0» a été sauvegardé.`,
+            { type: "success", autoHide: true }
+          );
+        })
+        .catch(() => {
+          if (state) userPrefs.favoritedSections[props.sectionType] = state;
+          mw.notify(
+            `Le contenu de la section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être sauvegardé.`,
+            { type: "errro", autoHide: true }
+          );
+        });
+    }
+
+    /**
+     * Reset the status of this section.
+     * @param {import("../types.js").SectionStatus} sectionStatus The previous section status.
+     */
+    function onReset(sectionStatus) {
+      const state = userPrefs.favoritedSections[props.sectionType];
+      delete userPrefs.favoritedSections[props.sectionType];
+      requests
+        .setUserPreferences(config.userName, userPrefs, config.api)
+        .then(() => {
+          mw.notify(
+            sectionStatus === "locked"
+              ? `La sauvegarde de l’état de la section «\u00a0${props.sectionData.name}\u00a0» a été supprimée.`
+              : `La section «\u00a0${props.sectionData.name}\u00a0» a été désépinglée.`,
+            { type: "success", autoHide: true }
+          );
+        })
+        .catch(() => {
+          if (state) userPrefs.favoritedSections[props.sectionType] = state;
+          mw.notify(
+            sectionStatus === "locked"
+              ? `La sauvegarde de l’état de la section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être supprimée.`
+              : `La section «\u00a0${props.sectionData.name}\u00a0» n’a pas pu être désépinglée.`,
+            { type: "errro", autoHide: true }
+          );
+        });
+    }
+
+    const sectionStatusObject = userPrefs.favoritedSections[props.sectionType];
+    if (sectionStatusObject && sectionStatusObject.status === "locked") {
+      for (const element of sectionStatusObject.content)
+        items.value.push(element);
+      sortItems();
+      fireEvent();
+    }
 
     return {
       // Data
       items,
+      sectionStatus,
       // Other
       config,
+      userPrefs,
       // Dialogs
       formattedItemDialogPrimaryAction,
       unformattedItemDialogPrimaryAction,
@@ -333,10 +441,14 @@ export default defineComponent({
       openDeletionDialog,
       // Icons
       cdxIconAdd,
+      cdxIconCancel,
+      cdxIconCheck,
       cdxIconEdit,
       cdxIconHelpNotice,
       cdxIconInfoFilled,
+      cdxIconStar,
       cdxIconTrash,
+      cdxIconUnStar,
       // Callbacks
       onOpenItemEditDialog,
       onOpenFormattedItemEditDialog,
@@ -346,6 +458,9 @@ export default defineComponent({
       onDelete,
       deleteRelatedWordsList,
       onDeleteItem,
+      onPin,
+      onLock,
+      onReset,
       userGenderSwitch: strings.userGenderSwitch,
       capitalize: strings.capitalize,
     };
@@ -383,6 +498,54 @@ export default defineComponent({
             @click="onDelete"
           >
             <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+          </cdx-button>
+
+          <template v-if="!$props.disableDelete">
+            <cdx-button
+              v-if="!sectionStatus"
+              type="button"
+              size="small"
+              aria-label="Épingler"
+              title="Épingler"
+              @click="onPin"
+            >
+              <cdx-icon :icon="cdxIconStar"></cdx-icon>
+            </cdx-button>
+
+            <cdx-button
+              v-if="sectionStatus === 'pinned'"
+              type="button"
+              size="small"
+              aria-label="Désépingler"
+              title="Désépingler"
+              @click="onReset('pinned')"
+            >
+              <cdx-icon :icon="cdxIconUnStar"></cdx-icon>
+            </cdx-button>
+          </template>
+
+          <cdx-button
+            v-if="
+              (!sectionStatus || sectionStatus === 'locked') && items.length
+            "
+            type="button"
+            size="small"
+            aria-label="Sauvegarder le contenu de cette section"
+            title="Sauvegarder le contenu de cette section"
+            @click="onLock"
+          >
+            <cdx-icon :icon="cdxIconCheck"></cdx-icon>
+          </cdx-button>
+
+          <cdx-button
+            v-if="sectionStatus === 'locked'"
+            type="button"
+            size="small"
+            aria-label="Supprimer la sauvegarde du contenu de cette section"
+            title="Supprimer la sauvegarde du contenu de cette section"
+            @click="onReset('locked')"
+          >
+            <cdx-icon :icon="cdxIconCancel"></cdx-icon>
           </cdx-button>
         </span>
       </template>

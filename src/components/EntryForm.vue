@@ -143,12 +143,8 @@ export default defineComponent({
               relatedWords.every((relatedWord) => relatedWord.empty)) ||
             !relatedWords
         ) &&
-        homophones.value.every((relatedWords) =>
-          relatedWords.every((relatedWord) => relatedWord.empty)
-        ) &&
-        nearHomophones.value.every((relatedWords) =>
-          relatedWords.every((relatedWord) => relatedWord.empty)
-        ) &&
+        homophones.value.every((relatedWord) => relatedWord.empty) &&
+        nearHomophones.value.every((relatedWord) => relatedWord.empty) &&
         !phoneticMutations.value &&
         !notes.value
       );
@@ -540,12 +536,14 @@ export default defineComponent({
         section-type="homophones"
         :section-data="otherSectionsData['homophones']"
         disable-delete
+        @update:model-value="fireUpdateEvent()"
       ></related-words-list>
       <related-words-list
         v-model="nearHomophones"
         section-type="paronymes"
         :section-data="otherSectionsData['paronymes']"
         disable-delete
+        @update:model-value="fireUpdateEvent()"
       ></related-words-list>
       <input-with-toolbar
         v-model="phoneticMutations"

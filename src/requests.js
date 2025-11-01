@@ -200,7 +200,7 @@ async function getUserPreferences(username, api) {
       introMessageHidden: getFlag("introMessageHidden"),
       warningIntroMessageHidden: getFlag("warningIntroMessageHidden"),
       favoritedSections:
-        JSON.parse(localStorage.getItem("cne-favoritedSections")) || [],
+        JSON.parse(localStorage.getItem("cne-favoritedSections")) || {},
     };
   }
 
@@ -250,6 +250,7 @@ async function getUserPreferences(username, api) {
     tabClosingWarningDisabled: !!rawPrefs.tabClosingWarningDisabled,
     introMessageHidden: !!rawPrefs.introMessageHidden,
     warningIntroMessageHidden: !!rawPrefs.warningIntroMessageHidden,
+    favoritedSections: rawPrefs.favoritedSections || {},
   };
 }
 

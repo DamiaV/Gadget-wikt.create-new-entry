@@ -3,7 +3,7 @@
 [ ] Ajouter un champ pour les attestations historiques.
 [ ] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
 [ ] Essayer de rendre compatible avec l’éditeur visuel.
-[ ] Pouvoir afficher par défaut certaines sections de niveau 4.
+[~] Pouvoir afficher par défaut certaines sections de niveau 4.
 [x] Écraser/supprimer la prononciation générée automatiquement à chaque changement de langue.
 [x] Générer un message de diff.
 [x] Faire en sorte que la touche Tab ne focus pas les boutons de formatage.

@@ -52,6 +52,15 @@ export default defineComponent({
      */
     const relatedWords = reactive(props.modelValue);
 
+    /**
+     * @type {import("../types.js").AppConfig}
+     */
+    const config = inject("config");
+    /**
+     * @type {import("../types.js").UserPreferences}
+     */
+    const userPrefs = inject("userPrefs");
+
     function fireUpdateEvent() {
       ctx.emit("update:model-value", Object.assign({}, relatedWords));
     }
@@ -103,10 +112,18 @@ export default defineComponent({
       fireUpdateEvent();
     }
 
-    /**
-     * @type {import("../types.js").AppConfig}
-     */
-    const config = inject("config");
+    let anySection = false;
+    for (const [code, data] of Object.entries(props.sections)) {
+      const sectionStatusObject = userPrefs.favoritedSections[code];
+      if (sectionStatusObject) {
+        if (sectionStatusObject.status) {
+          if (data.isText) relatedWords[code] = "";
+          else relatedWords[code] = [];
+          anySection = true;
+        }
+      }
+    }
+    if (anySection) fireUpdateEvent();
 
     return {
       // Data
