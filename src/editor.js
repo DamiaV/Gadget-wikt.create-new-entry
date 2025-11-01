@@ -20,12 +20,8 @@ function insertWikitext(wikitext, word, langCode, sortKey) {
 
   const text = getText() || "";
 
-  if (text.trim() === "") {
-    setText(wikitext + sortKeyTemplate);
-    return;
-  }
-
-  const noSortKeyTemplate = sortKey !== word && !text.includes("{{clé de tri");
+  const missingSortKeyTemplate =
+    sortKey !== word && !text.includes("{{clé de tri");
 
   const lines = text.split("\n");
   for (let i = 0; i < lines.length; i++) {
@@ -40,14 +36,16 @@ function insertWikitext(wikitext, word, langCode, sortKey) {
     if (i > 0 && lines[i - 1].trim() !== "") wikitext = "\n" + wikitext;
     lines.splice(i, 0, ...wikitext.split("\n"));
     let result = lines.join("\n").trim();
-    if (noSortKeyTemplate) result += "\n" + sortKeyTemplate;
+    if (missingSortKeyTemplate) result += "\n" + sortKeyTemplate;
     setText(result);
     selectLines(i);
     return;
   }
 
-  if (noSortKeyTemplate) wikitext += sortKeyTemplate;
-  setText(text.trim() + "\n\n" + wikitext);
+  if (missingSortKeyTemplate) wikitext += sortKeyTemplate;
+  const leadingText = text.trim();
+  if (leadingText) wikitext = leadingText + "\n\n" + wikitext;
+  setText(wikitext);
   selectLines(lines.length);
 }
 
