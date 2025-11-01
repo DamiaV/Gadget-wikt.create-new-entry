@@ -235,7 +235,7 @@ function escape(wikitext) {
 
 /**
  * Format an Etymology object into wikitext.
- * @param {import("./types.js").Definition} etymology The Etymology object to format.
+ * @param {import("./types.js").Etymology} etymology The Etymology object to format.
  * @param {string} langCode The language code of the entry.
  * @returns {string} The formatted etymology with its examples.
  */
@@ -246,7 +246,7 @@ function formatEtymology(etymology, langCode) {
   if (etymology.examples.length) {
     wikitext += "\n==== {{S|attestations}} ====\n";
     for (const example of etymology.examples)
-      wikitext += formatExample(example, langCode).substring(1);
+      wikitext += formatExample(example, langCode, "*");
   }
   return wikitext;
 }
@@ -432,13 +432,15 @@ const exempleTemplateFormat =
  * @param {string} langCode The language code of the entry.
  * @returns {string} The formatted example.
  */
-function formatExample(example, langCode) {
+function formatExample(example, langCode, listBullet = "#*") {
+  console.log(listBullet);
   return (
-    "#* " +
+    listBullet +
+    " " +
     templates.templateToString({
       name: "exemple",
       format: example.empty ? inlineTemplateFormat2 : exempleTemplateFormat,
-      paramOrder: ["1", "2", "3", "source", "lien", "pas-trad", "lang"],
+      paramOrder: ["1", "2", "3", "source", "lien", "pas-trad", "tête", "lang"],
       params: {
         1: example.text,
         2:
@@ -449,6 +451,7 @@ function formatExample(example, langCode) {
         source: example.source,
         "pas-trad": example.disableTranslation,
         lien: example.link,
+        tête: listBullet === "#*" ? null : listBullet,
         lang: langCode,
       },
     })
