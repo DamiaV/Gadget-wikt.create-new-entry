@@ -4,7 +4,7 @@
 [x] Option pour réduire la quantité de texte de l’UI.
     [x] Retirer les marges des <hr>.
     [x] Cacher les descriptions et help-texts.
-[ ] Déplacer les boutons de feedback dans le titre.
+[x] Déplacer les boutons de feedback dans le titre.
 [x] Ajouter un champ pour les attestations historiques.
 [ ] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
 [ ] Essayer de rendre compatible avec l’éditeur visuel.

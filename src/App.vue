@@ -513,7 +513,38 @@ export default defineComponent({
               :icon="showFormFields ? cdxIconCollapse : cdxIconExpand"
             ></cdx-icon>
           </cdx-button>
+
           <user-preferences v-model="userPrefs"></user-preferences>
+
+          <cdx-button
+            type="button"
+            weight="quiet"
+            title="Signaler un bug"
+            aria-label="Signaler un bug"
+            @click="onReport('bug')"
+          >
+            <cdx-icon :icon="cdxIconError"></cdx-icon>
+          </cdx-button>
+
+          <cdx-button
+            type="button"
+            weight="quiet"
+            title="Demander l’ajout d’une langue"
+            aria-label="Demander l’ajout d’une langue"
+            @click="onReport('language')"
+          >
+            <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
+          </cdx-button>
+
+          <cdx-button
+            type="button"
+            weight="quiet"
+            title="Suggérer une amélioration"
+            aria-label="Suggérer une amélioration"
+            @click="onReport('feature')"
+          >
+            <cdx-icon :icon="cdxIconLabFlask"></cdx-icon>
+          </cdx-button>
         </div>
 
         <h1>
@@ -564,36 +595,6 @@ export default defineComponent({
               vous avez entrées seront perdues.
             </strong>
           </cdx-message>
-
-          <div class="cne-report-bug">
-            <cdx-button
-              type="button"
-              weight="quiet"
-              action="progressive"
-              @click="onReport('bug')"
-            >
-              <cdx-icon :icon="cdxIconError"></cdx-icon>
-              Signaler un bug
-            </cdx-button>
-            <cdx-button
-              type="button"
-              weight="quiet"
-              action="progressive"
-              @click="onReport('language')"
-            >
-              <cdx-icon :icon="cdxIconLanguage"></cdx-icon>
-              Demander l’ajout d’une langue
-            </cdx-button>
-            <cdx-button
-              type="button"
-              weight="quiet"
-              action="progressive"
-              @click="onReport('feature')"
-            >
-              <cdx-icon :icon="cdxIconLabFlask"></cdx-icon>
-              Suggérer une amélioration
-            </cdx-button>
-          </div>
 
           <hr class="cne-horizontal-separator" />
 
@@ -851,14 +852,6 @@ a .cdx-icon svg {
 .cne .bottom-btns {
   display: flex;
   gap: 0.5em;
-  justify-content: center;
-  margin: 1em 0;
-}
-
-.cne-report-bug {
-  display: flex;
-  gap: 0.5em;
-  align-items: center;
   justify-content: center;
   margin: 1em 0;
 }
