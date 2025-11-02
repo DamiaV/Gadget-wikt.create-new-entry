@@ -91,6 +91,7 @@ export default defineComponent({
     const wordTypeProperties = ref({
       wordType: props.modelValue.wordType,
       properties: props.modelValue.wordProperties,
+      plural: props.modelValue.plural,
     });
     const definitions = ref(props.modelValue.definitions);
     const relatedWords = ref(props.modelValue.relatedWords);
@@ -160,6 +161,7 @@ export default defineComponent({
           id: props.modelValue.id,
           wordType: wordTypeProperties.value.wordType,
           wordProperties: wordTypeProperties.value.properties,
+          plural: wordTypeProperties.value.plural,
           definitions: definitions.value,
           relatedWords: relatedWords.value,
           pronunciations: pronunciations.value,

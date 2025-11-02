@@ -1,8 +1,9 @@
 <script>
 // <nowiki>
-import { CdxField, CdxIcon, CdxSelect } from "@wikimedia/codex";
+import { CdxField, CdxIcon, CdxSelect, CdxTextInput } from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
 import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
+import languages from "../languages.js";
 import strings from "../strings.js";
 import types from "../types.js";
 import WikiLink from "./WikiLink.vue";
@@ -11,6 +12,7 @@ import WikiLink from "./WikiLink.vue";
  * @typedef {{
  *  wordType: string,
  *  properties: Record<string, string>,
+ *  plural: string,
  * }} WordProperties
  */
 
@@ -28,6 +30,7 @@ export default defineComponent({
     CdxField,
     CdxIcon,
     CdxSelect,
+    CdxTextInput,
     WikiLink,
   },
 
@@ -48,6 +51,7 @@ export default defineComponent({
   setup(props, ctx) {
     const wordType = ref(props.modelValue.wordType);
     const wordProperties = ref(props.modelValue.properties);
+    const plural = ref(props.modelValue.plural);
 
     const wordTypesData = computed(() => {
       /**
@@ -110,6 +114,7 @@ export default defineComponent({
       const firedEvent = {
         wordType: wordType.value,
         properties: wordProperties.value,
+        plural: plural.value.trim(),
       };
       ctx.emit("update:model-value", firedEvent);
     }
@@ -118,6 +123,7 @@ export default defineComponent({
       wordTypeStatus.value = "default";
       wordPropertiesStatuses.value = {};
       wordProperties.value = {};
+      plural.value = "";
 
       const propertiesLists = props.language.getGrammarItem(
         wordType.value
@@ -148,15 +154,20 @@ export default defineComponent({
       wordTypePropertiesData,
       wordType,
       wordProperties,
+      plural,
       // Visual
       wordTypeStatus,
       wordPropertiesStatuses,
+      // Other
+      NUMBERS: languages.NUMBERS,
+      GRAMMATICAL_CLASSES: languages.GRAMMATICAL_CLASSES,
       // Icons
       cdxIconHelpNotice,
       cdxIconSettings,
       // Callbacks
       onWordTypeSelection,
       onWordPropertySelection,
+      fireUpdateEvent,
       capitalize: strings.capitalize,
     };
   },
@@ -187,21 +198,65 @@ export default defineComponent({
       </cdx-field>
 
       <template v-if="wordType && $props.language.getGrammarItem(wordType)">
-        <cdx-field
+        <template
           v-for="(key, i) in Object.keys(
             $props.language.getGrammarItem(wordType).properties
           )"
-          v-show="wordTypePropertiesData[wordType][i].length > 1"
           :key="key"
-          :status="wordPropertiesStatuses[key]"
         >
-          <template #label>{{ capitalize(key) }}</template>
-          <cdx-select
-            :selected="wordProperties[key] || ''"
-            :menu-items="wordTypePropertiesData[wordType][i]"
-            default-label="Choisissez une option"
-            @update:selected="onWordPropertySelection(key, $event)"
-          ></cdx-select>
+          <cdx-field
+            v-show="wordTypePropertiesData[wordType][i].length > 1"
+            :status="wordPropertiesStatuses[key]"
+          >
+            <template #label>{{ capitalize(key) }}</template>
+            <cdx-select
+              :selected="wordProperties[key] || ''"
+              :menu-items="wordTypePropertiesData[wordType][i]"
+              default-label="Choisissez une option"
+              @update:selected="onWordPropertySelection(key, $event)"
+            ></cdx-select>
+          </cdx-field>
+
+          <cdx-field v-if="key === 'nombre'">
+            <template #label>
+              {{
+                [
+                  NUMBERS.COLLECTIVE_SINGULATIVE.label,
+                  NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL.label,
+                ].includes(wordProperties[key])
+                  ? "Singulatif du mot"
+                  : wordProperties[key] ===
+                      NUMBERS.SINGULATIVE_DUAL_PLURAL.label
+                    ? "Duel du mot"
+                    : "Pluriel du mot (si nécessaire)"
+              }}
+            </template>
+            <cdx-text-input
+              v-model="plural"
+              :disabled="
+                ![
+                  NUMBERS.DIFF_SINGULAR_PLURAL.label,
+                  NUMBERS.COLLECTIVE_SINGULATIVE.label,
+                  NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL.label,
+                  NUMBERS.SINGULATIVE_DUAL_PLURAL.label,
+                ].includes(wordProperties[key])
+              "
+              @update:model-value="fireUpdateEvent()"
+            ></cdx-text-input>
+          </cdx-field>
+        </template>
+
+        <cdx-field
+          v-if="
+            $props.language.code === 'br' &&
+            wordType === GRAMMATICAL_CLASSES.PREPOSITION.label
+          "
+        >
+          <template #label>Type de conjugaison</template>
+          <cdx-text-input
+            v-model="plural"
+            @update:model-value="fireUpdateEvent()"
+          ></cdx-text-input>
         </cdx-field>
       </template>
     </div>

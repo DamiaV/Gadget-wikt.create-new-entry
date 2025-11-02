@@ -150,6 +150,7 @@ import wikisData from "./wikis.json";
  *  id: number,
  *  wordType: string,
  *  wordProperties: Record<string, string>,
+ *  plural: string,
  *  definitions: Definition[],
  *  relatedWords: Record<string, RelatedWord[] | string>,
  *  pronunciations: Pronunciation[],
@@ -288,6 +289,7 @@ function createEmptyEntry(id) {
     id: id || 1,
     wordType: "",
     wordProperties: {},
+    plural: "",
     definitions: [createEmptyDefinition()],
     relatedWords: {},
     pronunciations: [],
@@ -548,7 +550,7 @@ class GrammaticalClass {
 }
 
 /**
- * @typedef {((word: string, grammarClass: string, labels: string[], pronunciation: string) => string)?} InflectionsGenerator
+ * @typedef {((word: string, plural: string, grammarClass: string, labels: string[], pronunciation: string) => string)?} InflectionsGenerator
  */
 
 /**
@@ -616,15 +618,22 @@ class GrammaticalItem {
   /**
    * Generates the inflections template.
    * @param {string} word The base word.
+   * @param {string} plural The base word’s plural.
    * @param {string[]} labels Grammatical properties’ labels.
    * @param {string} pronunciation IPA pronunciation.
    * @returns {string} Template’s wikicode.
    */
-  getInflectionsTemplate(word, labels, pronunciation) {
+  getInflectionsTemplate(word, plural, labels, pronunciation) {
     let grammarClass = this._grammaticalClass.label;
     grammarClass =
       grammarClass.charAt(0).toUpperCase() + grammarClass.substring(1);
-    return this._generateInflections(word, grammarClass, labels, pronunciation);
+    return this._generateInflections(
+      word,
+      plural,
+      grammarClass,
+      labels,
+      pronunciation
+    );
   }
 }
 

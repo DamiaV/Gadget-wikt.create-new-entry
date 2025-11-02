@@ -6,7 +6,7 @@
     [x] Cacher les descriptions et help-texts.
 [x] Déplacer les boutons de feedback dans le titre.
 [x] Ajouter un champ pour les attestations historiques.
-[ ] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
+[x] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
 [ ] Essayer de rendre compatible avec l’éditeur visuel.
 [x] Pouvoir afficher par défaut certaines sections de niveau 4.
 [x] Écraser/supprimer la prononciation générée automatiquement à chaque changement de langue.

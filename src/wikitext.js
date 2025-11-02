@@ -284,6 +284,7 @@ function formatEntry(entry, word, language, number) {
   const inflectionsTemplate = grammarItem
     ? grammarItem.getInflectionsTemplate(
         word,
+        entry.plural,
         wordPropertyLabels,
         entry.pronunciations.length ? entry.pronunciations[0].pronunciation : ""
       )

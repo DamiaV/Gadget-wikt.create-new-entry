@@ -1,5 +1,6 @@
 // <nowiki>
 import langs from "./wiki_deps/wikt.core.languages.js";
+import templates from "./templates.js";
 import types from "./types.js";
 
 /**
@@ -158,6 +159,8 @@ function loadLanguages() {
    */
   const languages = [];
 
+  const inlineTemplateFormat = templates.parseTemplateFormat("inline");
+
   /*
    * French language definition.
    */
@@ -165,13 +168,21 @@ function loadLanguages() {
   /**
    * Generate the inflections template for French.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @param {boolean} simple If true, {{fr-rég}} will be returned instead of {{fr-accord-rég}}.
    * @returns An inflections template.
    */
-  const getFrenchModel = (word, grammarClass, properties, pron, simple) => {
+  const getFrenchModel = (
+    word,
+    plural,
+    grammarClass,
+    properties,
+    pron,
+    simple
+  ) => {
     const [gender, number] =
       properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
 
@@ -188,9 +199,37 @@ function loadLanguages() {
       return "{{boite à flexions demandée|fr}}";
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
-      return `{{fr-rég|${pron}|mf=oui}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "fr-rég",
+        paramOrder: ["1", "p", "mf"],
+        params: {
+          1: pron,
+          p: plural,
+          mf: true,
+        },
+      });
 
-    return simple ? `{{fr-rég|${pron}}}` : `{{fr-accord-rég|${pron}}}`;
+    if (simple)
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "fr-rég",
+        paramOrder: ["1", "p"],
+        params: {
+          1: pron,
+          p: plural,
+        },
+      });
+
+    return templates.templateToString({
+      format: inlineTemplateFormat,
+      name: "fr-accord-rég",
+      paramOrder: ["1", "radp"],
+      params: {
+        1: pron,
+        radp: plural,
+      },
+    });
   };
 
   languages.push(
@@ -282,8 +321,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PROPER_NOUN, {
           genre: [
@@ -494,8 +533,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INDEFINITE_PRONOUN,
@@ -515,8 +554,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.INTERROGATIVE_PRONOUN,
@@ -536,8 +575,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PERSONAL_PRONOUN,
@@ -557,8 +596,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.POSSESSIVE_PRONOUN,
@@ -578,8 +617,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.RELATIVE_PRONOUN,
@@ -599,8 +638,8 @@ function loadLanguages() {
               NUMBERS.UNKNOWN,
             ],
           },
-          (word, grammarClass, properties, pron) =>
-            getFrenchModel(word, grammarClass, properties, pron, true)
+          (word, plural, grammarClass, properties, pron) =>
+            getFrenchModel(word, plural, grammarClass, properties, pron, true)
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.SUFFIX),
       ]
@@ -614,12 +653,13 @@ function loadLanguages() {
   /**
    * Generate the inflections template for English.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @returns An inflections template.
    */
-  const getEnglishModel = (word, grammarClass, properties, pron) => {
+  const getEnglishModel = (word, plural, grammarClass, properties, pron) => {
     const grammarClass_ = grammarClass.toLowerCase();
     const [number, gender] = properties;
 
@@ -659,7 +699,15 @@ function loadLanguages() {
       ].includes(grammarClass_) &&
       number === NUMBERS.DIFF_SINGULAR_PLURAL.label
     )
-      return `{{en-nom-rég|${pron}}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "en-nom-rég",
+        paramOrder: ["1", "p"],
+        params: {
+          1: pron,
+          p: plural,
+        },
+      });
     return `{{en-inv|${pron}|inv_titre=${grammarClass}}}`;
   };
 
@@ -911,12 +959,13 @@ function loadLanguages() {
   /**
    * Generate the inflections template for Italian.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @returns An inflections template.
    */
-  const getItalianModel = (word, grammarClass, properties, pron) => {
+  const getItalianModel = (word, plural, grammarClass, properties, pron) => {
     const [gender, number] =
       properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
     if (number === NUMBERS.INVARIABLE.label)
@@ -931,10 +980,16 @@ function loadLanguages() {
     if (number === NUMBERS.UNKNOWN.label || gender === GENDERS.UNKNOWN.label)
       return "{{boite à flexions demandée|it}}";
 
-    if (gender === GENDERS.FEMININE_MASCULINE.label)
-      return `{{it-flexion|${pron}|mf=oui}}`;
-
-    return `{{it-flexion|${pron}}}`;
+    return templates.templateToString({
+      format: inlineTemplateFormat,
+      name: "it-flexion",
+      paramOrder: ["1", "p", "mf"],
+      params: {
+        1: pron,
+        p: plural,
+        mf: gender === GENDERS.FEMININE_MASCULINE.label,
+      },
+    });
   };
 
   languages.push(
@@ -1330,12 +1385,13 @@ function loadLanguages() {
   /**
    * Generate the inflections template for Spanish.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @returns An inflections template.
    */
-  const getSpanishModel = (word, grammarClass, properties, pron) => {
+  const getSpanishModel = (word, plural, grammarClass, properties, pron) => {
     const [gender, number] =
       properties.length === 2 ? properties : [null, NUMBERS.INVARIABLE.label];
     let mf = "";
@@ -1773,12 +1829,13 @@ function loadLanguages() {
   /**
    * Generate the inflections template for Portuguese.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @returns An inflections template.
    */
-  const getPortugueseModel = (word, grammarClass, properties, pron) => {
+  const getPortugueseModel = (word, plural, grammarClass, properties, pron) => {
     const [gender, number] =
       properties.length >= 2 ? properties : [null, NUMBERS.INVARIABLE.label];
 
@@ -1795,11 +1852,37 @@ function loadLanguages() {
       return `{{pt-inv|${pron}|inv_titre=${grammarClass}}}`;
 
     if (gender === GENDERS.FEMININE_MASCULINE.label)
-      return `{{pt-accord-mf|${pron}|mf=oui}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "pt-accord-mf",
+        paramOrder: ["ps", "p", "mf"],
+        params: {
+          ps: pron,
+          p: plural,
+          mf: true,
+        },
+      });
 
     if (grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.NOUN.label)
-      return `{{pt-rég|${pron}}}`;
-    return `{{pt-accord-mixte|${pron.slice(0, -1)}}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "pt-rég",
+        paramOrder: ["1", "p"],
+        params: {
+          1: pron,
+          p: plural,
+        },
+      });
+
+    return templates.templateToString({
+      format: inlineTemplateFormat,
+      name: "pt-accord-mixte",
+      paramOrder: ["prad", "mp"],
+      params: {
+        prad: pron.slice(0, -1),
+        mp: plural,
+      },
+    });
   };
 
   languages.push(
@@ -2190,12 +2273,13 @@ function loadLanguages() {
   /**
    * Generate the inflections template for Esperanto.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string]} properties The selected grammatical properties.
    * @param {string} pron The pronunciation.
    * @returns An inflections template.
    */
-  const getEsperantoModel = (_, grammarClass, properties, pron) => {
+  const getEsperantoModel = (word, plural, grammarClass, properties, pron) => {
     if (
       [
         GRAMMATICAL_CLASSES.NOUN.label,
@@ -2326,22 +2410,55 @@ function loadLanguages() {
   /**
    * Generate the inflections template for Breton.
    * @param {string} word The word.
+   * @param {string} plural The word’s plural.
    * @param {string} grammarClass The selected grammatical class.
    * @param {[string] | [string, string]} properties The selected grammatical properties.
    * @returns An inflections template.
    */
-  const getBretonModel = (word, grammarClass, properties) => {
+  const getBretonModel = (word, plural, grammarClass, properties) => {
     const number = properties[1];
     if (number === NUMBERS.UNKNOWN.label)
       return "{{boite à flexions demandée|br}}";
     if (number === NUMBERS.DIFF_SINGULAR_PLURAL.label)
-      return `{{br-nom|${word}}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "br-nom",
+        paramOrder: ["1", "2"],
+        params: {
+          1: word,
+          2: plural,
+        },
+      });
     if (number === NUMBERS.COLLECTIVE_SINGULATIVE.label)
-      return `{{br-nom-cs|${word}}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "br-nom-cs",
+        paramOrder: ["1", "2"],
+        params: {
+          1: word,
+          2: plural,
+        },
+      });
     if (number === NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL.label)
-      return `{{br-nom-csp|${word}}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "br-nom-csp",
+        paramOrder: ["1", "2"],
+        params: {
+          1: word,
+          2: plural,
+        },
+      });
     if (number === NUMBERS.SINGULATIVE_DUAL_PLURAL.label)
-      return `{{br-nom-duel|${word}|<!-- DUEL À COMPLÉTER -->}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "br-nom-duel",
+        paramOrder: ["1", "2"],
+        params: {
+          1: word,
+          2: plural,
+        },
+      });
 
     const grammarClass_ = grammarClass.toLowerCase();
     if (grammarClass_ === GRAMMATICAL_CLASSES.PROPER_NOUN.label)
@@ -2355,7 +2472,16 @@ function loadLanguages() {
     if (grammarClass_ === GRAMMATICAL_CLASSES.VERB.label)
       return `{{br-forme-mut|${word}}}`;
     if (grammarClass_ === GRAMMATICAL_CLASSES.PREPOSITION.label)
-      return `{{br-prép|${word}|<!-- TYPE À COMPLÉTER -->}}`;
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "br-prép",
+        paramOrder: ["1", "2"],
+        params: {
+          1: word,
+          2: plural,
+        },
+      });
+
     return "";
   };
 
