@@ -596,7 +596,13 @@ export default defineComponent({
             </strong>
           </cdx-message>
 
-          <hr class="cne-horizontal-separator" />
+          <hr
+            v-show="
+              !userPrefs.introMessageHidden ||
+              !userPrefs.warningIntroMessageHidden
+            "
+            class="cne-horizontal-separator"
+          />
 
           <language-selector
             v-model="formData.language"
