@@ -262,13 +262,10 @@ function formatEtymology(etymology, langCode) {
 function formatEntry(entry, word, language, number) {
   const langCode = language.code;
 
-  let wikitext = `\n=== {{S|${entry.wordType}|${langCode}`;
-  if (number) wikitext += `|num=${number}`;
-  wikitext += "}} ===\n";
-
   const grammarItem = language.getGrammarItem(entry.wordType);
   const wordPropertyTemplates = [];
   const wordPropertyLabels = [];
+  let gender = null;
   if (grammarItem) {
     for (const [propertyType, property] of Object.entries(
       entry.wordProperties
@@ -279,8 +276,37 @@ function formatEntry(entry, word, language, number) {
           interpolateString(wordProperty.template, langCode)
         );
       wordPropertyLabels.push(wordProperty.label);
+
+      if (
+        [
+          langs2.GENDERS.FEMININE.label,
+          langs2.GENDERS.FEMININE_MASCULINE.label,
+          langs2.GENDERS.MASCULINE.label,
+        ].includes(wordProperty.label)
+      )
+        gender = {
+          [langs2.GENDERS.FEMININE.label]: "f",
+          [langs2.GENDERS.FEMININE_MASCULINE.label]: "mf",
+          [langs2.GENDERS.MASCULINE.label]: "m",
+        }[wordProperty.label];
     }
   }
+
+  let wikitext =
+    "\n===" +
+    templates.templateToString({
+      format: inlineTemplateFormat,
+      name: "S",
+      paramOrder: ["1", "2", "genre", "num"],
+      params: {
+        1: entry.wordType,
+        2: langCode,
+        genre: entry.wordType === "prénom" ? gender : null,
+        num: number > 0 ? number : null,
+      },
+    }) +
+    "===\n";
+
   const inflectionsTemplate = grammarItem
     ? grammarItem.getInflectionsTemplate(
         word,

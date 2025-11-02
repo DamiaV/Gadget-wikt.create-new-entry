@@ -489,7 +489,14 @@ function loadLanguages() {
           getFrenchModel
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {}),
+        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
+          genre: [
+            GENDERS.MASCULINE,
+            GENDERS.FEMININE,
+            GENDERS.FEMININE_MASCULINE,
+            GENDERS.UNKNOWN,
+          ],
+        }),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},
