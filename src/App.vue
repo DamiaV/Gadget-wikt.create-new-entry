@@ -457,7 +457,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{ cne: true, 'minimal-ui': userPrefs.minimalMode }">
+  <div
+    :class="{
+      cne: true,
+      'minimal-ui': userPrefs.displayMode === 'minimal',
+      'compact-ui': userPrefs.displayMode === 'compact',
+    }"
+  >
     <div v-if="!showForm" class="cne-start-btn">
       <cdx-button
         action="progressive"
@@ -598,7 +604,10 @@ export default defineComponent({
             @update:model-value="onLanguageSelection"
           ></language-selector>
 
-          <cdx-checkbox v-show="!userPrefs.minimalMode" v-model="formData.stub">
+          <cdx-checkbox
+            v-show="userPrefs.displayMode !== 'minimal'"
+            v-model="formData.stub"
+          >
             Ébauche
             <template #description>
               Cochez cette case pour insérer un
@@ -609,7 +618,7 @@ export default defineComponent({
           </cdx-checkbox>
 
           <input-with-toolbar
-            v-show="!userPrefs.minimalMode"
+            v-show="userPrefs.displayMode !== 'minimal'"
             v-model="formData.sortKey"
             :show-format-buttons="false"
             :special-characters="[]"
@@ -625,7 +634,7 @@ export default defineComponent({
           <hr class="cne-horizontal-separator" />
 
           <cdx-button
-            v-show="!userPrefs.minimalMode"
+            v-show="userPrefs.displayMode !== 'minimal'"
             type="button"
             class="cne-add-entry-btn"
             action="progressive"
@@ -666,7 +675,7 @@ export default defineComponent({
             </cdx-tab>
 
             <cdx-tab
-              v-if="!userPrefs.minimalMode"
+              v-if="userPrefs.displayMode !== 'minimal'"
               name="etymology"
               label="Étymologie"
               class="cne-main-tab"
@@ -678,7 +687,7 @@ export default defineComponent({
             </cdx-tab>
 
             <cdx-tab
-              v-if="!userPrefs.minimalMode"
+              v-if="userPrefs.displayMode !== 'minimal'"
               name="wiki-links"
               label="Liens wikis"
               class="cne-main-tab"
@@ -690,7 +699,7 @@ export default defineComponent({
             </cdx-tab>
 
             <cdx-tab
-              v-if="!userPrefs.minimalMode"
+              v-if="userPrefs.displayMode !== 'minimal'"
               name="references"
               label="Bibliographie & imports"
               class="cne-main-tab"
@@ -699,7 +708,7 @@ export default defineComponent({
             </cdx-tab>
 
             <cdx-tab
-              v-if="!userPrefs.minimalMode"
+              v-if="userPrefs.displayMode !== 'minimal'"
               name="categories"
               :label="
                 formData.categories.length
@@ -708,17 +717,20 @@ export default defineComponent({
               "
               class="cne-main-tab"
             >
-              <p>
-                Vous pouvez ajouter ci-dessous des catégories pertinentes qui ne
-                sont pas ajoutées par les modèles déjà présents.
-              </p>
-              <p>
-                Par exemple, il est inutile d’ajouter ici les catégories du type
-                «&nbsp;Noms communs en {{ formData.language.name }}&nbsp;» car
-                elles seront ajoutées par le modèle
-                <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
-                automatiquement.
-              </p>
+              <div v-show="userPrefs.displayMode === 'full'">
+                <p>
+                  Vous pouvez ajouter ci-dessous des catégories pertinentes qui
+                  ne sont pas ajoutées par les modèles déjà présents.
+                </p>
+                <p>
+                  Par exemple, il est inutile d’ajouter ici les catégories du
+                  type «&nbsp;Noms communs en
+                  {{ formData.language.name }}&nbsp;» car elles seront ajoutées
+                  par le modèle
+                  <wiki-link page-title="Modèle:S">S</wiki-link> qui sera inséré
+                  automatiquement.
+                </p>
+              </div>
               <categories-selector
                 v-model="formData.categories"
               ></categories-selector>
@@ -787,8 +799,13 @@ export default defineComponent({
   align-items: center;
 }
 
-.cne:not(.minimal-ui) hr.cne-horizontal-separator {
+.cne:not(.minimal-ui):not(.compact-ui) hr.cne-horizontal-separator {
   margin: 2em 0;
+}
+
+.cne.compact-ui .cdx-label__description,
+.cne.compact-ui .cdx-field__help-text {
+  display: none;
 }
 
 a .cdx-icon svg {

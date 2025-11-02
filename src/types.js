@@ -49,7 +49,7 @@ import wikisData from "./wikis.json";
 
 /**
  * @typedef {{
- *  minimalMode: boolean,
+ *  displayMode: "minimal" | "compact" | "full",
  *  formValidityCheckingDisabled: boolean,
  *  tabClosingWarningDisabled: boolean,
  *  introMessageHidden: boolean,
@@ -257,12 +257,12 @@ import wikisData from "./wikis.json";
  */
 function createEmptyUserPreferences() {
   return {
-    minimalMode: false,
+    displayMode: "full",
     formValidityCheckingDisabled: false,
     tabClosingWarningDisabled: false,
     introMessageHidden: false,
     warningIntroMessageHidden: false,
-    favoritedSections: [],
+    favoritedSections: {},
   };
 }
 

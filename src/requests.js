@@ -193,14 +193,28 @@ const userPrefsPageTitle = "Gadget-wikt.create-new-entry.prefs.json";
 async function getUserPreferences(username, api) {
   if (!username) {
     const getFlag = (key) => localStorage.getItem(`cne-${key}`) === "true";
+
+    let displayMode = localStorage.getItem("cne-displayMode");
+    if (!["minimal", "compact", "full"].includes(displayMode))
+      displayMode = "full";
+
+    let favoritedSections;
+    try {
+      favoritedSections = JSON.parse(
+        localStorage.getItem("cne-favoritedSections")
+      );
+    } catch (e) {
+      console.warn(e);
+      favoritedSections = {};
+    }
+
     return {
-      minimalMode: getFlag("minimalMode"),
+      displayMode: displayMode,
       formValidityCheckingDisabled: getFlag("formValidityCheckingDisabled"),
       tabClosingWarningDisabled: getFlag("tabClosingWarningDisabled"),
       introMessageHidden: getFlag("introMessageHidden"),
       warningIntroMessageHidden: getFlag("warningIntroMessageHidden"),
-      favoritedSections:
-        JSON.parse(localStorage.getItem("cne-favoritedSections")) || {},
+      favoritedSections: favoritedSections || {},
     };
   }
 
@@ -244,8 +258,13 @@ async function getUserPreferences(username, api) {
     );
 
   const rawPrefs = JSON.parse(pageData.content);
+
+  let displayMode = String(rawPrefs.displayMode);
+  if (!["minimal", "compact", "full"].includes(displayMode))
+    displayMode = "full";
+
   return {
-    minimalMode: !!rawPrefs.minimalMode,
+    displayMode: displayMode,
     formValidityCheckingDisabled: !!rawPrefs.formValidityCheckingDisabled,
     tabClosingWarningDisabled: !!rawPrefs.tabClosingWarningDisabled,
     introMessageHidden: !!rawPrefs.introMessageHidden,
@@ -262,7 +281,7 @@ async function getUserPreferences(username, api) {
  */
 async function setUserPreferences(username, prefs, api) {
   if (!username) {
-    localStorage.setItem("cne-minimalMode", prefs.minimalMode);
+    localStorage.setItem("cne-displayMode", prefs.displayMode);
     localStorage.setItem(
       "cne-formValidityCheckingDisabled",
       prefs.formValidityCheckingDisabled

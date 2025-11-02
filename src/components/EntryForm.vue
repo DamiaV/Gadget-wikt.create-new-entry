@@ -368,7 +368,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-show="!userPrefs.minimalMode" class="cne-entry-action-btns">
+  <div
+    v-show="userPrefs.displayMode !== 'minimal'"
+    class="cne-entry-action-btns"
+  >
     <cdx-button
       v-show="$props.enableDeleteBtn"
       type="button"
@@ -428,7 +431,7 @@ export default defineComponent({
       ></definition-form>
 
       <cdx-button
-        v-show="!userPrefs.minimalMode"
+        v-show="userPrefs.displayMode !== 'minimal'"
         type="button"
         action="progressive"
         @click="onAddDefinition"
@@ -439,7 +442,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab
-      v-if="!userPrefs.minimalMode"
+      v-if="userPrefs.displayMode !== 'minimal'"
       name="other-sections"
       label="Notes, variantes, dérivés, etc."
     >
@@ -469,7 +472,7 @@ export default defineComponent({
     </cdx-tab>
 
     <cdx-tab
-      v-if="!userPrefs.minimalMode"
+      v-if="userPrefs.displayMode !== 'minimal'"
       name="pronunciation"
       :disabled="$props.language.code === 'conv'"
       :label="
@@ -478,33 +481,35 @@ export default defineComponent({
           : 'Prononciation'
       "
     >
-      <p>Les prononciations suivantes seront affichées après le mot.</p>
-      <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
-      <ul style="margin-bottom: 1em">
-        <li>
-          <strong>g</strong> (lettre latine G minuscule) en
-          <strong>ɡ</strong> (consonne occlusive vélaire voisée)
-        </li>
-        <li>
-          <strong>'</strong> (apostrophe droite) en <strong>ˈ</strong> (accent
-          tonique)
-        </li>
-        <li>
-          <strong>:</strong> (deux-points) en <strong>ː</strong> (allongement)
-        </li>
-        <li>
-          <strong>!</strong> (point d’exclamation) en <strong>ǃ</strong> (clic
-          post-alvéolaire)
-        </li>
-        <li>
-          <strong>|</strong> (barre verticale) en <strong>ǀ</strong> (clic
-          dental)
-        </li>
-        <li>
-          <strong>espace insécable</strong> et
-          <strong>espace insécable fine</strong> en <strong>espace</strong>
-        </li>
-      </ul>
+      <div v-show="userPrefs.displayMode === 'full'">
+        <p>Les prononciations suivantes seront affichées après le mot.</p>
+        <p>Les caractères suivants seront automatiquement remplacés&nbsp;:</p>
+        <ul style="margin-bottom: 1em">
+          <li>
+            <strong>g</strong> (lettre latine G minuscule) en
+            <strong>ɡ</strong> (consonne occlusive vélaire voisée)
+          </li>
+          <li>
+            <strong>'</strong> (apostrophe droite) en <strong>ˈ</strong> (accent
+            tonique)
+          </li>
+          <li>
+            <strong>:</strong> (deux-points) en <strong>ː</strong> (allongement)
+          </li>
+          <li>
+            <strong>!</strong> (point d’exclamation) en <strong>ǃ</strong> (clic
+            post-alvéolaire)
+          </li>
+          <li>
+            <strong>|</strong> (barre verticale) en <strong>ǀ</strong> (clic
+            dental)
+          </li>
+          <li>
+            <strong>espace insécable</strong> et
+            <strong>espace insécable fine</strong> en <strong>espace</strong>
+          </li>
+        </ul>
+      </div>
 
       <pronunciation-form
         v-for="(pronunciation, i) in pronunciations"

@@ -409,7 +409,7 @@ export default defineComponent({
         </input-with-toolbar>
 
         <cdx-field
-          v-show="!userPrefs.minimalMode"
+          v-show="userPrefs.displayMode !== 'minimal'"
           class="cne-examples cne-box"
           is-fieldset
         >
@@ -475,7 +475,7 @@ export default defineComponent({
         </cdx-field>
 
         <cdx-field
-          v-show="!userPrefs.minimalMode"
+          v-show="userPrefs.displayMode !== 'minimal'"
           class="cne-related-words cne-box"
           is-fieldset
         >
@@ -513,23 +513,24 @@ export default defineComponent({
           ></collapsed-preview>
         </cdx-field>
 
-        <div v-show="!userPrefs.minimalMode" v-if="!illustration">
-          <cdx-button
-            type="button"
-            action="progressive"
-            @click="onAddIllustration"
-          >
-            <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-            Ajouter une illustration
-          </cdx-button>
-        </div>
-        <illustration-form
-          v-show="!userPrefs.minimalMode"
-          v-else
-          v-model="illustration"
-          @update:model-value="onIllustrationUpdate"
-          @delete="onDeleteIllustration"
-        ></illustration-form>
+        <template v-if="userPrefs.displayMode !== 'minimal'">
+          <div v-if="!illustration">
+            <cdx-button
+              type="button"
+              action="progressive"
+              @click="onAddIllustration"
+            >
+              <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+              Ajouter une illustration
+            </cdx-button>
+          </div>
+          <illustration-form
+            v-else
+            v-model="illustration"
+            @update:model-value="onIllustrationUpdate"
+            @delete="onDeleteIllustration"
+          ></illustration-form>
+        </template>
       </div>
     </div>
     <collapsed-preview

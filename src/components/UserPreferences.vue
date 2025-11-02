@@ -8,6 +8,7 @@ import {
   CdxField,
   CdxIcon,
   CdxMessage,
+  CdxRadio,
 } from "@wikimedia/codex";
 import { cdxIconAlert, cdxIconConfigure } from "@wikimedia/codex-icons";
 import requests from "../requests.js";
@@ -25,6 +26,7 @@ export default defineComponent({
     CdxField,
     CdxIcon,
     CdxMessage,
+    CdxRadio,
   },
 
   props: {
@@ -58,7 +60,7 @@ export default defineComponent({
 
     const openDialog = ref(false);
     const editingUserPrefs = reactive({
-      minimalMode: false,
+      displayMode: "full",
       formValidityCheckingDisabled: false,
       tabClosingWarningDisabled: false,
       resetIntroMessages: false,
@@ -79,7 +81,7 @@ export default defineComponent({
     };
 
     function onOpenDialog() {
-      editingUserPrefs.minimalMode = userPrefs.minimalMode;
+      editingUserPrefs.displayMode = userPrefs.displayMode;
       editingUserPrefs.formValidityCheckingDisabled =
         userPrefs.formValidityCheckingDisabled;
       editingUserPrefs.tabClosingWarningDisabled =
@@ -94,7 +96,7 @@ export default defineComponent({
        * @type {import("../types.js").UserPreferences}
        */
       const prefs = {
-        minimalMode: editingUserPrefs.minimalMode,
+        displayMode: editingUserPrefs.displayMode,
         formValidityCheckingDisabled:
           editingUserPrefs.formValidityCheckingDisabled,
         tabClosingWarningDisabled: editingUserPrefs.tabClosingWarningDisabled,
@@ -104,13 +106,14 @@ export default defineComponent({
         warningIntroMessageHidden: editingUserPrefs.resetIntroMessages
           ? false
           : userPrefs.warningIntroMessageHidden,
+        favoritedSections: userPrefs.favoritedSections,
       };
       requests
         .setUserPreferences(config.userName, prefs, config.api)
         .then(() => {
           openDialog.value = false;
 
-          userPrefs.minimalMode = prefs.minimalMode;
+          userPrefs.displayMode = prefs.displayMode;
           userPrefs.formValidityCheckingDisabled =
             prefs.formValidityCheckingDisabled;
           userPrefs.tabClosingWarningDisabled = prefs.tabClosingWarningDisabled;
@@ -176,21 +179,54 @@ export default defineComponent({
     @primary="onSavePreferences"
     @default="openDialog = false"
   >
-    <cdx-field>
-      <cdx-checkbox v-model="editingUserPrefs.minimalMode">
-        Mode minimaliste
-      </cdx-checkbox>
-      <template #help-text>
-        Une interface simplifiée, avec seulement le sélecteur de langue, les
-        sélecteurs de propriétés grammaticales, et un champ de définition.
-      </template>
+    <cdx-field is-fieldset role="radiogroup" class="cne-box">
+      <template #label>Mode d’affichage</template>
+
+      <cdx-radio
+        v-model="editingUserPrefs.displayMode"
+        name="display-mode"
+        input-value="full"
+      >
+        Complet
+      </cdx-radio>
+
+      <cdx-radio
+        v-model="editingUserPrefs.displayMode"
+        name="display-mode"
+        input-value="minimal"
+      >
+        Minimaliste
+        <template #description>
+          Une interface simplifiée, avec seulement le sélecteur de langue, les
+          sélecteurs de propriétés grammaticales, et un champ de définition.
+        </template>
+      </cdx-radio>
       <cdx-message
-        v-if="editingUserPrefs.minimalMode"
+        v-if="editingUserPrefs.displayMode === 'minimal'"
         :icon="cdxIconAlert"
         type="warning"
+        style="margin-bottom: 0.5em"
       >
-        Les données déjà entrées dans le formulaire seront effacées.
+        Les données déjà entrées dans le formulaire seront partiellement
+        effacées.
       </cdx-message>
+
+      <cdx-radio
+        v-model="editingUserPrefs.displayMode"
+        name="display-mode"
+        input-value="compact"
+      >
+        Compact
+        <template #description>
+          Une interface épurée, avec moins de texte et d’espaces vides.
+        </template>
+      </cdx-radio>
+    </cdx-field>
+
+    <cdx-field>
+      <cdx-checkbox v-model="editingUserPrefs.resetIntroMessages">
+        Réinitialiser tous les messages fermés
+      </cdx-checkbox>
     </cdx-field>
 
     <cdx-field>
@@ -226,12 +262,6 @@ export default defineComponent({
       >
         Activer cette option vous expose à des pertes de données accidentelles.
       </cdx-message>
-    </cdx-field>
-
-    <cdx-field>
-      <cdx-checkbox v-model="editingUserPrefs.resetIntroMessages">
-        Réinitialiser tous les messages fermés
-      </cdx-checkbox>
     </cdx-field>
   </cdx-dialog>
 </template>
