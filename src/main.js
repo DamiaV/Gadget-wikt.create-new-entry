@@ -21,7 +21,7 @@
  * === v4.x (2014-01-22 - 2020-07-29) ===
  * v4.0   2014-01-22 support for new editable sections syntax
  *
- * === v5.x (2020-07-29 - 2025-09-??) ===
+ * === v5.x (2020-07-29 - 2025-12-??) ===
  * v5.0   2020-07-29 full rewrite, migration to OOUI
  * v5.0.1 2020-08-01 using {{lien}} for links, reworked toolbar
  * v5.0.2 2020-08-02 added missing sections
@@ -60,8 +60,8 @@
  * v5.9   2025-06-25 Refactor to enable by default.
  * v5.9.1 2025-07-10 Better handling of English adjectives.
  *
- * === v6.x (2025-10-?? -) ===
- * v6.0   2025-10-?? Full rewrite in Vue.js + Codex.
+ * === v6.x (2025-12-?? -) ===
+ * v6.0   2025-12-?? Full rewrite in Vue.js + Codex.
  *
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/main.js]]
  */
