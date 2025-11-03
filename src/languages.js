@@ -101,6 +101,7 @@ const GRAMMATICAL_CLASSES = {
   PROPER_NOUN: new types.GrammaticalClass("nom propre"),
   FIRST_NAME: new types.GrammaticalClass("prénom"),
   LAST_NAME: new types.GrammaticalClass("nom de famille"),
+  PATRONYM: new types.GrammaticalClass("patronyme"),
 
   // Adjectives
   ADJECTIVE: new types.GrammaticalClass("adjectif"),
@@ -207,6 +208,21 @@ function loadLanguages() {
           1: pron,
           p: plural,
           mf: true,
+        },
+      });
+
+    if (
+      grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.FIRST_NAME.label ||
+      grammarClass.toLowerCase() === GRAMMATICAL_CLASSES.PATRONYM.label
+    )
+      return templates.templateToString({
+        format: inlineTemplateFormat,
+        name: "fr-accord-ind",
+        paramOrder: ["m", "f", "pron"],
+        params: {
+          m: gender === GENDERS.MASCULINE.label ? word : plural,
+          f: gender === GENDERS.MASCULINE.label ? plural : word,
+          pron: pron,
         },
       });
 
@@ -489,14 +505,36 @@ function loadLanguages() {
           getFrenchModel
         ),
         new types.GrammaticalItem(GRAMMATICAL_CLASSES.PREFIX),
-        new types.GrammaticalItem(GRAMMATICAL_CLASSES.FIRST_NAME, {
-          genre: [
-            GENDERS.MASCULINE,
-            GENDERS.FEMININE,
-            GENDERS.FEMININE_MASCULINE,
-            GENDERS.UNKNOWN,
-          ],
-        }),
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.FIRST_NAME,
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+              GENDERS.UNKNOWN,
+            ],
+            nombre: [
+              NUMBERS.INVARIABLE,
+              NUMBERS.DIFF_SINGULAR_PLURAL,
+              NUMBERS.UNKNOWN,
+            ],
+          },
+          getFrenchModel
+        ),
+        new types.GrammaticalItem(
+          GRAMMATICAL_CLASSES.PATRONYM,
+          {
+            genre: [
+              GENDERS.MASCULINE,
+              GENDERS.FEMININE,
+              GENDERS.FEMININE_MASCULINE,
+              GENDERS.UNKNOWN,
+            ],
+            accord: [NUMBERS.INVARIABLE, GENDERS.FEMININE_MASCULINE_DIFF],
+          },
+          getFrenchModel
+        ),
         new types.GrammaticalItem(
           GRAMMATICAL_CLASSES.PREPOSITION,
           {},

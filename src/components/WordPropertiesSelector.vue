@@ -161,6 +161,7 @@ export default defineComponent({
       // Other
       NUMBERS: languages.NUMBERS,
       GRAMMATICAL_CLASSES: languages.GRAMMATICAL_CLASSES,
+      GENDERS: languages.GENDERS,
       // Icons
       cdxIconHelpNotice,
       cdxIconSettings,
@@ -217,7 +218,7 @@ export default defineComponent({
             ></cdx-select>
           </cdx-field>
 
-          <cdx-field v-if="key === 'nombre'">
+          <cdx-field v-if="key === 'nombre' || key === 'accord'">
             <template #label>
               {{
                 [
@@ -228,7 +229,9 @@ export default defineComponent({
                   : wordProperties[key] ===
                       NUMBERS.SINGULATIVE_DUAL_PLURAL.label
                     ? "Duel du mot"
-                    : "Pluriel du mot (si nécessaire)"
+                    : key === "accord"
+                      ? "Autre forme du mot"
+                      : "Pluriel du mot (si nécessaire)"
               }}
             </template>
             <cdx-text-input
@@ -239,6 +242,7 @@ export default defineComponent({
                   NUMBERS.COLLECTIVE_SINGULATIVE.label,
                   NUMBERS.COLLECTIVE_SINGULATIVE_PLURAL.label,
                   NUMBERS.SINGULATIVE_DUAL_PLURAL.label,
+                  GENDERS.FEMININE_MASCULINE_DIFF.label,
                 ].includes(wordProperties[key])
               "
               @update:model-value="fireUpdateEvent()"
