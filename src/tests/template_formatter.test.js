@@ -429,56 +429,6 @@ test("skipped positional args treated as named args", () => {
   );
 });
 
-test("| is escaped in positional params", () => {
-  let template = {
-    name: "Foo",
-    params: {
-      1: "pipe | should be escaped",
-    },
-    paramOrder: ["1"],
-  };
-  template.format = {
-    newLineBeforeTemplate: false,
-    newLineAfterTemplate: false,
-    newLineBeforePipe: false,
-    newLineAfterPipe: false,
-    newLineBeforeClosing: false,
-    spacesBeforePipe: 0,
-    spacesBeforeParamName: 0,
-    spacesBeforeEqual: 0,
-    spacesAfterEqual: 0,
-    minParamNameLength: 1,
-  };
-  expect(templates.templateToString(template)).toBe(
-    "{{Foo|pipe {{!}} should be escaped}}"
-  );
-});
-
-test("| is escaped in named params", () => {
-  let template = {
-    name: "Foo",
-    params: {
-      bar: "pipe | should be escaped",
-    },
-    paramOrder: ["1"],
-  };
-  template.format = {
-    newLineBeforeTemplate: false,
-    newLineAfterTemplate: false,
-    newLineBeforePipe: false,
-    newLineAfterPipe: false,
-    newLineBeforeClosing: false,
-    spacesBeforePipe: 0,
-    spacesBeforeParamName: 0,
-    spacesBeforeEqual: 0,
-    spacesAfterEqual: 0,
-    minParamNameLength: 1,
-  };
-  expect(templates.templateToString(template)).toBe(
-    "{{Foo|bar=pipe {{!}} should be escaped}}"
-  );
-});
-
 test("= forces named positional param", () => {
   let template = {
     name: "Foo",

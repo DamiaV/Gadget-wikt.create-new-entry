@@ -225,15 +225,6 @@ function generateWikitext(formData, word) {
 }
 
 /**
- * Escape the given wikitext.
- * @param {string} wikitext The wikitext to escape.
- * @returns {string} The escaped wikitext.
- */
-function escape(wikitext) {
-  return wikitext.replaceAll("|", "{{!}}");
-}
-
-/**
  * Format an Etymology object into wikitext.
  * @param {import("./types.js").Etymology} etymology The Etymology object to format.
  * @param {string} langCode The language code of the entry.
@@ -419,15 +410,15 @@ function formatIllustration(illustration) {
     case "image":
     case "video":
     case "audio":
-      wikitext = `[[Fichier:${illustration.fileName}|vignette|${escape(illustration.description)}`;
+      wikitext = `[[Fichier:${illustration.fileName}|vignette|${illustration.description}`;
       if (illustration.alt) wikitext += `|alt=${illustration.alt}`;
       wikitext += "]]";
       break;
     case "text":
-      wikitext = `{{illustration texte|${illustration.text}|${escape(illustration.description)}}}`;
+      wikitext = `{{illustration texte|${illustration.text}|${illustration.description}}}`;
       break;
     case "color":
-      wikitext = `{{illustration couleur|${illustration.color}|${escape(illustration.description)}}}`;
+      wikitext = `{{illustration couleur|${illustration.color}|${illustration.description}}}`;
       break;
   }
 

@@ -124,8 +124,7 @@ function templateToString(filledTemplate) {
    */
   function formatNamedParam(name, value) {
     let stringifiedValue;
-    if (typeof value === "string")
-      stringifiedValue = value.replace("|", "{{!}}");
+    if (typeof value === "string") stringifiedValue = value;
     else if (typeof value === "boolean") stringifiedValue = value ? "1" : "";
     else stringifiedValue = String(value);
 
@@ -154,7 +153,7 @@ function templateToString(filledTemplate) {
         Number(name) - lastPositionalParam === 1 &&
         !String(value).includes("=")
       ) {
-        template += String(value).replace("|", "{{!}}");
+        template += String(value);
         lastPositionalParam++;
       } else {
         lastPositionalParam = -1; // Disable positional arguments
