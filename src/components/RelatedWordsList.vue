@@ -711,7 +711,7 @@ export default defineComponent({
       @click="editedFormattedItem.words.push('')"
     >
       <cdx-icon :icon="cdxIconAdd"></cdx-icon>
-      Ajouter une variante orthographique
+      Ajouter un mot sur la même ligne
     </cdx-button>
 
     <input-with-toolbar v-model="editedFormattedItem.annotation" clearable>
