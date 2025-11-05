@@ -293,7 +293,7 @@ function formatEntry(entry, word, language, number) {
   }
 
   let wikitext =
-    "\n===" +
+    "\n=== " +
     templates.templateToString({
       format: inlineTemplateFormat,
       name: "S",
@@ -305,7 +305,7 @@ function formatEntry(entry, word, language, number) {
         num: number > 0 ? number : null,
       },
     }) +
-    "===\n";
+    " ===\n";
 
   const inflectionsTemplate = grammarItem
     ? grammarItem.getInflectionsTemplate(
