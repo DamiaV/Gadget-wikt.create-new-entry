@@ -262,7 +262,11 @@ function formatEntry(entry, word, language, number) {
       entry.wordProperties
     )) {
       const wordProperty = grammarItem.getProperty(propertyType, property);
-      if (wordProperty.template)
+      if (
+        wordProperty.template &&
+        (isNotAGender(wordProperty) ||
+          !grammarItem.grammaticalClass.label.includes("adjectif"))
+      )
         wordPropertyTemplates.push(
           interpolateString(wordProperty.template, langCode)
         );
@@ -356,6 +360,17 @@ function formatEntry(entry, word, language, number) {
   }
 
   return wikitext;
+}
+
+/**
+ * Check whether the given word property is a *not* a gender.
+ * @param {import("./types.js").GrammaticalProperty} wordProperty The word property to check.
+ * @returns True if the given property is a *not* a gender, false if it is.
+ */
+function isNotAGender(wordProperty) {
+  return Object.values(langs2.GENDERS).every(
+    (gp) => gp.label !== wordProperty.label
+  );
 }
 
 /**
