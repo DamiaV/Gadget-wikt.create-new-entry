@@ -681,6 +681,10 @@ export default defineComponent({
               ></entry-form>
             </cdx-tab>
 
+            <cdx-tab name="buffer" label=" " :disabled="true">
+              <!-- Dummy tab to add a small gap between entry tabs and fixed tabs. -->
+            </cdx-tab>
+
             <cdx-tab
               v-if="userPrefs.displayMode !== 'minimal'"
               name="etymology"
@@ -841,6 +845,10 @@ a .cdx-icon svg {
 
 .cne-add-entry-btn {
   margin: 0.5em 0;
+}
+
+.cne-etymology-tab {
+  margin-left: 2em;
 }
 
 .cne-main-tab {
