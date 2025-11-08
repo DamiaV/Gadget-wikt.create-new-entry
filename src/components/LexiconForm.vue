@@ -22,7 +22,7 @@ export default defineComponent({
 
   props: {
     /**
-     * The Definition object to manage.
+     * The array of lexicons to manage.
      * @type {import("vue").PropType<string[]>}
      */
     modelValue: { type: Array, required: true },

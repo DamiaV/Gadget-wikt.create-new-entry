@@ -17,12 +17,22 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The component’s label.
+     */
     label: { type: String, required: true },
     /**
+     * The item data to use to build the radio button list.
      * @type {import("vue").PropType<import("@wikimedia/codex").MenuItemData[]>}
      */
     menuItems: { type: Array, required: true },
+    /**
+     * The selected radio button’s value.
+     */
     selected: { type: String, required: true },
+    /**
+     * The radio group’s name. A randomly generated UUID will be appended to it in order to avoid name collisions with other components.
+     */
     name: { type: String, required: true },
   },
 
