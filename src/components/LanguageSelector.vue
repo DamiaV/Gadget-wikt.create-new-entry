@@ -123,7 +123,11 @@ export default defineComponent({
       if (value) {
         value = value.toLocaleLowerCase();
         menuItems.value = languagesData
-          .filter((item) => item.label.toLocaleLowerCase().includes(value))
+          .filter(
+            (item) =>
+              languageItems.value.every((lang) => lang.label !== item.label) &&
+              item.label.toLocaleLowerCase().includes(value)
+          )
           .sort((i1, i2) => {
             const name1 = i1.label.toLocaleLowerCase();
             const name2 = i2.label.toLocaleLowerCase();
