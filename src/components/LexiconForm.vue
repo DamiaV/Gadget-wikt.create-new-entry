@@ -3,7 +3,7 @@
 import { defineComponent, ref } from "vue";
 import { CdxButton, CdxField, CdxIcon, CdxLookup } from "@wikimedia/codex";
 import lex from "../wiki_deps/wikt.core.lexicons.js";
-import { cdxIconTrash } from "@wikimedia/codex-icons";
+import { cdxIconSearch, cdxIconTrash } from "@wikimedia/codex-icons";
 
 // </nowiki>
 /**
@@ -53,6 +53,14 @@ export default defineComponent({
      * @type {import("vue").Ref<import("@wikimedia/codex").MenuItemData[]>}
      */
     const menuItems = ref([]);
+
+    /**
+     * @type {import("@wikimedia/codex").MenuConfig}
+     */
+    const lookupConfig = {
+      boldLabel: true,
+      visibleItemLimit: 10,
+    };
 
     function fireUpdateEvent() {
       ctx.emit("update:model-value", lexicons.value);
@@ -107,7 +115,10 @@ export default defineComponent({
       lexicons,
       menuItems,
       menuSelection,
+      // Visual
+      lookupConfig,
       // Icons
+      cdxIconSearch,
       cdxIconTrash,
       // Callbacks
       onMenuSelection,
@@ -124,7 +135,10 @@ export default defineComponent({
     <cdx-lookup
       v-model:selected="menuSelection"
       :menu-items="menuItems"
+      :menu-config="lookupConfig"
+      :start-icon="cdxIconSearch"
       clearable
+      placeholder="Rechercher le nom d’un lexique…"
       @input="onInput"
       @update:selected="onMenuSelection"
     ></cdx-lookup>
