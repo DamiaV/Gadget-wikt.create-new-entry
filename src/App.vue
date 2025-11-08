@@ -828,6 +828,7 @@ a .cdx-icon svg {
   text-align: center;
 }
 
+form.cne-box,
 .cne-previsualization {
   margin-bottom: 1em;
 }
