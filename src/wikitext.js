@@ -233,13 +233,32 @@ function generateWikitext(formData, word) {
 function formatEtymology(etymology, langCode) {
   if (etymology.empty) return `: {{ébauche-étym|${langCode}}}\n`;
 
-  let wikitext = etymology.text + "\n";
+  let wikitext = indent(etymology.text, ":") + "\n";
   if (etymology.examples.length) {
     wikitext += "\n==== {{S|attestations}} ====\n";
     for (const example of etymology.examples)
       wikitext += formatExample(example, langCode, "*");
   }
   return wikitext;
+}
+
+/**
+ * Indent the given text, skipping lines that start with a list character: `#*`.
+ * @param {string} text The text to indent.
+ * @param {string} char The indent character.
+ * @returns The indented text.
+ */
+function indent(text, char) {
+  const lines = [];
+
+  for (let line of text.split("\n")) {
+    line = line.trim();
+    if (line.startsWith(":")) line = char + line;
+    else if (!/^[#*]/.test(line)) line = char + " " + line;
+    lines.push(line);
+  }
+
+  return lines.join("\n");
 }
 
 /**
