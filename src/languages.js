@@ -2437,14 +2437,15 @@ function loadLanguages() {
       (word) =>
         word
           .toLowerCase()
-          .replace(/c/g, "t͡s")
-          .replace(/ĉ/g, "t͡ʃ")
-          .replace(/g/g, "ɡ")
-          .replace(/ĝ/g, "d͡ʒ")
-          .replace(/ĥ/g, "x")
-          .replace(/ĵ/g, "ʒ")
-          .replace(/ŝ/g, "ʃ")
-          .replace(/ŭ/g, "w")
+          .replaceAll("c", "t͡s")
+          .replaceAll("ĉ", "t͡ʃ")
+          .replaceAll("g", "ɡ")
+          .replaceAll("ĝ", "d͡ʒ")
+          .replaceAll("ĥ", "x")
+          .replaceAll("ĵ", "ʒ")
+          .replaceAll("ŝ", "ʃ")
+          .replaceAll("ŭ", "w")
+          .replaceAll(/['’]/g, "")
     )
   ); // eo
 
