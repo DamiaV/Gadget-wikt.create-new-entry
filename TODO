@@ -1,4 +1,6 @@
-[ ] Page d’aide (ou tutoriel interactif).
+[~] Aide.
+    [~] Page d’aide.
+    [ ] Tutoriel interactif.
 [x] Afficher un message si un champ required est vide.
 [ ] Boutons/menus pour ajouter des lexiques aux définitions.
 [x] Réparer la mise à jour de l’UI après modif de la config.
