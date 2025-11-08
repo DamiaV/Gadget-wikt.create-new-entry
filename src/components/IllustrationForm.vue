@@ -56,6 +56,8 @@ export default defineComponent({
   emits: ["update:model-value", "delete"],
 
   setup(props, ctx) {
+    // UUID to avoid collisions of radio groups
+    const uuid = crypto.randomUUID();
     const type = ref(props.modelValue.type);
     const description = ref(props.modelValue.description || "");
     /**
@@ -292,6 +294,7 @@ export default defineComponent({
       // Other
       config,
       userPrefs,
+      uuid,
       // Icons
       cdxIconHelpNotice,
       cdxIconInfoFilled,
@@ -423,7 +426,7 @@ export default defineComponent({
           :key="i"
           v-model="type"
           :input-value="type_.value"
-          name="type"
+          :name="`type-${uuid}`"
           @change="onTypeUpdate"
         >
           {{ type_.label }}
