@@ -14,6 +14,7 @@ import {
 } from "@wikimedia/codex-icons";
 import languages from "./wiki_deps/wikt.core.languages.js";
 import sections from "./wiki_deps/wikt.core.sections.js";
+import defTemplates from "./definition-templates.json";
 import additionalSectionsData from "./sections-additional.json";
 import wikisData from "./wikis.json";
 
@@ -168,6 +169,7 @@ import wikisData from "./wikis.json";
  *  id: number,
  *  text: string,
  *  lexicons: string[],
+ *  usagePrecisions: Record<keyof import("./definition-templates.json"), string>,
  *  examples: Example[],
  *  relatedWords: Record<string, RelatedWord[] | string>,
  *  illustration?: Illustration,
@@ -308,10 +310,14 @@ function createEmptyEntry(id) {
  * @returns {Definition} An empty Definition object.
  */
 function createEmptyDefinition(id) {
+  const usagePrecisions = {};
+  for (const key of Object.keys(defTemplates)) usagePrecisions[key] = "-";
+
   return {
     id: id || 1,
     text: "",
     lexicons: [],
+    usagePrecisions,
     examples: [],
     relatedWords: {},
     empty: true,

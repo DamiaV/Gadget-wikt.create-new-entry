@@ -473,6 +473,9 @@ function formatDefinition(definition, langCode) {
     wikitext += `{{lexique|${lexicons}|${langCode}}} `;
   }
 
+  for (const templateName of Object.values(definition.usagePrecisions))
+    if (templateName !== "-") wikitext += `{{${templateName}|${langCode}}} `;
+
   wikitext += `${definition.text}\n`;
 
   if (definition.examples.length)

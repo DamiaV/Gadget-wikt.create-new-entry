@@ -1,6 +1,6 @@
 <script>
 // <nowiki>
-import { computed, defineComponent, inject, ref } from "vue";
+import { computed, defineComponent, inject, reactive, ref } from "vue";
 import { CdxButton, CdxDialog, CdxField, CdxIcon } from "@wikimedia/codex";
 import {
   cdxIconAdd,
@@ -15,6 +15,7 @@ import {
   cdxIconQuotes,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
+import defTemplates from "../definition-templates.json";
 import strings from "../strings.js";
 import types from "../types.js";
 import utils from "../utils.js";
@@ -25,6 +26,15 @@ import InputWithToolbar from "./InputWithToolbar.vue";
 import RelatedWordsLists from "./RelatedWordsLists.vue";
 import WikiLink from "./WikiLink.vue";
 import LexiconForm from "./LexiconForm.vue";
+import RadioList from "./RadioList.vue";
+
+/**
+ * @typedef {{
+ *  index: number,
+ *  label: string,
+ *  values: Record<string, string>,
+ * }} DefinitionUsage
+ */
 
 // </nowiki>
 /**
@@ -44,6 +54,7 @@ export default defineComponent({
     IllustrationForm,
     InputWithToolbar,
     LexiconForm,
+    RadioList,
     RelatedWordsLists,
     WikiLink,
   },
@@ -107,6 +118,52 @@ export default defineComponent({
     const showExamples = ref(true);
     const showRelatedWords = ref(true);
 
+    const collapsedDefTemplatesText = computed(() => {
+      let text =
+        lexicons.value.length === 0
+          ? "Aucun lexique"
+          : `${lexicons.value.length} lexique${lexicons.value.length > 1 ? "s" : ""}`;
+
+      const precisions = Object.values(usagePrecisions)
+        .filter((v) => v !== "-")
+        .join(", ");
+      if (precisions) text += ` — ${precisions}`;
+
+      return text;
+    });
+
+    /**
+     * @type {import("vue").Reactive<Record<keyof import("../definition-templates.json"), string>>}
+     */
+    const usagePrecisions = reactive(props.modelValue.usagePrecisions);
+
+    /**
+     * @type {Record<keyof import("../definition-templates.json"), {
+     *  label: string,
+     *  items: import("@wikimedia/codex").MenuButtonItemData[],
+     * }>}
+     */
+    const usagePrecisionsMenuItems = {};
+    for (const [key, { label, values }] of Object.entries(defTemplates)) {
+      /**
+       * @type {import("@wikimedia/codex").MenuButtonItemData[]}
+       */
+      const items = [
+        {
+          label: "non précisé(e)",
+          value: "-",
+        },
+      ];
+      for (const [valueLabel, valueDesc] of Object.entries(values)) {
+        items.push({
+          label: valueLabel,
+          value: valueLabel,
+          description: valueDesc,
+        });
+      }
+      usagePrecisionsMenuItems[key] = { label, items };
+    }
+
     function isEmpty() {
       return (
         !text.value &&
@@ -131,6 +188,7 @@ export default defineComponent({
         definition: {
           id: props.modelValue.id,
           text: text.value,
+          usagePrecisions,
           lexicons: lexicons.value,
           examples: examples.value,
           relatedWords: relatedWords.value,
@@ -180,6 +238,20 @@ export default defineComponent({
     function deleteDefinition() {
       openDeletionDialog.value = false;
       ctx.emit("delete", props.index);
+    }
+
+    /*
+     * Usage precisions
+     */
+
+    /**
+     * Called when a value is selected for a usage precision category.
+     * @param {string} category The value’s category.
+     * @param {string} value The selected value.
+     */
+    function onUsagePrecisionUpdate(category, value) {
+      usagePrecisions[category] = value;
+      fireUpdateEvent();
     }
 
     /*
@@ -281,9 +353,12 @@ export default defineComponent({
       examples,
       illustration,
       relatedWords,
+      usagePrecisions,
+      usagePrecisionsMenuItems,
       // Visuals
       showFields,
       showDefinitionTemplates,
+      collapsedDefTemplatesText,
       showExamples,
       showRelatedWords,
       collapsedPreviewText,
@@ -312,6 +387,7 @@ export default defineComponent({
       fireUpdateEvent,
       onDelete,
       deleteDefinition,
+      onUsagePrecisionUpdate,
       onExampleUpdate,
       onAddExample,
       onDeleteExample,
@@ -440,14 +516,20 @@ export default defineComponent({
               v-model="lexicons"
               @update:model-value="fireUpdateEvent()"
             ></lexicon-form>
+
+            <radio-list
+              v-for="({ label, items }, code) in usagePrecisionsMenuItems"
+              :key="label"
+              :label="label"
+              :menu-items="items"
+              :selected="usagePrecisions[code]"
+              :name="code"
+              @update:selected="onUsagePrecisionUpdate(code, $event)"
+            ></radio-list>
           </div>
           <collapsed-preview
             v-show="!showDefinitionTemplates"
-            :text="
-              lexicons.length === 0
-                ? 'Aucun lexique'
-                : `${lexicons.length} lexique${lexicons.length > 1 ? 's' : ''}`
-            "
+            :text="collapsedDefTemplatesText"
           ></collapsed-preview>
         </cdx-field>
 

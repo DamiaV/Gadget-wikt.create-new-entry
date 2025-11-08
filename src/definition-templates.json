@@ -1,0 +1,35 @@
+{
+    "frequencies": {
+        "label": "Fréquence d’usage",
+        "values": {
+            "peu usité": "",
+            "rare": "",
+            "très rare": "",
+            "extrêmement rare": "",
+            "hapax": "Utilisé seulement quelques (voire une seule) fois dans la littérature."
+        }
+    },
+    "registers": {
+        "label": "Registre de langue",
+        "values": {
+            "soutenu": "Mots rares, savants, et/ou respectueux.",
+            "informel": "Langage de tous les jours.",
+            "familier": "Utilisé entre personnes proches.",
+            "très familier": "Utilisé entre personnes très proches.",
+            "vulgaire": "Langage impoli, injurieux.",
+            "enfantin": "Utilisé par ou avec des enfants."
+        }
+    },
+    "connotations": {
+        "label": "Connotation",
+        "values": {
+            "mélioratif": "Jugement positif.",
+            "péjoratif": "Jugement négatif.",
+            "affectueux": "Exprime une affection particulière.",
+            "par plaisanterie": "Pour amuser.",
+            "par dérision": "Moquerie, raillerie.",
+            "injurieux": "Insultant, blessant.",
+            "ironique": "Dire le contraire de ce qu’on pense."
+        }
+    }
+}
