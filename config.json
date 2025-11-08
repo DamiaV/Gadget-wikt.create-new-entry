@@ -7,6 +7,8 @@
     "wikiDependencies": [
         "wikt.core.languages.js",
         "wikt.core.languages.json",
+        "wikt.core.lexicons.js",
+        "wikt.core.lexicons.json",
         "wikt.core.page.js",
         "wikt.core.sections.js",
         "wikt.core.sections.json",

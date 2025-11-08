@@ -2,7 +2,9 @@
     [~] Page d’aide.
     [ ] Tutoriel interactif.
 [x] Afficher un message si un champ required est vide.
-[ ] Boutons/menus pour ajouter des lexiques aux définitions.
+[ ] Boutons pour sélectionner le registre de langue.
+[ ] Boutons pour sélectionner la rareté.
+[~] Boutons/menus pour ajouter des lexiques aux définitions.
 [x] Réparer la mise à jour de l’UI après modif de la config.
 [x] Option pour réduire la quantité de texte de l’UI.
     [x] Retirer les marges des <hr>.

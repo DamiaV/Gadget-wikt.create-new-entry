@@ -466,11 +466,20 @@ function formatIllustration(illustration) {
  * @returns {string} The formatted definition with its examples.
  */
 function formatDefinition(definition, langCode) {
-  let wikitext = `# ${definition.text}\n`;
+  let wikitext = "# ";
+
+  if (definition.lexicons.length) {
+    const lexicons = definition.lexicons.join("|");
+    wikitext += `{{lexique|${lexicons}|${langCode}}} `;
+  }
+
+  wikitext += `${definition.text}\n`;
+
   if (definition.examples.length)
     for (const example of definition.examples)
       wikitext += formatExample(example, langCode);
   else wikitext += formatExample(types.createEmptyExample(), langCode);
+
   return wikitext;
 }
 

@@ -24,6 +24,7 @@ import IllustrationForm from "./IllustrationForm.vue";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import RelatedWordsLists from "./RelatedWordsLists.vue";
 import WikiLink from "./WikiLink.vue";
+import LexiconForm from "./LexiconForm.vue";
 
 // </nowiki>
 /**
@@ -42,6 +43,7 @@ export default defineComponent({
     ExampleForm,
     IllustrationForm,
     InputWithToolbar,
+    LexiconForm,
     RelatedWordsLists,
     WikiLink,
   },
@@ -81,6 +83,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     const text = ref(props.modelValue.text);
+    const lexicons = ref(props.modelValue.lexicons);
     const examples = ref(props.modelValue.examples);
     const illustration = ref(props.modelValue.illustration);
     const relatedWords = ref(props.modelValue.relatedWords);
@@ -100,12 +103,14 @@ export default defineComponent({
     );
 
     const showFields = ref(true);
+    const showDefinitionTemplates = ref(false);
     const showExamples = ref(true);
     const showRelatedWords = ref(true);
 
     function isEmpty() {
       return (
         !text.value &&
+        !lexicons.value.length &&
         examples.value.every((ex) => ex.empty) &&
         (!illustration.value || illustration.value.empty) &&
         Object.values(relatedWords.value).every(
@@ -126,6 +131,7 @@ export default defineComponent({
         definition: {
           id: props.modelValue.id,
           text: text.value,
+          lexicons: lexicons.value,
           examples: examples.value,
           relatedWords: relatedWords.value,
           illustration: illustration.value,
@@ -271,11 +277,13 @@ export default defineComponent({
     return {
       // Data
       text,
+      lexicons,
       examples,
       illustration,
       relatedWords,
       // Visuals
       showFields,
+      showDefinitionTemplates,
       showExamples,
       showRelatedWords,
       collapsedPreviewText,
@@ -389,7 +397,7 @@ export default defineComponent({
           v-model="text"
           :required="!userPrefs.formValidityCheckingDisabled"
           text-area
-          @change="fireUpdateEvent"
+          @change="fireUpdateEvent()"
         >
           <template #description>
             Une courte définition, pas plus d’une ou deux phrases si possible.
@@ -407,6 +415,41 @@ export default defineComponent({
             >.
           </template>
         </input-with-toolbar>
+
+        <cdx-field class="cne-box" is-fieldset>
+          <template #label>
+            Informations d’usage
+            <span class="cne-fieldset-btns">
+              <cdx-button
+                type="button"
+                size="small"
+                :aria-label="showDefinitionTemplates ? 'Enrouler' : 'Dérouler'"
+                :title="showDefinitionTemplates ? 'Enrouler' : 'Dérouler'"
+                @click="showDefinitionTemplates = !showDefinitionTemplates"
+              >
+                <cdx-icon
+                  :icon="
+                    showDefinitionTemplates ? cdxIconCollapse : cdxIconExpand
+                  "
+                ></cdx-icon>
+              </cdx-button>
+            </span>
+          </template>
+          <div v-show="showDefinitionTemplates">
+            <lexicon-form
+              v-model="lexicons"
+              @update:model-value="fireUpdateEvent()"
+            ></lexicon-form>
+          </div>
+          <collapsed-preview
+            v-show="!showDefinitionTemplates"
+            :text="
+              lexicons.length === 0
+                ? 'Aucun lexique'
+                : `${lexicons.length} lexique${lexicons.length > 1 ? 's' : ''}`
+            "
+          ></collapsed-preview>
+        </cdx-field>
 
         <cdx-field
           v-show="userPrefs.displayMode !== 'minimal'"

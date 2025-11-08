@@ -167,6 +167,7 @@ import wikisData from "./wikis.json";
  * @typedef {{
  *  id: number,
  *  text: string,
+ *  lexicons: string[],
  *  examples: Example[],
  *  relatedWords: Record<string, RelatedWord[] | string>,
  *  illustration?: Illustration,
@@ -310,6 +311,7 @@ function createEmptyDefinition(id) {
   return {
     id: id || 1,
     text: "",
+    lexicons: [],
     examples: [],
     relatedWords: {},
     empty: true,
