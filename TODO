@@ -1,5 +1,5 @@
 [x] Clarifier le message d’info : code -> wikicode.
-[ ] Remplacer les sauts de lignes par des <br> dans les exemples.
+[x] Remplacer les sauts de lignes par des <br> dans les exemples.
 [~] Aide.
     [~] Page d’aide.
     [ ] Tutoriel interactif.

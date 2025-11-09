@@ -476,7 +476,9 @@ function formatDefinition(definition, langCode) {
   for (const templateName of Object.values(definition.usagePrecisions))
     if (templateName !== "-") wikitext += `{{${templateName}|${langCode}}} `;
 
-  wikitext += `${definition.text}\n`;
+  // Put whole definition on one single line
+  const text = definition.text.replaceAll(/\n+/g, " ");
+  wikitext += `${text}\n`;
 
   if (definition.examples.length)
     for (const example of definition.examples)
@@ -497,28 +499,31 @@ const exempleTemplateFormat =
  * @returns {string} The formatted example.
  */
 function formatExample(example, langCode, listBullet = "#*") {
-  return (
-    listBullet +
-    " " +
-    templates.templateToString({
-      name: "exemple",
-      format: example.empty ? inlineTemplateFormat2 : exempleTemplateFormat,
-      paramOrder: ["1", "2", "3", "source", "lien", "pas-trad", "tête", "lang"],
-      params: {
-        1: example.text,
-        2:
-          langCode !== "fr" && !example.disableTranslation
-            ? example.translation
-            : "",
-        3: langCode !== "fr" ? example.transcription : "",
-        source: example.source,
-        "pas-trad": example.disableTranslation,
-        lien: example.link,
-        tête: listBullet === "#*" ? null : listBullet,
-        lang: langCode,
-      },
-    })
-  );
+  const format = example.empty ? inlineTemplateFormat2 : exempleTemplateFormat;
+
+  // Replace all line returns by <br> tags to avoid formatting errors
+  const text = example.text.replaceAll(/\n+/g, "<br>");
+  const translation =
+    langCode !== "fr" && !example.disableTranslation ? example.translation : "";
+  const transcription = langCode !== "fr" ? example.transcription : "";
+
+  const template = templates.templateToString({
+    name: "exemple",
+    format: format,
+    paramOrder: ["1", "2", "3", "source", "lien", "pas-trad", "tête", "lang"],
+    params: {
+      1: text,
+      2: translation,
+      3: transcription,
+      source: example.source,
+      "pas-trad": example.disableTranslation,
+      lien: example.link,
+      tête: listBullet === "#*" ? null : listBullet,
+      lang: langCode,
+    },
+  });
+
+  return `${listBullet} ${template}`;
 }
 
 /**
