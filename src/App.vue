@@ -563,20 +563,22 @@ export default defineComponent({
             "
           >
             <p>
-              Ce gadget permet de créer une section de langue complète en
-              écrivant le moins de code possible.
+              Ce gadget permet de créer une section complète dans la langue
+              sélectionnée en écrivant le moins de wikicode possible.
             </p>
             <p>
-              Le code sera directement inséré au bon endroit dans la zone
-              d’édition.
+              Le wikicode généré à partir des informations que vous aurez
+              rentrées dans ce formulaire sera directement inséré au bon endroit
+              dans la zone d’édition sous ce même formulaire.
               <strong>
                 Vérifiez bien que le code généré est correct avant de publier
                 votre modification.
               </strong>
             </p>
             <p>
-              Vous pouvez créer plusieurs sections de types de mots en même
-              temps en cliquant sur le bouton «&nbsp;Ajouter une entrée&nbsp;».
+              Vous pouvez créer plusieurs sections de types de mots (adjectifs,
+              noms communs, etc.) en même temps en cliquant sur le bouton
+              «&nbsp;Ajouter une entrée&nbsp;».
             </p>
           </cdx-message>
           <cdx-message
