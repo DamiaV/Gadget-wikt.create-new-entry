@@ -94,7 +94,7 @@ export default defineComponent({
 
   setup(props, ctx) {
     const languages = ref(langs.loadLanguages());
-    const previousLangCode = localStorage.getItem(LAST_LANG_STORAGE_KEY);
+    const previousLangCode = mw.storage.get(LAST_LANG_STORAGE_KEY);
     let startLanguage;
     for (const lang of languages.value) {
       if (lang.code === previousLangCode) {
@@ -214,7 +214,7 @@ export default defineComponent({
     function onLanguageSelection(language) {
       if (!languages.value.some((lang) => lang.code === language.code))
         languages.value.push(language);
-      localStorage.setItem(LAST_LANG_STORAGE_KEY, language.code);
+      mw.storage.set(LAST_LANG_STORAGE_KEY, language.code);
     }
 
     /**
@@ -341,15 +341,14 @@ export default defineComponent({
 
     function onSubmit() {
       if (!userPrefs.formValidityCheckingDisabled && isFormInvalid()) {
-        if (typeof mw !== "undefined")
-          mw.notify(
-            "Des erreurs sont présentes dans le formulaire. Veuillez les corriger avant d’insérer le code.",
-            {
-              type: "error",
-              title: "Insertion du code impossile",
-              autoHide: true,
-            }
-          );
+        mw.notify(
+          "Des erreurs sont présentes dans le formulaire. Veuillez les corriger avant d’insérer le code.",
+          {
+            type: "error",
+            title: "Insertion du code impossile",
+            autoHide: true,
+          }
+        );
         return;
       }
       // Hide preview to avoid clutter

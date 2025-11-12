@@ -182,138 +182,121 @@ async function renderWikitext(wikitext, word, skin, api) {
   return json.parse.text;
 }
 
-const userPrefsPageTitle = "Gadget-wikt.create-new-entry.prefs.json";
+const DISPLAY_MODE_PREF = "cne-displayMode";
+const FAVORITED_SECTIONS_PREF = "cne-favoritedSections";
+const NO_FORM_VALIDITY_CHECK_PREF = "cne-formValidityCheckingDisabled";
+const TAB_CLOSE_WARNING_PREF = "cne-tabClosingWarningDisabled";
+const HIDE_INTRO_MESSAGE_PREF = "introMessageHidden";
+const HIDE_WARNING_INTRO_MESSAGE_PREF = "warningIntroMessageHidden";
 
 /**
  * Fetch the preferences of the current user.
- * @param {string?} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
+ * @param {string?} username The user’s username. If no value is provided, `mw.storage` will be used instead.
  * @param {mw.Api} api The MediaWiki API to use.
  * @returns {Promise<import("./types.js").UserPreferences>} The fetched preferences.
  */
 async function getUserPreferences(username, api) {
   if (!username) {
-    const getFlag = (key) => localStorage.getItem(`cne-${key}`) === "true";
+    const getFlag = (key) => mw.storage.get(key) === "1";
 
-    let displayMode = localStorage.getItem("cne-displayMode");
+    let displayMode = String(mw.storage.get(DISPLAY_MODE_PREF));
     if (!["minimal", "compact", "full"].includes(displayMode))
       displayMode = "full";
 
-    let favoritedSections;
-    try {
-      favoritedSections = JSON.parse(
-        localStorage.getItem("cne-favoritedSections")
-      );
-    } catch (e) {
-      console.warn(e);
-      favoritedSections = {};
-    }
-
     return {
       displayMode: displayMode,
-      formValidityCheckingDisabled: getFlag("formValidityCheckingDisabled"),
-      tabClosingWarningDisabled: getFlag("tabClosingWarningDisabled"),
-      introMessageHidden: getFlag("introMessageHidden"),
-      warningIntroMessageHidden: getFlag("warningIntroMessageHidden"),
-      favoritedSections: favoritedSections || {},
+      formValidityCheckingDisabled: getFlag(NO_FORM_VALIDITY_CHECK_PREF),
+      tabClosingWarningDisabled: getFlag(TAB_CLOSE_WARNING_PREF),
+      introMessageHidden: getFlag(HIDE_INTRO_MESSAGE_PREF),
+      warningIntroMessageHidden: getFlag(HIDE_WARNING_INTRO_MESSAGE_PREF),
+      favoritedSections: mw.storage.getObject(FAVORITED_SECTIONS_PREF) || {},
     };
   }
 
-  const pageTitle = `User:${username}/${userPrefsPageTitle}`;
-  /**
-   * @typedef {{
-   *  revisions: {
-   *    slots: {
-   *      main: {
-   *        contentmodel: string,
-   *        contentformat: string,
-   *        content: string,
-   *      }
-   *    }
-   *  }[],
-   * }} Page
-   */
   /**
    * @type {{
    *  query: {
-   *    pages: (Page | { missing: true })[],
+   *    userinfo: {
+   *      options: Record<string, string | boolean | number | null>,
+   *    }
    *  },
    * }}
    */
   const json = await api.get({
-    action: "query",
-    titles: pageTitle,
-    prop: "revisions",
-    rvprop: "content",
-    rvslots: "*",
+    meta: "userinfo",
+    uiprop: "options",
     format: "json",
     formatversion: "2",
   });
-  const page = json.query.pages[0];
-  if ("missing" in page) throw new Error(`Missing page`);
+  const options = json.query.userinfo.options;
 
-  const pageData = page.revisions[0].slots.main;
-  if (pageData.contentmodel !== "json")
-    throw new Error(
-      `Invalid contentmodel: expected "json", got "${pageData.contentmodel}"`
-    );
-
-  const rawPrefs = JSON.parse(pageData.content);
-
-  let displayMode = String(rawPrefs.displayMode);
+  let displayMode = String(options["userjs-" + DISPLAY_MODE_PREF]);
   if (!["minimal", "compact", "full"].includes(displayMode))
     displayMode = "full";
 
+  let favoritedSections;
+  try {
+    favoritedSections = JSON.parse(
+      options["userjs-" + FAVORITED_SECTIONS_PREF]
+    );
+  } catch (e) {
+    console.warn(e);
+    favoritedSections = {};
+  }
+
   return {
     displayMode: displayMode,
-    formValidityCheckingDisabled: !!rawPrefs.formValidityCheckingDisabled,
-    tabClosingWarningDisabled: !!rawPrefs.tabClosingWarningDisabled,
-    introMessageHidden: !!rawPrefs.introMessageHidden,
-    warningIntroMessageHidden: !!rawPrefs.warningIntroMessageHidden,
-    favoritedSections: rawPrefs.favoritedSections || {},
+    formValidityCheckingDisabled:
+      options["userjs-" + NO_FORM_VALIDITY_CHECK_PREF] === "1",
+    tabClosingWarningDisabled:
+      options["userjs-" + TAB_CLOSE_WARNING_PREF] === "1",
+    introMessageHidden: options["userjs-" + HIDE_INTRO_MESSAGE_PREF] === "1",
+    warningIntroMessageHidden:
+      options["userjs-" + HIDE_WARNING_INTRO_MESSAGE_PREF] === "1",
+    favoritedSections: favoritedSections,
   };
 }
 
 /**
  * Save the given user preferences to their user page.
- * @param {string | null} username The user’s username. If no value is provided, the browser’s local storage will be used instead.
+ * @param {string | null} username The user’s username. If no value is provided, `mw.storage` will be used instead.
  * @param {import("./types.js").UserPreferences} prefs The preferences to save.
  * @param {mw.Api} api The MediaWiki API to use.
  */
 async function setUserPreferences(username, prefs, api) {
   if (!username) {
-    localStorage.setItem("cne-displayMode", prefs.displayMode);
-    localStorage.setItem(
-      "cne-formValidityCheckingDisabled",
+    mw.storage.set(DISPLAY_MODE_PREF, prefs.displayMode ? 1 : 0);
+    mw.storage.set(
+      NO_FORM_VALIDITY_CHECK_PREF,
       prefs.formValidityCheckingDisabled
     );
-    localStorage.setItem(
-      "cne-tabClosingWarningDisabled",
-      prefs.tabClosingWarningDisabled
+    mw.storage.set(
+      TAB_CLOSE_WARNING_PREF,
+      prefs.tabClosingWarningDisabled ? 1 : 0
     );
-    localStorage.setItem("cne-introMessageHidden", prefs.introMessageHidden);
-    localStorage.setItem(
-      "cne-warningIntroMessageHidden",
-      prefs.warningIntroMessageHidden
+    mw.storage.set(HIDE_INTRO_MESSAGE_PREF, prefs.introMessageHidden ? 1 : 0);
+    mw.storage.set(
+      HIDE_WARNING_INTRO_MESSAGE_PREF,
+      prefs.warningIntroMessageHidden ? 1 : 0
     );
-    localStorage.setItem(
-      "cne-favoritedSections",
-      JSON.stringify(prefs.favoritedSections)
-    );
+    mw.storage.setObject(FAVORITED_SECTIONS_PREF, prefs.favoritedSections);
     return;
   }
 
-  const pageTitle = `User:${username}/${userPrefsPageTitle}`;
-  const summary = "Sauvegarde des préférences";
-  try {
-    await api.edit(pageTitle, () => ({
-      text: JSON.stringify(prefs),
-      summary,
-    }));
-  } catch (e) {
-    if (e === "nocreate-missing")
-      await api.create(pageTitle, { summary }, JSON.stringify(prefs));
-    else throw e;
-  }
+  await api.saveOptions({
+    ["userjs-" + DISPLAY_MODE_PREF]: prefs.displayMode ? 1 : 0,
+    ["userjs-" + NO_FORM_VALIDITY_CHECK_PREF]:
+      prefs.formValidityCheckingDisabled ? 1 : 0,
+    ["userjs-" + TAB_CLOSE_WARNING_PREF]: prefs.tabClosingWarningDisabled
+      ? 1
+      : 0,
+    ["userjs-" + HIDE_INTRO_MESSAGE_PREF]: prefs.introMessageHidden ? 1 : 0,
+    ["userjs-" + HIDE_WARNING_INTRO_MESSAGE_PREF]:
+      prefs.warningIntroMessageHidden ? 1 : 0,
+    ["userjs-" + FAVORITED_SECTIONS_PREF]: JSON.stringify(
+      prefs.favoritedSections
+    ),
+  });
 }
 
 // </nowiki>

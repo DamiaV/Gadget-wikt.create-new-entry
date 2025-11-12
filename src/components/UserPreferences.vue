@@ -120,24 +120,22 @@ export default defineComponent({
           userPrefs.introMessageHidden = prefs.introMessageHidden;
           userPrefs.warningIntroMessageHidden = prefs.warningIntroMessageHidden;
 
-          if (typeof mw !== "undefined")
-            mw.notify("Vos préférences ont été enregistrées.", {
-              type: "success",
-              autoHide: true,
-            });
+          mw.notify("Vos préférences ont été enregistrées.", {
+            type: "success",
+            autoHide: true,
+          });
 
           fireEvent();
         })
         .catch((reason) => {
           console.warn("[CNE] Error:", reason);
-          if (typeof mw !== "undefined")
-            mw.notify(
-              "Vos préférences n’ont pas pu être sauvegardées. Veuillez réessayer.",
-              {
-                type: "error",
-                autoHide: true,
-              }
-            );
+          mw.notify(
+            "Vos préférences n’ont pas pu être sauvegardées. Veuillez réessayer.",
+            {
+              type: "error",
+              autoHide: true,
+            }
+          );
         });
     }
 

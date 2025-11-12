@@ -1,4 +1,4 @@
-[ ] Utiliser l’API Options pour sauvegarder les préférences plutot qu’une sous-page.
+[x] Utiliser l’API Options pour sauvegarder les préférences plutot qu’une sous-page.
 [ ] Rendre compatible avec la coloration syntaxique de la version bêta.
 [x] Clarifier le message d’info : code -> wikicode.
 [x] Remplacer les sauts de lignes par des <br> dans les exemples.

@@ -53,6 +53,116 @@ class Api {
   }
 }
 
+class MwStorage {
+  /**
+   * Retrieve value from device storage.
+   *
+   * @param {string} key Key of item to retrieve.
+   * @returns {string | null | false} String value, null if no value exists, or false
+   *  if storage is not available.
+   */
+  get(key) {
+    try {
+      return localStorage.getItem(key);
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Retrieve JSON object from device storage.
+   *
+   * @param {string} key Key of item to retrieve.
+   * @returns {object | null | boolean} Object, null if no value exists or value
+   *  is not JSON-parseable, or false if storage is not available.
+   */
+  getObject(key) {
+    let value;
+    try {
+      value = localStorage.getItem(key);
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return false;
+    }
+    if (value === null) return null;
+    try {
+      return JSON.parse(value);
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Set a value in device storage.
+   *
+   * @param {string} key Key name to store under.
+   * @param {string} value Value to be stored.
+   * @param {number} [expiry] Number of seconds after which this item can be deleted.
+   * @returns The value was set.
+   */
+  // eslint-disable-next-line no-unused-vars
+  set(key, value, expiry) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Set an object value in device storage by JSON encoding.
+   *
+   * @param {string} key Key name to store under.
+   * @param {object} value Object value to be stored.
+   * @param {number} [expiry] Number of seconds after which this item can be deleted.
+   * @returns The value was set.
+   */
+  // eslint-disable-next-line no-unused-vars
+  setObject(key, value, expiry) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Remove a value from device storage.
+   *
+   * @param {string} key Key of item to remove.
+   * @returns {boolean} Whether the key was removed.
+   */
+  remove(key) {
+    try {
+      localStorage.removeItem(key);
+      return true;
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Set the expiry time for an item in the store.
+   *
+   * @param {string} key Key name.
+   * @param {number} [expiry] Number of seconds after which this item can be deleted,
+   *  omit to clear the expiry (either making the item never expire, or to clean up
+   *  when deleting a key).
+   * @returns {boolean} The expiry was set (or cleared).
+   */
+  // eslint-disable-next-line no-unused-vars
+  setExpires(key, expiry) {
+    return false;
+  }
+}
+
 /**
  * @type {Record<string, any>}
  */
@@ -66,5 +176,6 @@ window.mw = {
     const type = (options.type || "info").toUpperCase();
     console.log(`[${type}] mw.notify: ${message}`);
   },
+  storage: new MwStorage(),
   Api,
 };
