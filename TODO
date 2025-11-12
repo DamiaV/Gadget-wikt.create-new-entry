@@ -17,7 +17,13 @@
 [x] Déplacer les boutons de feedback dans le titre.
 [x] Ajouter un champ pour les attestations historiques.
 [x] Ajouter un champ pour renseigner la forme du pluriel pour les langues concernées.
-[ ] Essayer de rendre compatible avec l’éditeur visuel.
+[~] Essayer de rendre compatible avec l’éditeur visuel. Cf. [[mw:VisualEditor]], [[mw:VisualEditor/Developers/Getting started]], et [[mw:VisualEditor/Design/Software overview]].
+    [x] Extraction des sections de langues : détection des items du DataModel de type `{ type: "mwTransclusionInline", attributes: { originalMw: '{"parts":[{"template":{"target":{"wt":"langue","href":"./Modèle:langue"},"params":{"1":{"wt":"<code langue>"}},"i":0}}]}' } }`.
+    [~] Insertion du wikicode généré.
+        [~] Détection de l’indice du point d’insertion.
+        [ ] Conversion du wikicode en transaction (utiliser `ve.dm.TransactionBuilder` pour construire la transaction).
+        [~] Application de la transaction.
+    [ ] Génération du message de diff.
 [x] Pouvoir afficher par défaut certaines sections de niveau 4.
 [x] Écraser/supprimer la prononciation générée automatiquement à chaque changement de langue.
 [x] Générer un message de diff.

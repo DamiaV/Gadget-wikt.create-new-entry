@@ -10,7 +10,7 @@ export default defineConfig([
     files: ["src/**/*.js", "src/**/*.vue"],
     languageOptions: {
       ecmaVersion: 2017,
-      globals: { ...globals.browser, mw: "readonly" },
+      globals: { ...globals.browser, mw: "readonly", ve: "readonly" },
     },
     rules: {
       eqeqeq: ["error", "always"],
