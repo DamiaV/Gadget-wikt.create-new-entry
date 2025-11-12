@@ -17,7 +17,7 @@ import {
   cdxIconReferences,
   cdxIconTrash,
 } from "@wikimedia/codex-icons";
-import languages from "../wiki_deps/wikt.core.languages.js";
+import languages from "../wiki_deps/wikt.core/languages.js";
 import types from "../types.js";
 import InputWithToolbar from "./InputWithToolbar.vue";
 import WikiLink from "./WikiLink.vue";

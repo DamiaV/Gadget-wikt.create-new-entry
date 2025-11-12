@@ -3,7 +3,7 @@
 import { computed, defineComponent, ref } from "vue";
 import { CdxField, CdxIcon, CdxLookup, CdxSelect } from "@wikimedia/codex";
 import { cdxIconLanguage, cdxIconSearch } from "@wikimedia/codex-icons";
-import languages from "../wiki_deps/wikt.core.languages.js";
+import languages from "../wiki_deps/wikt.core/languages.js";
 import langs from "../languages.js";
 import types from "../types.js";
 

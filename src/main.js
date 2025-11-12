@@ -67,7 +67,7 @@
  */
 // <nowiki>
 import { createApp } from "vue";
-import user from "./wiki_deps/wikt.core.user.js";
+import user from "./wiki_deps/wikt.core/user.js";
 import editor from "./editor.js";
 import pages from "./pages.js";
 import requests from "./requests.js";

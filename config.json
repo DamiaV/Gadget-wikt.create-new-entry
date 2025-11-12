@@ -5,15 +5,15 @@
         "@wikimedia/codex"
     ],
     "wikiDependencies": [
-        "wikt.core.languages.js",
-        "wikt.core.languages.json",
-        "wikt.core.lexicons.js",
-        "wikt.core.lexicons.json",
-        "wikt.core.page.js",
-        "wikt.core.sections.js",
-        "wikt.core.sections.json",
-        "wikt.core.user.js",
-        "wikt.core.word-types.json"
+        "wikt.core/languages.js",
+        "wikt.core/languages.json",
+        "wikt.core/lexicons.js",
+        "wikt.core/lexicons.json",
+        "wikt.core/page.js",
+        "wikt.core/sections.js",
+        "wikt.core/sections.json",
+        "wikt.core/user.js",
+        "wikt.core/word-types.json"
     ],
     "ignoredFiles": [
         "mocks.js",

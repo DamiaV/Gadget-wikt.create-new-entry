@@ -160,6 +160,7 @@ def update_wiki_deps(verbose: bool = False) -> int:
         source_code = page.text
         if os.path.splitext(dep)[1] in JS_EXTS:
             source_code = commonjs_to_esm(source_code, file_path, config)
+        file_path.parent.mkdir(parents=True, exist_ok=True)
         with file_path.open("w") as f:
             f.write(source_code)
         if verbose:

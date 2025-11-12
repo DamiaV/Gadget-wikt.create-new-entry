@@ -12,8 +12,8 @@ import {
   cdxIconLogoWikivoyage,
   cdxIconLogoWiktionary,
 } from "@wikimedia/codex-icons";
-import languages from "./wiki_deps/wikt.core.languages.js";
-import sections from "./wiki_deps/wikt.core.sections.js";
+import languages from "./wiki_deps/wikt.core/languages.js";
+import sections from "./wiki_deps/wikt.core/sections.js";
 import defTemplates from "./definition-templates.json";
 import additionalSectionsData from "./sections-additional.json";
 import wikisData from "./wikis.json";
@@ -406,7 +406,7 @@ function createEmptyUnformattedRelatedWord(id) {
 }
 
 /**
- * @typedef {import("./wiki_deps/wikt.core.sections.js").SectionData & {
+ * @typedef {import("./wiki_deps/wikt.core/sections.js").SectionData & {
  *  definitionSpecific: boolean,
  *  helpPage?: string,
  *  conventionPage?: string,

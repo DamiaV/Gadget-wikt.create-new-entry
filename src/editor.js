@@ -1,5 +1,5 @@
 // <nowiki>
-import languages from "./wiki_deps/wikt.core.languages.js";
+import languages from "./wiki_deps/wikt.core/languages.js";
 
 const sectionRegexp = /==\s*{{langue\s*\|([^|{}]+?)}}\s*==/;
 

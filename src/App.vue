@@ -31,7 +31,7 @@ import {
   cdxIconLabFlask,
   cdxIconLanguage,
 } from "@wikimedia/codex-icons";
-import pages from "./wiki_deps/wikt.core.page.js";
+import pages from "./wiki_deps/wikt.core/page.js";
 import langs from "./languages.js";
 import requests from "./requests.js";
 import strings from "./strings.js";

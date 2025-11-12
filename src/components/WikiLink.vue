@@ -1,7 +1,7 @@
 <script>
 // <nowiki>
 import { computed, defineComponent } from "vue";
-import languages from "../wiki_deps/wikt.core.languages.js";
+import languages from "../wiki_deps/wikt.core/languages.js";
 import types from "../types.js";
 
 // </nowiki>

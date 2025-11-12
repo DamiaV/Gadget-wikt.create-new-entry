@@ -1,5 +1,5 @@
 // <nowiki>
-import langs from "./wiki_deps/wikt.core.languages.js";
+import langs from "./wiki_deps/wikt.core/languages.js";
 import templates from "./templates.js";
 import types from "./types.js";
 

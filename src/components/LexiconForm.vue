@@ -2,7 +2,7 @@
 // <nowiki>
 import { defineComponent, ref } from "vue";
 import { CdxButton, CdxField, CdxIcon, CdxLookup } from "@wikimedia/codex";
-import lex from "../wiki_deps/wikt.core.lexicons.js";
+import lex from "../wiki_deps/wikt.core/lexicons.js";
 import { cdxIconSearch, cdxIconTrash } from "@wikimedia/codex-icons";
 
 // </nowiki>
