@@ -55,6 +55,7 @@ import wikisData from "./wikis.json";
  *  tabClosingWarningDisabled: boolean,
  *  introMessageHidden: boolean,
  *  warningIntroMessageHidden: boolean,
+ *  compatibilityMessageHidden: boolean,
  *  favoritedSections: Record<string, SectionStatus | null>,
  * }} UserPreferences
  */
@@ -266,6 +267,7 @@ function createEmptyUserPreferences() {
     tabClosingWarningDisabled: false,
     introMessageHidden: false,
     warningIntroMessageHidden: false,
+    compatibilityMessageHidden: false,
     favoritedSections: {},
   };
 }

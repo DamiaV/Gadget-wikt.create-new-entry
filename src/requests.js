@@ -188,6 +188,7 @@ const NO_FORM_VALIDITY_CHECK_PREF = "cne-formValidityCheckingDisabled";
 const TAB_CLOSE_WARNING_PREF = "cne-tabClosingWarningDisabled";
 const HIDE_INTRO_MESSAGE_PREF = "introMessageHidden";
 const HIDE_WARNING_INTRO_MESSAGE_PREF = "warningIntroMessageHidden";
+const HIDE_COMPAT_MESSAGE_PREF = "compatibilityMessageHidden";
 
 /**
  * Fetch the preferences of the current user.
@@ -209,6 +210,7 @@ async function getUserPreferences(username, api) {
       tabClosingWarningDisabled: getFlag(TAB_CLOSE_WARNING_PREF),
       introMessageHidden: getFlag(HIDE_INTRO_MESSAGE_PREF),
       warningIntroMessageHidden: getFlag(HIDE_WARNING_INTRO_MESSAGE_PREF),
+      compatibilityMessageHidden: getFlag(HIDE_COMPAT_MESSAGE_PREF),
       favoritedSections: mw.storage.getObject(FAVORITED_SECTIONS_PREF) || {},
     };
   }
@@ -253,6 +255,8 @@ async function getUserPreferences(username, api) {
     introMessageHidden: options["userjs-" + HIDE_INTRO_MESSAGE_PREF] === "1",
     warningIntroMessageHidden:
       options["userjs-" + HIDE_WARNING_INTRO_MESSAGE_PREF] === "1",
+    compatibilityMessageHidden:
+      options["userjs-" + HIDE_COMPAT_MESSAGE_PREF] === "1",
     favoritedSections: favoritedSections,
   };
 }
@@ -279,6 +283,10 @@ async function setUserPreferences(username, prefs, api) {
       HIDE_WARNING_INTRO_MESSAGE_PREF,
       prefs.warningIntroMessageHidden ? 1 : 0
     );
+    mw.storage.set(
+      HIDE_COMPAT_MESSAGE_PREF,
+      prefs.compatibilityMessageHidden ? 1 : 0
+    );
     mw.storage.setObject(FAVORITED_SECTIONS_PREF, prefs.favoritedSections);
     return;
   }
@@ -293,6 +301,9 @@ async function setUserPreferences(username, prefs, api) {
     ["userjs-" + HIDE_INTRO_MESSAGE_PREF]: prefs.introMessageHidden ? 1 : 0,
     ["userjs-" + HIDE_WARNING_INTRO_MESSAGE_PREF]:
       prefs.warningIntroMessageHidden ? 1 : 0,
+    ["userjs-" + HIDE_COMPAT_MESSAGE_PREF]: prefs.compatibilityMessageHidden
+      ? 1
+      : 0,
     ["userjs-" + FAVORITED_SECTIONS_PREF]: JSON.stringify(
       prefs.favoritedSections
     ),

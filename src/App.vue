@@ -582,7 +582,7 @@ export default defineComponent({
           </cdx-message>
           <cdx-message
             v-if="!userPrefs.warningIntroMessageHidden"
-            type="warning"
+            type="notice"
             allow-user-dismiss
             dismiss-button-label="Fermer"
             @user-dismissed="
@@ -596,11 +596,38 @@ export default defineComponent({
               vous avez entrées seront perdues.
             </strong>
           </cdx-message>
+          <cdx-message
+            v-if="!userPrefs.compatibilityMessageHidden"
+            type="warning"
+            allow-user-dismiss
+            dismiss-button-label="Fermer"
+            @user-dismissed="
+              userPrefs.compatibilityMessageHidden = true;
+              onSavePreferences();
+            "
+          >
+            Ce gadget n’est pas compatible avec les éditeurs suivants&nbsp;:
+            <ul>
+              <li>Éditeur visuel</li>
+              <li>
+                La
+                <wiki-link
+                  page-title="Spécial:Préférences"
+                  anchor="mw-prefsection-betafeatures"
+                  >fonctionnalité bêta</wiki-link
+                >
+                «&nbsp;Mise en évidence améliorée de la syntaxe&nbsp;» (travail
+                de mise en compatibilité en cours)
+              </li>
+              <li>WikEd (gadget)</li>
+            </ul>
+          </cdx-message>
 
           <hr
             v-show="
               !userPrefs.introMessageHidden ||
-              !userPrefs.warningIntroMessageHidden
+              !userPrefs.warningIntroMessageHidden ||
+              !userPrefs.compatibilityMessageHidden
             "
             class="cne-horizontal-separator"
           />

@@ -106,6 +106,9 @@ export default defineComponent({
         warningIntroMessageHidden: editingUserPrefs.resetIntroMessages
           ? false
           : userPrefs.warningIntroMessageHidden,
+        compatibilityMessageHidden: editingUserPrefs.resetIntroMessages
+          ? false
+          : userPrefs.compatibilityMessageHidden,
         favoritedSections: userPrefs.favoritedSections,
       };
       requests
@@ -119,6 +122,8 @@ export default defineComponent({
           userPrefs.tabClosingWarningDisabled = prefs.tabClosingWarningDisabled;
           userPrefs.introMessageHidden = prefs.introMessageHidden;
           userPrefs.warningIntroMessageHidden = prefs.warningIntroMessageHidden;
+          userPrefs.compatibilityMessageHidden =
+            prefs.compatibilityMessageHidden;
 
           mw.notify("Vos préférences ont été enregistrées.", {
             type: "success",
