@@ -5,6 +5,7 @@
         "@wikimedia/codex"
     ],
     "wikiDependencies": [
+        "wikt.core/edit.js",
         "wikt.core/languages.js",
         "wikt.core/languages.json",
         "wikt.core/lexicons.js",

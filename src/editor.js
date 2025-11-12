@@ -1,6 +1,8 @@
 // <nowiki>
+import edit from "./wiki_deps/wikt.core/edit.js";
 import languages from "./wiki_deps/wikt.core/languages.js";
 
+const Editor = edit.Editor;
 const sectionRegexp = /==\s*{{langue\s*\|([^|{}]+?)}}\s*==/;
 
 /**
@@ -18,7 +20,7 @@ function insertWikitext(wikitext, word, langCode, sortKey) {
 
   const sortKeyTemplate = `\n{{clé de tri|${sortKey}}}`;
 
-  const text = getText() || "";
+  const text = Editor.getText() || "";
 
   const missingSortKeyTemplate =
     sortKey !== word && !text.includes("{{clé de tri");
@@ -34,19 +36,26 @@ function insertWikitext(wikitext, word, langCode, sortKey) {
       continue;
 
     if (i > 0 && lines[i - 1].trim() !== "") wikitext = "\n" + wikitext;
-    lines.splice(i, 0, ...wikitext.split("\n"));
+    const wikitextLines = wikitext.split("\n");
+    lines.splice(i, 0, ...wikitextLines);
     let result = lines.join("\n").trim();
     if (missingSortKeyTemplate) result += "\n" + sortKeyTemplate;
-    setText(result);
-    selectLines(i);
+    Editor.setText(result);
+    Editor.setLineSelection(i, i + wikitextLines.length - 1);
+    Editor.focus();
     return;
   }
 
   if (missingSortKeyTemplate) wikitext += sortKeyTemplate;
   const leadingText = text.trim();
-  if (leadingText) wikitext = leadingText + "\n\n" + wikitext;
-  setText(wikitext);
-  selectLines(lines.length);
+  let lineOffset = 0;
+  if (leadingText) {
+    wikitext = leadingText + "\n\n" + wikitext;
+    lineOffset = leadingText.split("\n").length + 1;
+  }
+  Editor.setText(wikitext);
+  Editor.setLineSelection(lineOffset, wikitext.split("\n").length - 1);
+  Editor.focus();
 }
 
 /**
@@ -84,7 +93,7 @@ function compareNames(name1, name2) {
  */
 function extractLanguageCodes() {
   const codes = [];
-  const text = getText();
+  const text = Editor.getText() || "";
   if (!text) return [];
 
   for (const line of text.split("\n")) {
@@ -98,72 +107,6 @@ function extractLanguageCodes() {
   }
 
   return codes;
-}
-
-function getText() {
-  const codeMirror = getCodeMirrorEditor();
-  if (codeMirror) return codeMirror.getValue();
-  const editor = getDefaultEditor();
-  return editor && editor.value;
-}
-
-function setText(text) {
-  const codeMirror = getCodeMirrorEditor();
-  const editor = getDefaultEditor();
-  if (codeMirror) codeMirror.setValue(text);
-  else if (editor) editor.value = text;
-}
-
-/**
- * @type {HTMLTextAreaElement | null}
- */
-let defaultEditor = null;
-
-function getDefaultEditor() {
-  if (!defaultEditor) defaultEditor = document.getElementById("wpTextbox1");
-  return defaultEditor;
-}
-
-/**
- * @type {import("@types/codemirror").Editor | null}
- */
-let codeMirrorEditor = null;
-
-function getCodeMirrorEditor() {
-  if (!codeMirrorEditor) {
-    const codeMirrorElement = document.querySelector(".CodeMirror");
-    codeMirrorEditor = codeMirrorElement && codeMirrorElement.CodeMirror;
-  }
-  return codeMirrorEditor;
-}
-
-/**
- * Select the given line(s).
- * @param {number} start The index of the first line to select.
- * @param {number?} end The index of the last line to select.
- */
-function selectLines(start, end) {
-  if (!end) end = start;
-
-  const codeMirror = getCodeMirrorEditor();
-  if (codeMirror) {
-    codeMirror.setSelection(
-      { line: start, ch: 0 },
-      {
-        line: end,
-        ch: codeMirror.getLine(end).length,
-      }
-    );
-  } else {
-    const editor = getDefaultEditor();
-    const text = editor.value;
-    editor.selectionStart =
-      text.split("\n").slice(0, start).join("\n").length + 1;
-    editor.selectionEnd = text
-      .split("\n")
-      .slice(0, end + 1)
-      .join("\n").length;
-  }
 }
 
 // </nowiki>
