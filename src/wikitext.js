@@ -253,8 +253,7 @@ function indent(text, char) {
 
   for (let line of text.split("\n")) {
     line = line.trim();
-    if (line.startsWith(":")) line = char + line;
-    else if (!/^[#*]/.test(line)) line = char + " " + line;
+    if (!/^[#*:]/.test(line)) line = char + " " + line;
     lines.push(line);
   }
 
