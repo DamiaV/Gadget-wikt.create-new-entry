@@ -137,3 +137,27 @@ test("extractTrailingWhitespace: matches thin non-breaking space", () => {
     "\u202f\u202f",
   ]);
 });
+
+/*
+ * Test: substitute
+ */
+
+test("substitute: returns empty strings for empty input (non-empty table)", () => {
+  expect(strings.substitute("", { a: "b" })).toBe("");
+});
+
+test("substitute: returns empty strings for empty input (empty table)", () => {
+  expect(strings.substitute("", {})).toBe("");
+});
+
+test("substitute: unchanged string for empty table", () => {
+  expect(strings.substitute("abcd", {})).toBe("abcd");
+});
+
+test("substitute: replaces all occurrences", () => {
+  expect(strings.substitute("abcada", { a: "e" })).toBe("ebcede");
+});
+
+test("substitute: respects insertion order", () => {
+  expect(strings.substitute("abcada", { a: "ef", e: "g" })).toBe("gfbcgfdgf");
+});
