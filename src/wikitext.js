@@ -364,7 +364,7 @@ function formatEntry(entry, word, language, number) {
     wikitext += formatPronunciations(entry.pronunciations, langCode);
 
   if (wordPropertyTemplates.length)
-    wikitext += " " + wordPropertyTemplates.join(" ");
+    wikitext += " " + wordPropertyTemplates.join(", ");
   wikitext += "\n";
 
   wikitext += definitions.join("");
