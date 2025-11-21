@@ -659,6 +659,7 @@ class GrammaticalItem {
  *  readonly hasPronunciationAppendix: boolean,
  *  readonly getGrammarItem: (sectionName: string) => GrammaticalItem | undefined,
  *  readonly generatePronunciation: (word: string) => string | null,
+ *  readonly generateSectionTemplate: (word: string) => string | null,
  * }} Language
  */
 /**
@@ -667,13 +668,15 @@ class GrammaticalItem {
 class Language {
   /**
    * @param {string} code Language code defined in [[Module:langues/data]].
-   * @param {string|null} wikimediaCode Language code used by WikiMedia projects.
-   * @param {string|null} iso6393Code ISO 639-3 language code for Lingua Libre’s files.
+   * @param {string | null} wikimediaCode Language code used by WikiMedia projects.
+   * @param {string | null} iso6393Code ISO 639-3 language code for Lingua Libre’s files.
    * @param {string} name Language’s name (in French).
-   * @param {string[][]?} ipaSymbols An optional list of common IPA symbols for the language.
-   * @param {GrammaticalItem[]?} grammarItems An optional list of grammatical items.
-   * @param {((word: string) => string | null)?} pronGenerator An optional function that generates an approximate pronunciation based on the word.
-   * @param {boolean?} isSupported Indicate whether this language is officialy supported by this gadget.
+   * @param {string[][]} [ipaSymbols] An optional list of common IPA symbols for the language.
+   * @param {GrammaticalItem[]} [grammarItems] An optional list of grammatical items.
+   * @param {(word: string) => string | null} [pronGenerator] An optional function that generates an approximate pronunciation based on the word.
+   * @param {(word: string) => string | null} [sectionTemplateGenerator] An optional function that generates a template
+   *  to insert right below the language section title.
+   * @param {boolean} [isSupported] Indicate whether this language is officialy supported by this gadget.
    */
   constructor(
     code,
@@ -683,6 +686,7 @@ class Language {
     ipaSymbols,
     grammarItems,
     pronGenerator,
+    sectionTemplateGenerator,
     isSupported = true
   ) {
     /**
@@ -716,10 +720,15 @@ class Language {
      */
     this._grammarItems = {};
     /**
-     * @type {(word: string) => string}
+     * @type {(word: string) => string | null}
      * @private
      */
     this._pronGenerator = pronGenerator || (() => null);
+    /**
+     * @type {(word: string) => string | null}
+     * @private
+     */
+    this._sectionTemplateGenerator = sectionTemplateGenerator || (() => null);
     /**
      * @type {boolean}
      * @private
@@ -795,7 +804,7 @@ class Language {
   }
 
   /**
-   * Fetches the grammatical item that has the given section title.
+   * Fetch the grammatical item that has the given section title.
    * @param {string} sectionName Section’s title.
    * @returns {GrammaticalItem | undefined} The grammatical item if found or undefined otherwise.
    */
@@ -804,12 +813,21 @@ class Language {
   }
 
   /**
-   * Generates the pronunciation of the given word for this language.
+   * Generate the pronunciation of the given word for this language.
    * @param {string} word The word.
-   * @returns {string | null} The pronunciation or an empty string if no function was defined in the constructor.
+   * @returns {string | null} The pronunciation or `null` if no function was defined in the constructor.
    */
   generatePronunciation(word) {
     return this._pronGenerator(word);
+  }
+
+  /**
+   * Generate the template to insert right below the language section title.
+   * @param {string} word The word.
+   * @returns {string | null} The template or `null` if no function was defined in the constructor.
+   */
+  generateSectionTemplate(word) {
+    return this._sectionTemplateGenerator(word);
   }
 }
 

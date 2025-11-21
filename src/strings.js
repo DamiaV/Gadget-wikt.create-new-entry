@@ -40,6 +40,19 @@ function extractTrailingWhitespace(text) {
   return [match[1], match[2], match[3]];
 }
 
+/**
+ * Apply the specified substitutions to the given string.
+ * Substitutions are applied following the insertion order of the second argument.
+ * @param {string} string The string to transform.
+ * @param {Record<string, string>} substitutionTable An object containing the substitutions to make.
+ * @returns The transformed string.
+ */
+function substitute(string, substitutionTable) {
+  for (const [searchValue, replaceValue] of Object.entries(substitutionTable))
+    string = string.replaceAll(searchValue, replaceValue);
+  return string;
+}
+
 // </nowiki>
 /**
  * This module defines functions to manipulate strings.
@@ -50,4 +63,5 @@ export default {
   userGenderSwitch,
   capitalize,
   extractTrailingWhitespace,
+  substitute,
 };

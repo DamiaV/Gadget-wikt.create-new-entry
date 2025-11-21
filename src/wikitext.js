@@ -92,6 +92,9 @@ function generateWikitext(formData, word) {
 
   let wikitext = `== {{langue|${langCode}}} ==\n`;
 
+  const sectionTemplate = language.generateSectionTemplate(word);
+  if (sectionTemplate) wikitext += sectionTemplate + "\n";
+
   if (formData.stub) wikitext += `{{ébauche|${langCode}}}\n`;
 
   wikitext += "=== {{S|étymologie}} ===\n";

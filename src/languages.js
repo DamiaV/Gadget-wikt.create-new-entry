@@ -1,5 +1,6 @@
 // <nowiki>
 import langs from "./wiki_deps/wikt.core/languages.js";
+import strings from "./strings.js";
 import templates from "./templates.js";
 import types from "./types.js";
 
@@ -2435,17 +2436,39 @@ function loadLanguages() {
         ),
       ],
       (word) =>
-        word
-          .toLowerCase()
-          .replaceAll("c", "t͡s")
-          .replaceAll("ĉ", "t͡ʃ")
-          .replaceAll("g", "ɡ")
-          .replaceAll("ĝ", "d͡ʒ")
-          .replaceAll("ĥ", "x")
-          .replaceAll("ĵ", "ʒ")
-          .replaceAll("ŝ", "ʃ")
-          .replaceAll("ŭ", "w")
-          .replaceAll(/['’]/g, "")
+        strings.substitute(word.toLowerCase(), {
+          c: "t͡s",
+          ĉ: "t͡ʃ",
+          g: "ɡ",
+          ĝ: "d͡ʒ",
+          ĥ: "x",
+          ĵ: "ʒ",
+          ŝ: "ʃ",
+          ŭ: "w",
+          "'": "",
+          "’": "",
+        }),
+      (word) => {
+        if (!/[ĉĝĥĵŝŭ]/.test(word)) return null;
+
+        const xSystem = strings.substitute(word, {
+          ĉ: "cx",
+          ĝ: "gx",
+          ĥ: "hx",
+          ĵ: "jx",
+          ŝ: "sx",
+          ŭ: "ux",
+        });
+        const hSystem = strings.substitute(word, {
+          ĉ: "ch",
+          ĝ: "gh",
+          ĥ: "hh",
+          ĵ: "jh",
+          ŝ: "sh",
+          ŭ: "u",
+        });
+        return `{{voir autres systèmes|eo|${xSystem}|${hSystem}}}`;
+      }
     )
   ); // eo
 
@@ -2790,6 +2813,7 @@ function getDefaultLanguage(code) {
     name,
     [],
     items,
+    null,
     null,
     false
   );
