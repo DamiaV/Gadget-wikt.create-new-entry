@@ -1444,7 +1444,7 @@ function loadLanguages() {
     if (gender === GENDERS.FEMININE_MASCULINE.label) mf = "|mf=oui";
 
     if (number === NUMBERS.INVARIABLE.label)
-      return `{{es-inv|${pron}|inv_titre=${grammarClass}${mf}}`;
+      return `{{es-inv|${pron}|inv_titre=${grammarClass}${mf}}}`;
     if (number === NUMBERS.SAME_SINGULAR_PLURAL.label)
       return `{{es-inv|${pron}|inv_titre=Singulier et pluriel${mf}}}`;
     if (number === NUMBERS.SINGULAR_ONLY.label)
@@ -1472,7 +1472,7 @@ function loadLanguages() {
           GRAMMATICAL_CLASSES.ADJECTIVE.label,
           GRAMMATICAL_CLASSES.NOUN.label,
         ].includes(grammarClass_) &&
-        !/[aáeéiíoóuúüyý]$/.test(word)
+        word.endsWith("ón")
       )
         return `{{es-accord-ón|${word.slice(0, -2)}|${pron ? pron.slice(0, -2) : ""}}`;
     }

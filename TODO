@@ -1,3 +1,4 @@
+[x] Fix tableaux en espagnol.
 [x] Pour l’espéranto, si lettres accentuées dans le mot vedette, insérer {{voir autres systèmes}} sous le titre de langue.
 [x] Utiliser l’API Options pour sauvegarder les préférences plutot qu’une sous-page.
 [~] Rendre compatible avec la coloration syntaxique de la version bêta.
