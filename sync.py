@@ -199,7 +199,7 @@ def update_wikis_list(verbose: bool = False) -> int:
 
     if verbose:
         print("Extracting wiki languages…")
-    with (w.WIKI_DEPS_DIR / "wikt.core.languages.json").open() as f:
+    with (w.WIKI_DEPS_DIR / "wikt.core" / "languages.json").open() as f:
         langs_data = json.load(f)
 
     wikis = {}
