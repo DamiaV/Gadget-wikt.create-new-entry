@@ -58,7 +58,7 @@ def generate_gadget_definition(
         + sorted(config.wiki_deps)
     )
     return (
-        f"{prefix} [ResourceLoader | package | namespaces = 0 | actions = edit"
+        f"{prefix} [ResourceLoader | package | default | namespaces = 0 | actions = edit"
         f" | dependencies = {deps} | codexIcons = {icons}] | {sources}"
     )
 
