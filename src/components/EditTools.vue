@@ -6,6 +6,8 @@ import {
   cdxIconBold,
   cdxIconCode,
   cdxIconItalic,
+  cdxIconLink,
+  cdxIconLinkExternal,
   cdxIconNoWikitext,
   cdxIconPuzzle,
   cdxIconQuotes,
@@ -72,6 +74,7 @@ export default defineComponent({
     "insert:superscript",
     "insert:subscript",
     "insert:link",
+    "insert:ext-link",
     "insert:nowiki",
     "insert:code",
     "insert:quotes",
@@ -86,6 +89,8 @@ export default defineComponent({
       cdxIconBold,
       cdxIconCode,
       cdxIconItalic,
+      cdxIconLink,
+      cdxIconLinkExternal,
       cdxIconNoWikitext,
       cdxIconPuzzle,
       cdxIconQuotes,
@@ -150,13 +155,24 @@ export default defineComponent({
       <cdx-button
         class="format-btn"
         type="button"
-        aria-label="Insérer un lien"
-        title="Insérer un lien"
+        aria-label="Insérer un lien wiki"
+        title="Insérer un lien wiki"
         size="small"
         tabindex="-1"
         @click="$emit('insert:link')"
       >
-        <cdx-icon :icon="cdxIconWikitext"></cdx-icon>
+        <cdx-icon :icon="cdxIconLink"></cdx-icon>
+      </cdx-button>
+      <cdx-button
+        class="format-btn"
+        type="button"
+        aria-label="Insérer un lien externe"
+        title="Insérer un lien externe"
+        size="small"
+        tabindex="-1"
+        @click="$emit('insert:ext-link')"
+      >
+        <cdx-icon :icon="cdxIconLinkExternal"></cdx-icon>
       </cdx-button>
       <cdx-button
         class="format-btn"

@@ -1,6 +1,6 @@
 [ ] Changer le message de diff en fonction de si une nouvelle page est en train d’être créée ou non.
 [x] Indiquer que les infos d’usage sont facultatives.
-[ ] Champ source des exemples, ajouter un bouton de lien externe.
+[x] Champ source des exemples, ajouter un bouton de lien externe.
 [ ] Nom communs, ajouter un champ équiv-pour.
 [x] Fix tableaux en espagnol.
 [x] Pour l’espéranto, si lettres accentuées dans le mot vedette, insérer {{voir autres systèmes}} sous le titre de langue.

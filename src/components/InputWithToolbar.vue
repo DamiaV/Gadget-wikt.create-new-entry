@@ -210,6 +210,18 @@ export default defineComponent({
     }
 
     /**
+     * Insert an external link around the current selection.
+     */
+    function onInsertExtLink() {
+      if (props.disabled) return;
+      transformText(
+        (beforeSelection, selection, afterSelection) =>
+          `${beforeSelection}[${selection} ]${afterSelection}`,
+        true
+      );
+    }
+
+    /**
      * Insert quotes around the current selection.
      */
     function onInsertQuotes() {
@@ -296,6 +308,7 @@ export default defineComponent({
       onInvalid,
       onInsertChar,
       onInsertLink,
+      onInsertExtLink,
       onInsertQuotes,
       onInsertTag,
       onBold,
@@ -320,6 +333,7 @@ export default defineComponent({
         @style:italic="onItalic"
         @insert:char="onInsertChar"
         @insert:link="onInsertLink"
+        @insert:ext-link="onInsertExtLink"
         @insert:quotes="onInsertQuotes"
         @insert:nowiki="onInsertTag('nowiki')"
         @insert:subscript="onInsertTag('sub')"
