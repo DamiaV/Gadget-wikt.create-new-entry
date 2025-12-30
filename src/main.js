@@ -78,6 +78,7 @@ import App from "./App.vue";
 const NAME = "Gadget-wikt.create-new-entry";
 const VERSION = "6.0";
 const EDIT_SUMMARY = `Ajout d’une section en {lang} assisté par [[Aide:Gadget de création d’entrée|${NAME}]] (v${VERSION})`;
+const CREATE_SUMMARY = `Création d’une page en {lang} assistée par [[Aide:Gadget de création d’entrée|${NAME}]] (v${VERSION})`;
 
 console.log(`Chargement de ${NAME} (v${VERSION})…`);
 
@@ -132,8 +133,10 @@ console.log(`Chargement de ${NAME} (v${VERSION})…`);
         formData.language.code,
         formData.sortKey
       );
+      const newPage = mw.config.get("wgArticleId") === 0;
+      const editSummary = newPage ? CREATE_SUMMARY : EDIT_SUMMARY;
       editor.setEditSummary(
-        EDIT_SUMMARY.replaceAll("{lang}", formData.language.name)
+        editSummary.replaceAll("{lang}", formData.language.name)
       );
       mw.notify(
         "Le wikicode a été inséré dans le champ de texte ci-dessous. Veuillez vérifier que celui-ci est correct avant de publier vos modifications.",
