@@ -517,6 +517,10 @@ export default defineComponent({
               @update:model-value="fireUpdateEvent()"
             ></lexicon-form>
 
+            <p>
+              Les informations ci-dessous sont facultatives, renseignez-les
+              seulement si elles sont pertinentes.
+            </p>
             <radio-list
               v-for="({ label, items }, code) in usagePrecisionsMenuItems"
               :key="label"

@@ -1,5 +1,5 @@
 [ ] Changer le message de diff en fonction de si une nouvelle page est en train d’être créée ou non.
-[ ] Indiquer que les infos d’usage sont facultatives.
+[x] Indiquer que les infos d’usage sont facultatives.
 [ ] Champ source des exemples, ajouter un bouton de lien externe.
 [ ] Nom communs, ajouter un champ équiv-pour.
 [x] Fix tableaux en espagnol.

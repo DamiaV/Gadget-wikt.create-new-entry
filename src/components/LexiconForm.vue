@@ -132,6 +132,11 @@ export default defineComponent({
 <template>
   <cdx-field class="cne-lexicon-form">
     <template #label>Lexiques</template>
+    <template #description>
+      Ajouter un lexique permet d’indiquer que cette définition est restreinte à
+      un domaine spécifique (géologie, menuiserie, transitude, etc.). Si la
+      définition n’est pas spécifique à un domaine, ne renseignez rien.
+    </template>
     <cdx-lookup
       v-model:selected="menuSelection"
       :menu-items="menuItems"
