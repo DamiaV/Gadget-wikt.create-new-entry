@@ -21,7 +21,7 @@
  * === v4.x (2014-01-22 - 2020-07-29) ===
  * v4.0   2014-01-22 support for new editable sections syntax
  *
- * === v5.x (2020-07-29 - 2025-12-??) ===
+ * === v5.x (2020-07-29 - 2025-12-01) ===
  * v5.0   2020-07-29 full rewrite, migration to OOUI
  * v5.0.1 2020-08-01 using {{lien}} for links, reworked toolbar
  * v5.0.2 2020-08-02 added missing sections
@@ -60,8 +60,9 @@
  * v5.9   2025-06-25 Refactor to enable by default.
  * v5.9.1 2025-07-10 Better handling of English adjectives.
  *
- * === v6.x (2025-12-?? -) ===
- * v6.0   2025-12-?? Full rewrite in Vue.js + Codex.
+ * === v6.x (2025-12-01) ===
+ * v6.0   2025-12-01 Full rewrite in Vue.js + Codex.
+ * v6.1   2026-01-?? Add button to insert ext. links; add form to specify gender equivalents of nouns.
  *
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/main.js]]
  */
@@ -76,7 +77,7 @@ import wikitext from "./wikitext.js";
 import App from "./App.vue";
 
 const NAME = "Gadget-wikt.create-new-entry";
-const VERSION = "6.0";
+const VERSION = "6.1";
 const EDIT_SUMMARY = `Ajout d’une section en {lang} assisté par [[Aide:Gadget de création d’entrée|${NAME}]] (v${VERSION})`;
 const CREATE_SUMMARY = `Création d’une page en {lang} assistée par [[Aide:Gadget de création d’entrée|${NAME}]] (v${VERSION})`;
 

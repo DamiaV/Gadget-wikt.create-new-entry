@@ -359,7 +359,7 @@ function formatEntry(entry, word, language, number) {
 
   if (
     langCode === "conv" &&
-    entry.wordType === langs2.GRAMMATICAL_CLASSES.SCIENTIFIC_NAME.label
+    entry.wordType === langs2.GRAMMATICAL_CLASSES.SCIENTIFIC_NAME.sectionCode
   )
     wikitext += `'''''${word}'''''`;
   else wikitext += `'''${word}'''`;
@@ -368,6 +368,56 @@ function formatEntry(entry, word, language, number) {
 
   if (wordPropertyTemplates.length)
     wikitext += " " + wordPropertyTemplates.join(", ");
+
+  if (entry.wordType === langs2.GRAMMATICAL_CLASSES.NOUN.sectionCode) {
+    const params = {
+      lang: langCode,
+    };
+    const MAX_VALUES = 6;
+
+    let firstGender = true;
+    let anyFound = false;
+    for (const [gender, values] of entry.genderEquivalents) {
+      if (firstGender) {
+        params[1] = gender;
+        for (let i = 0; i < values.length && i < MAX_VALUES; i++)
+          params[i + 2] = values[i];
+        firstGender = false;
+        anyFound = true;
+      } else {
+        params["2egenre"] = gender;
+        for (let i = 0; i < values.length && i < MAX_VALUES; i++)
+          params[`2egenre${i + 1}`] = values[i];
+      }
+    }
+
+    if (anyFound)
+      wikitext +=
+        " " +
+        templates.templateToString({
+          name: "équiv-pour",
+          format: inlineTemplateFormat,
+          paramOrder: [
+            "lang",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "2egenre",
+            "2egenre1",
+            "2egenre2",
+            "2egenre3",
+            "2egenre4",
+            "2egenre5",
+            "2egenre6",
+          ],
+          params,
+        });
+  }
+
   wikitext += "\n";
 
   wikitext += definitions.join("");
@@ -384,7 +434,7 @@ function formatEntry(entry, word, language, number) {
 }
 
 /**
- * Check whether the given word property is a *not* a gender.
+ * Check whether the given word property is *not* a gender.
  * @param {import("./types.js").GrammaticalProperty} wordProperty The word property to check.
  * @returns True if the given property is a *not* a gender, false if it is.
  */

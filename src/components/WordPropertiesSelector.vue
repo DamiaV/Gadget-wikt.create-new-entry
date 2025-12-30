@@ -1,8 +1,19 @@
 <script>
 // <nowiki>
-import { CdxField, CdxIcon, CdxSelect, CdxTextInput } from "@wikimedia/codex";
+import {
+  CdxButton,
+  CdxField,
+  CdxIcon,
+  CdxSelect,
+  CdxTextInput,
+} from "@wikimedia/codex";
 import { computed, defineComponent, ref, watch } from "vue";
-import { cdxIconHelpNotice, cdxIconSettings } from "@wikimedia/codex-icons";
+import {
+  cdxIconAdd,
+  cdxIconHelpNotice,
+  cdxIconSettings,
+  cdxIconTrash,
+} from "@wikimedia/codex-icons";
 import languages from "../languages.js";
 import strings from "../strings.js";
 import types from "../types.js";
@@ -13,6 +24,7 @@ import WikiLink from "./WikiLink.vue";
  *  wordType: string,
  *  properties: Record<string, string>,
  *  plural: string,
+ *  genderEquivalents: [string, string[]][],
  * }} WordProperties
  */
 
@@ -27,6 +39,7 @@ import WikiLink from "./WikiLink.vue";
 // <nowiki>
 export default defineComponent({
   components: {
+    CdxButton,
     CdxField,
     CdxIcon,
     CdxSelect,
@@ -52,6 +65,7 @@ export default defineComponent({
     const wordType = ref(props.modelValue.wordType);
     const wordProperties = ref(props.modelValue.properties);
     const plural = ref(props.modelValue.plural);
+    const genderEquivalents = ref(props.modelValue.genderEquivalents);
 
     const wordTypesData = computed(() => {
       /**
@@ -107,6 +121,10 @@ export default defineComponent({
      */
     const wordPropertiesStatuses = ref({});
 
+    const showGenderEquivForm = computed(
+      () => wordType.value === languages.GRAMMATICAL_CLASSES.NOUN.sectionCode
+    );
+
     function fireUpdateEvent() {
       /**
        * @type {WordProperties}
@@ -115,9 +133,14 @@ export default defineComponent({
         wordType: wordType.value,
         properties: wordProperties.value,
         plural: plural.value.trim(),
+        genderEquivalents: genderEquivalents.value,
       };
       ctx.emit("update:model-value", firedEvent);
     }
+
+    /*
+     * Word properties
+     */
 
     function onWordTypeSelection() {
       wordTypeStatus.value = "default";
@@ -148,6 +171,30 @@ export default defineComponent({
       fireUpdateEvent();
     }
 
+    /*
+     * Gender equivalents
+     */
+
+    function onAddGenderEquiv() {
+      genderEquivalents.value.push(["", [""]]);
+      fireUpdateEvent();
+    }
+
+    function onDeleteGenderEquiv(genderIndex) {
+      genderEquivalents.value.splice(genderIndex, 1);
+      fireUpdateEvent();
+    }
+
+    function onAddEquiv(genderIndex) {
+      genderEquivalents.value[genderIndex][1].push("");
+      fireUpdateEvent();
+    }
+
+    function onDeleteEquiv(genderIndex, valueIndex) {
+      genderEquivalents.value[genderIndex][1].splice(valueIndex, 1);
+      fireUpdateEvent();
+    }
+
     return {
       // Data
       wordTypesData,
@@ -155,19 +202,27 @@ export default defineComponent({
       wordType,
       wordProperties,
       plural,
+      genderEquivalents,
       // Visual
       wordTypeStatus,
       wordPropertiesStatuses,
+      showGenderEquivForm,
       // Other
       NUMBERS: languages.NUMBERS,
       GRAMMATICAL_CLASSES: languages.GRAMMATICAL_CLASSES,
       GENDERS: languages.GENDERS,
       // Icons
+      cdxIconAdd,
       cdxIconHelpNotice,
       cdxIconSettings,
+      cdxIconTrash,
       // Callbacks
       onWordTypeSelection,
       onWordPropertySelection,
+      onAddGenderEquiv,
+      onDeleteGenderEquiv,
+      onAddEquiv,
+      onDeleteEquiv,
       fireUpdateEvent,
       capitalize: strings.capitalize,
     };
@@ -253,7 +308,7 @@ export default defineComponent({
         <cdx-field
           v-if="
             $props.language.code === 'br' &&
-            wordType === GRAMMATICAL_CLASSES.PREPOSITION.label
+            wordType === GRAMMATICAL_CLASSES.PREPOSITION.sectionCode
           "
         >
           <template #label>Type de conjugaison</template>
@@ -264,6 +319,83 @@ export default defineComponent({
         </cdx-field>
       </template>
     </div>
+
+    <cdx-field v-show="showGenderEquivForm" is-fieldset class="cne-box">
+      <template #label>Équivalents pour d’autres genres/sexes</template>
+      <div class="cdx-label">
+        <div class="cdx-label__description">
+          Si ce mot désigne une personne ou un animal, donnez l’équivalent dans
+          d’autres genres et/ou sexes s’il y en a.
+        </div>
+      </div>
+      <div class="cne-gender-equiv-forms">
+        <div
+          v-for="([text, values], i) in genderEquivalents"
+          :key="i"
+          class="cne-gender-equiv-form"
+        >
+          <div class="gender-text">
+            <cdx-text-input
+              :model-value="text"
+              @update:model-value="
+                genderEquivalents[i][0] = $event;
+                fireUpdateEvent();
+              "
+            ></cdx-text-input>
+            <cdx-button
+              type="button"
+              action="destructive"
+              aria-label="Supprimer"
+              title="Supprimer"
+              @click="onDeleteGenderEquiv(i)"
+            >
+              <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+            </cdx-button>
+          </div>
+          <ul>
+            <li v-for="(value, j) in values" :key="j">
+              <cdx-text-input
+                :model-value="value"
+                @update:model-value="
+                  genderEquivalents[i][1][j] = $event;
+                  fireUpdateEvent();
+                "
+              ></cdx-text-input>
+              <cdx-button
+                type="button"
+                action="destructive"
+                aria-label="Supprimer"
+                title="Supprimer"
+                :disabled="values.length === 1"
+                @click="onDeleteEquiv(i, j)"
+              >
+                <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+              </cdx-button>
+            </li>
+            <li>
+              <cdx-button
+                type="button"
+                action="progressive"
+                :disabled="genderEquivalents[i][1].length >= 6"
+                @click="onAddEquiv(i)"
+              >
+                <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+                Ajouter un autre équivalent
+              </cdx-button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <cdx-button
+        type="button"
+        action="progressive"
+        :disabled="genderEquivalents.length >= 2"
+        @click="onAddGenderEquiv"
+      >
+        <cdx-icon :icon="cdxIconAdd"></cdx-icon>
+        Ajouter un {{ genderEquivalents.length >= 1 ? "autre" : "" }} genre
+      </cdx-button>
+    </cdx-field>
   </cdx-field>
 </template>
 
@@ -280,5 +412,27 @@ export default defineComponent({
 .cne-word-type-selects .cdx-field {
   margin-top: 0;
 }
+
+.cne-gender-equiv-forms {
+  display: flex;
+  gap: 1em;
+  flex-direction: row;
+}
+
+.cne-gender-equiv-form {
+  flex-grow: 1;
+}
+
+.cne-gender-equiv-form .gender-text,
+.cne-gender-equiv-form ul li {
+  display: flex;
+  gap: 0.5em;
+  margin: 0.5em 0;
+}
+
+.cne-gender-equiv-form ul {
+  margin: 0;
+}
+
 /* </nowiki> */
 </style>

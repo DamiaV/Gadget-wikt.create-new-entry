@@ -92,6 +92,7 @@ export default defineComponent({
       wordType: props.modelValue.wordType,
       properties: props.modelValue.wordProperties,
       plural: props.modelValue.plural,
+      genderEquivalents: props.modelValue.genderEquivalents,
     });
     const definitions = ref(props.modelValue.definitions);
     const relatedWords = ref(props.modelValue.relatedWords);
@@ -162,6 +163,7 @@ export default defineComponent({
           wordType: wordTypeProperties.value.wordType,
           wordProperties: wordTypeProperties.value.properties,
           plural: wordTypeProperties.value.plural,
+          genderEquivalents: wordTypeProperties.value.genderEquivalents,
           definitions: definitions.value,
           relatedWords: relatedWords.value,
           pronunciations: pronunciations.value,
