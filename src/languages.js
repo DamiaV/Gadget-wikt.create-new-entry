@@ -847,6 +847,8 @@ function loadLanguages() {
             nombre: [
               NUMBERS.DIFF_SINGULAR_PLURAL,
               NUMBERS.SAME_SINGULAR_PLURAL,
+              NUMBERS.SINGULAR_ONLY,
+              NUMBERS.PLURAL_ONLY,
               NUMBERS.UNKNOWN,
             ],
           },
