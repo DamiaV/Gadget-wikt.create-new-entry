@@ -62,7 +62,7 @@
  *
  * === v6.x (2025-12-01) ===
  * v6.0   2025-12-01 Full rewrite in Vue.js + Codex.
- * v6.1   2026-01-?? Add button to insert ext. links; add form to specify gender equivalents of nouns.
+ * v6.1   2026-01-04 Add button to insert ext. links; add form to specify gender equivalents of nouns.
  *
  * [[Catégorie:JavaScript du Wiktionnaire|create-new-entry/main.js]]
  */
