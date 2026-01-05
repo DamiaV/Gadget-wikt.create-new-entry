@@ -444,6 +444,7 @@ export default defineComponent({
 
 .cne-gender-equiv-form ul {
   margin-top: 0;
+  list-style-type: none;
 }
 
 /* </nowiki> */
