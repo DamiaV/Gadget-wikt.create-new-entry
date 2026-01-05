@@ -334,9 +334,15 @@ export default defineComponent({
           :key="i"
           class="cne-gender-equiv-form"
         >
-          <div class="gender-text">
+          <cdx-field class="gender-text">
+            <template #label>Genre ou sexe concerné</template>
+            <template #description>
+              Le texte doit être de la forme <em>déterminant + nom</em>, comme
+              «&nbsp;une femme&nbsp;» ou «&nbsp;un chien&nbsp;».
+            </template>
             <cdx-text-input
               :model-value="text"
+              placeholder="Ex.&nbsp;: une femme"
               @update:model-value="
                 genderEquivalents[i][0] = $event;
                 fireUpdateEvent();
@@ -351,26 +357,32 @@ export default defineComponent({
             >
               <cdx-icon :icon="cdxIconTrash"></cdx-icon>
             </cdx-button>
-          </div>
+          </cdx-field>
           <ul>
             <li v-for="(value, j) in values" :key="j">
-              <cdx-text-input
-                :model-value="value"
-                @update:model-value="
-                  genderEquivalents[i][1][j] = $event;
-                  fireUpdateEvent();
-                "
-              ></cdx-text-input>
-              <cdx-button
-                type="button"
-                action="destructive"
-                aria-label="Supprimer"
-                title="Supprimer"
-                :disabled="values.length === 1"
-                @click="onDeleteEquiv(i, j)"
-              >
-                <cdx-icon :icon="cdxIconTrash"></cdx-icon>
-              </cdx-button>
+              <cdx-field>
+                <template #label>
+                  Mot équivalent <abbr title="numéro">n<sup>o</sup></abbr>
+                  {{ j + 1 }}
+                </template>
+                <cdx-text-input
+                  :model-value="value"
+                  @update:model-value="
+                    genderEquivalents[i][1][j] = $event;
+                    fireUpdateEvent();
+                  "
+                ></cdx-text-input>
+                <cdx-button
+                  type="button"
+                  action="destructive"
+                  aria-label="Supprimer"
+                  title="Supprimer"
+                  :disabled="values.length === 1"
+                  @click="onDeleteEquiv(i, j)"
+                >
+                  <cdx-icon :icon="cdxIconTrash"></cdx-icon>
+                </cdx-button>
+              </cdx-field>
             </li>
             <li>
               <cdx-button
@@ -423,15 +435,15 @@ export default defineComponent({
   flex-grow: 1;
 }
 
-.cne-gender-equiv-form .gender-text,
-.cne-gender-equiv-form ul li {
+.cne-gender-equiv-form .gender-text .cdx-field__control,
+.cne-gender-equiv-form ul li .cdx-field__control {
   display: flex;
   gap: 0.5em;
   margin: 0.5em 0;
 }
 
 .cne-gender-equiv-form ul {
-  margin: 0;
+  margin-top: 0;
 }
 
 /* </nowiki> */
