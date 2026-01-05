@@ -444,6 +444,7 @@ export default defineComponent({
 
 .cne-gender-equiv-form ul {
   margin-top: 0;
+  margin-bottom: 0.5em;
   list-style-type: none;
 }
 
