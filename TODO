@@ -1,3 +1,4 @@
+[ ] Utiliser un store de Pinia pour simplifier le code.
 [ ] Raccourcis clavier pour la barre d’outils.
 [x] Changer le message de diff en fonction de si une nouvelle page est en train d’être créée ou non.
 [x] Indiquer que les infos d’usage sont facultatives.
