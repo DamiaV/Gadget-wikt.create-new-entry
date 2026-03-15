@@ -1,3 +1,4 @@
+[ ] Permettre de déplacer les exemples d’une définition à une autre.
 [ ] Utiliser un store Pinia pour simplifier le code.
 [ ] Raccourcis clavier pour la barre d’outils.
 [x] Changer le message de diff en fonction de si une nouvelle page est en train d’être créée ou non.
