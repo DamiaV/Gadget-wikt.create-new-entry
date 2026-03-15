@@ -1,3 +1,4 @@
+[ ] Ajouter la description des hyperonymes, etc. dans les menus déroulants.
 [ ] Permettre de déplacer les exemples d’une définition à une autre.
 [ ] Utiliser un store Pinia pour simplifier le code.
 [ ] Raccourcis clavier pour la barre d’outils.
